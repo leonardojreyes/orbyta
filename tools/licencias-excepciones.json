@@ -7,9 +7,9 @@
       "motivo": "El paquete no declara el campo license, pero su archivo LICENSE es MIT (verificado a mano)."
     },
     {
-      "paquete": "@img/sharp-libvips-darwin-arm64",
+      "paquete": "@img/sharp-libvips-*",
       "licencia": "LGPL-3.0-or-later",
-      "motivo": "Binario nativo sin modificar, enlazado dinámicamente por sharp (dependencia de Next.js). Solo desarrollo en macOS; no se redistribuye modificado."
+      "motivo": "Binario nativo sin modificar, enlazado dinámicamente por sharp (dependencia de Next.js). Variantes por plataforma (darwin, linux, linuxmusl); no se modifica el binario."
     }
   ]
 }

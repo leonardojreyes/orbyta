@@ -30,7 +30,12 @@ Además: Dependabot (npm, github-actions, docker) semanal. Las acciones de terce
 ### Excepciones de licencia
 Registradas en `tools/licencias-excepciones.json`:
 - `union` — no declara `license`, pero su archivo LICENSE es MIT (verificado).
-- `@img/sharp-libvips-darwin-arm64` — LGPL-3.0-or-later. Binario nativo sin modificar, enlazado dinámicamente por `sharp` (dependencia de Next.js); es un paquete opcional de plataforma, usado en desarrollo en macOS.
+- `@img/sharp-libvips-*` — LGPL-3.0-or-later. Binarios nativos sin modificar, enlazados dinámicamente por `sharp` (dependencia de Next.js); paquetes opcionales por plataforma (darwin, linux, linuxmusl).
+
+### Vulnerabilidades corregidas y excepciones
+El primer OSV-Scanner encontró 51 vulnerabilidades en 10 paquetes. Se corrigieron subiendo `next` a ~16.3.8 y con `overrides` en `pnpm-workspace.yaml` (axios, smol-toml, brace-expansion, esbuild). Quedan dos excepciones con vencimiento 2026-12-31 en `osv-scanner.toml`:
+- `node-forge` 1.4.0 (GHSA-86w9-cpqp-85rv): solo herramienta de desarrollo de Expo, sin corrección publicada.
+- `uuid` 7.x/8.x (GHSA-w5hq-g745-h8pq): transitiva de Expo/Metro; el uso vulnerable no aplica y la corrección es un cambio mayor.
 
 ## Alternativas consideradas
 - **CodeQL:** gratuito para repos públicos, pero la regla del proyecto pide Semgrep CE; podría añadirse después.

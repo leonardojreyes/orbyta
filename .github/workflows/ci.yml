@@ -15,6 +15,7 @@ env:
   GITLEAKS_VERSION: 8.30.1
   OSV_VERSION: 2.6.0
   OASDIFF_VERSION: 1.33.0
+  TRIVY_VERSION: 0.75.0
 
 jobs:
   lint-tipos:
@@ -112,25 +113,18 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - run: docker build -f apps/${{ matrix.app }}/Dockerfile -t orbyta-${{ matrix.app }}:${{ github.sha }} .
-      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
-        with:
-          image-ref: orbyta-${{ matrix.app }}:${{ github.sha }}
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
+      - name: Instalar Trivy
+        run: curl -sSfL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" | tar -xz trivy
+      - run: ./trivy image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 orbyta-${{ matrix.app }}:${{ github.sha }}
 
   sbom:
     name: sbom
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: cyclonedx
-          output: sbom.cdx.json
-          skip-dirs: node_modules
+      - name: Instalar Trivy
+        run: curl -sSfL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" | tar -xz trivy
+      - run: ./trivy fs --format cyclonedx --output sbom.cdx.json --skip-dirs node_modules .
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: sbom-cyclonedx

@@ -1,12 +1,17 @@
 packages:
-  - "apps/*"
-  - "modules/*/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'modules/*/*'
+  - 'packages/*'
 allowBuilds:
   '@parcel/watcher': true
   nx: true
   unrs-resolver: true
-  "@nestjs/core": false
+  '@nestjs/core': false
   '@swc/core': true
   sharp: true
   esbuild: true
+overrides:
+  axios: ^1.20.0
+  smol-toml: ^1.7.1
+  brace-expansion@5: ^5.0.12
+  esbuild@0.27: ^0.28.1

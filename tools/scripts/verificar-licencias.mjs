@@ -28,7 +28,13 @@ const excepciones = JSON.parse(
     'utf8',
   ),
 ).excepciones;
-const excepcionadas = new Set(excepciones.map((e) => e.paquete));
+// "paquete" puede terminar en * para cubrir variantes por plataforma.
+const estaExcepcionado = (nombre) =>
+  excepciones.some((e) =>
+    e.paquete.endsWith('*')
+      ? nombre.startsWith(e.paquete.slice(0, -1))
+      : e.paquete === nombre,
+  );
 
 // "A OR B" es válida si alguna alternativa lo es; "A AND B" si todas lo son.
 const esPermitida = (expresion) => {
@@ -53,7 +59,7 @@ const infracciones = [];
 for (const [licencia, paquetes] of Object.entries(porLicencia)) {
   if (esPermitida(licencia)) continue;
   for (const paquete of paquetes) {
-    if (!excepcionadas.has(paquete.name))
+    if (!estaExcepcionado(paquete.name))
       infracciones.push(`${paquete.name} (${licencia})`);
   }
 }

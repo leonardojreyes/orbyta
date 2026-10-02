@@ -1,0 +1,11 @@
+# Excepciones de OSV-Scanner. Cada una vence y se justifica en docs/adr/022-pipeline-calidad.md.
+
+[[IgnoredVulns]]
+id = "GHSA-86w9-cpqp-85rv"
+ignoreUntil = 2026-12-31
+reason = "node-forge 1.4.0 llega solo por @expo/cli (herramienta de desarrollo móvil, no se despliega). Sin versión corregida publicada."
+
+[[IgnoredVulns]]
+id = "GHSA-w5hq-g745-h8pq"
+ignoreUntil = 2026-12-31
+reason = "uuid 7.x y 8.x llegan por dependencias transitivas de herramientas de desarrollo (Expo/Metro). La falla exige pasar un buffer propio a v3/v5/v6; no se usa. Corrección solo en 11.x (cambio mayor)."
