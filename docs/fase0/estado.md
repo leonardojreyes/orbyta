@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.5 — Look and feel y sistema de diseño.** En planificación (rama `fase0/0.5`); plan pendiente de "adelante". Los pasos 0.2, 0.3 y 0.4 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1), [#2](https://github.com/leonardojreyes/orbyta/pull/2) y [#3](https://github.com/leonardojreyes/orbyta/pull/3)).
+**0.5 — Look and feel y sistema de diseño.** Ejecutado (2026-10-02), **pendiente de aprobación humana** y merge del PR de la rama `fase0/0.5`. Los pasos 0.2, 0.3 y 0.4 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1), [#2](https://github.com/leonardojreyes/orbyta/pull/2) y [#3](https://github.com/leonardojreyes/orbyta/pull/3)).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -46,6 +46,9 @@ Registradas también como ADR cuando aplica.
 13. **Autoaprobación en `main`.** La protección exige una aprobación pero no aplica a administradores, para que `leonardojreyes` pueda mergear sus propios PR (ADR 022).
 14. **Excepciones de seguridad con vencimiento 2026-12-31:** `node-forge` y `uuid` 7.x/8.x (solo herramientas de desarrollo de Expo), en `osv-scanner.toml`. Revisar antes de esa fecha.
 15. **Hook `guard-bash` con falso positivo:** bloquea comandos que contienen el texto de un borrado recursivo forzado aunque sea contenido de un archivo (p. ej. un Dockerfile en un heredoc). Se evitó editando con Write/Edit; considerar afinarlo.
+16. **Móvil sin probar en dispositivo.** Las pantallas móviles se validaron con pruebas de componentes y exportadas como web en Chrome; falta probarlas en un simulador o dispositivo iOS/Android (el revisor, con Expo Go o un build local).
+17. **Logo de Orbyta sin versión para tema oscuro.** Hoy conserva su fondo claro en ambos temas. En móvil se usa una copia PNG rasterizada del SVG.
+18. **Tailwind 3.4 hasta que NativeWind 5 sea estable** (ver ADR 023).
 
 ## Próximo paso
 
@@ -64,3 +67,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Paso 0.4 ejecutado en `fase0/0.4`: workflow `ci.yml` (lint-tipos, pruebas con 80 % en domain/application, semgrep, osv-scanner, licencias, gitleaks, trivy x3, sbom, contrato-openapi), Dependabot, Dockerfiles mínimos, contrato OpenAPI base, scripts `typecheck` y `licencias`, ADR 022. Corregidos 3 errores de tipos en tsconfig de pruebas (api, mobile). Repositorio hecho público.
 - 2026-10-01 — Paso 0.4 verificado: CI con 11 controles en verde en el PR #3; `main` protegida (PR, 11 controles, 1 aprobación, sin aplicar a administradores). Tres PR de prueba bloqueados y cerrados sin mergear: #4 importación prohibida (`@nx/enforce-module-boundaries`), #5 prueba fallida (`pruebas`), #6 secreto simulado (`gitleaks`, regla `github-pat`). OSV encontró 51 vulnerabilidades: corregidas subiendo `next` a ~16.3.8 y con overrides; 2 excepciones documentadas.
 - 2026-10-01 — Paso 0.4 **aprobado** y PR #3 mergeado a `main` (`6ca19e6`) con aprobación del administrador (sin revisión de GitHub, por ser el único revisor). Se crea la rama `fase0/0.5`.
+- 2026-10-02 — Paso 0.5 ejecutado en `fase0/0.5`: guía de estilo; tokens W3C + Style Dictionary con temas claro y oscuro y verificación de contraste; 15 componentes web, Storybook (≈40 historias), 5 pantallas en web y 5 en móvil (NativeWind); logo de Orbyta incorporado; job `accesibilidad` en el CI (Playwright + axe sobre pantallas e historias en ambos temas); ADR 023.

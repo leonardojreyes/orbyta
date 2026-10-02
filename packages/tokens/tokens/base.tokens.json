@@ -17,8 +17,12 @@
   },
   "fuente": {
     "$type": "fontFamily",
-    "sistema": { "$value": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif" },
-    "mono": { "$value": "ui-monospace, \"SF Mono\", Menlo, Consolas, monospace" }
+    "sistema": {
+      "$value": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+    },
+    "mono": {
+      "$value": "ui-monospace, \"SF Mono\", Menlo, Consolas, monospace"
+    }
   },
   "texto": {
     "$type": "dimension",

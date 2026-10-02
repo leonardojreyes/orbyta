@@ -18,5 +18,8 @@ Orbyta necesita un look and feel propio (paleta y tipografía de Orbyta, no de C
 - Los ~15 componentes base y las 5 pantallas plantilla del paso 0.5 se construyen sobre esta base.
 - axe se integra al pipeline para verificar accesibilidad de forma continua (paso 0.4/0.5).
 
+## Implementación
+Las versiones, el reparto web/móvil y la verificación de accesibilidad se concretaron en el [ADR 023](023-implementacion-sistema-diseno.md) (paso 0.5): Tailwind 3.4 con NativeWind 4, pila de fuentes del sistema, axe en navegador real.
+
 ## Licencia
 Style Dictionary: Apache 2.0. Tailwind CSS: MIT. shadcn/ui: MIT. NativeWind: MIT. Storybook: MIT.

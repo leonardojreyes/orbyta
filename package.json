@@ -11,7 +11,10 @@
     "test:cov": "nx run-many -t test --coverage",
     "licencias": "node tools/scripts/verificar-licencias.mjs",
     "tokens": "node packages/tokens/scripts/generar.mjs",
-    "tokens:check": "node packages/tokens/scripts/generar.mjs --check"
+    "tokens:check": "node packages/tokens/scripts/generar.mjs --check",
+    "test:a11y": "playwright test",
+    "storybook": "nx storybook ui",
+    "build:storybook": "nx build-storybook ui"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
@@ -102,14 +105,19 @@
     "expo-status-bar": "~56.0.4",
     "expo-system-ui": "~56.0.5",
     "lucide-react": "^1.49.0",
+    "nativewind": "4.2.7",
     "next": "~16.3.8",
     "radix-ui": "^1.6.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-native": "0.85.3",
+    "react-native-css-interop": "0.2.7",
+    "react-native-reanimated": "4.3.1",
+    "react-native-safe-area-context": "~5.7.0",
     "react-native-svg": "15.12.1",
     "react-native-svg-transformer": "~1.5.1",
     "react-native-web": "~0.21.0",
+    "react-native-worklets": "0.8.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0",
     "tailwind-merge": "^3.7.0"

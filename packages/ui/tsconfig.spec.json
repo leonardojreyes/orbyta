@@ -4,17 +4,9 @@
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
     "moduleResolution": "node10",
-    "types": [
-      "jest",
-      "node",
-      "@testing-library/jest-dom"
-    ],
+    "types": ["jest", "node", "@testing-library/jest-dom"],
     "jsx": "react-jsx",
-    "lib": [
-      "es2022",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["es2022", "dom", "dom.iterable"],
     "esModuleInterop": true
   },
   "include": [

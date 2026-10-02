@@ -1,6 +1,6 @@
 # Guía de estilo de Orbyta
 
-> **Estado:** borrador para aprobación del revisor (`leonardojreyes`). Paso 0.5 de la Fase 0. Decisiones técnicas en [ADR 019](../adr/019-sistema-diseno.md).
+> **Estado:** implementada en el paso 0.5, pendiente de aprobación del revisor (`leonardojreyes`). Decisiones técnicas en [ADR 019](../adr/019-sistema-diseno.md) y [ADR 023](../adr/023-implementacion-sistema-diseno.md).
 > Todo valor de esta guía vive en `packages/tokens`. **Ninguna pantalla escribe un color, espaciado o tamaño a mano.**
 
 ## 1. Principios
@@ -185,7 +185,7 @@ Cinco, en web y móvil, con datos simulados (sin conexión a la API hasta el pas
 - El logo de la empresa aparece en la **barra lateral**, el **inicio de sesión** y la **app móvil**.
 - Espacio reservado: máximo 160 × 40 px en web y 120 × 32 px en móvil. Formatos SVG o PNG con fondo transparente; se muestra una variante clara u oscura según el tema.
 - Si la empresa no tiene logo, se muestra su nombre en texto.
-- El logo de Orbyta es independiente y se agrega al final del paso; hasta entonces, un marcador temporal.
+- El logo de Orbyta (`docs/design/marca/orbyta-logo.svg`) es fijo para todas las empresas y es independiente del logo de la empresa. La versión para tema oscuro está pendiente: hoy conserva su fondo claro.
 
 ## 11. Accesibilidad (WCAG 2.2 AA)
 
@@ -207,3 +207,15 @@ Cinco, en web y móvil, con datos simulados (sin conexión a la API hasta el pas
 ## 13. Fuera de alcance de esta guía (diferido)
 
 Vistas de calendario y cronograma, y el diseño en Penpot (ver [deuda planificada](../fase0/deuda-planificada.md), ítem 12).
+
+## 14. Dónde está cada cosa
+
+| Qué | Dónde |
+| --- | --- |
+| Tokens (fuente) | `packages/tokens/tokens/*.tokens.json`; `pnpm tokens` regenera `src/generado/` |
+| Componentes web | `packages/ui/src/lib/` (importar de `@orbyta/ui`) |
+| Textos en español | `packages/ui/src/i18n/es-EC.ts` (`@orbyta/ui/textos`) |
+| Componentes y pantallas móviles | `apps/mobile/src/componentes` y `apps/mobile/src/pantallas` |
+| Pantallas web | `apps/web/src/app` y `apps/web/src/componentes` |
+| Storybook | `pnpm storybook` (desarrollo) · `pnpm build:storybook` |
+| Accesibilidad en navegador | `pnpm test:a11y` (requiere `pnpm nx build web` y `pnpm build:storybook`) |
