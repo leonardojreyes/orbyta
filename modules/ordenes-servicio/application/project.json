@@ -1,0 +1,26 @@
+{
+  "name": "application",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "modules/ordenes-servicio/application/src",
+  "projectType": "library",
+  "tags": [
+    "scope:ordenes-servicio",
+    "type:application"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/modules/ordenes-servicio/application",
+        "main": "modules/ordenes-servicio/application/src/index.ts",
+        "tsConfig": "modules/ordenes-servicio/application/tsconfig.lib.json",
+        "assets": [
+          "modules/ordenes-servicio/application/*.md"
+        ]
+      }
+    }
+  }
+}

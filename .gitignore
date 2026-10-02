@@ -1,6 +1,7 @@
 node_modules/
 dist/
 build/
+tmp/
 .nx/cache/
 .nx/workspace-data/
 coverage/
@@ -10,3 +11,27 @@ coverage/
 *.log
 .DS_Store
 .claude/settings.local.json
+
+
+
+.nx/migrate-runs
+
+# Next.js
+.next
+out
+
+# Expo
+node_modules/
+.expo/
+.yarn/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+cache/
+

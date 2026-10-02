@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.1 — Decisiones fundacionales.** Aprobado (2026-10-01). Siguiente: **0.2 — Repositorio y esqueleto**, listo para entrar en modo plan (repositorio y `gh` ya resueltos).
+**0.2 — Repositorio y esqueleto.** Ejecutado (2026-10-01), **pendiente de aprobación humana** y merge del PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) (`fase0/0.2` → `main`).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -34,10 +34,12 @@ Registradas también como ADR cuando aplica.
 3. ~~URL del repositorio GitHub no definida~~ — **resuelto**: `https://github.com/leonardojreyes/orbyta` (privado, vacío), `gh` autenticado.
 4. **Disponibilidad de GPU no confirmada** para Ollama. Se eligieron modelos pequeños aptos para CPU como escenario conservador; reconfirmar en el paso 0.7/0.8.
 5. **Mecanismo exacto de integración con Palmera** (qué vistas, periodicidad, mecanismo de escritura) no está definido más allá de "tablas/vistas de base de datos"; se debe acordar con el equipo de Palmera antes de Fase 1.
+6. **Identidad de git autoconfigurada.** El primer commit se hizo con `leo@Leonardos-MacBook-Pro-5.local` (autodetectado), no con el correo real del usuario. No bloqueante; corregible con `git config --global user.email/user.name` si se quiere otra identidad de autor en los commits.
+7. **Devcontainer y docker-compose sin probar de punta a punta.** Este entorno no tiene motor de contenedores (Docker/Podman/Rancher Desktop) instalado, así que no se pudo levantar `.devcontainer/` ni `docker-compose.yml` para verificarlos. **Pendiente de que el revisor humano los pruebe en un equipo con Rancher Desktop o Podman Desktop** antes de cerrar el paso 0.2 como verificado end-to-end.
 
 ## Próximo paso
 
-**0.2 — Repositorio y esqueleto.** Listo para iniciar (entrar en modo plan, presentar plan, esperar "adelante").
+**0.3 — Capa de context engineering.** Pendiente de que se apruebe el paso 0.2 y se mergee el PR [#1](https://github.com/leonardojreyes/orbyta/pull/1).
 
 ## Historial
 
@@ -45,3 +47,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Paso 0.1 **aprobado** por el usuario.
 - 2026-10-01 — Repositorio GitHub `leonardojreyes/orbyta` confirmado vacío y privado; `gh` autenticado (usar `env -u GITHUB_TOKEN gh ...` por el alcance limitado del token de la variable de entorno).
 - 2026-10-01 — `leonardojreyes` confirmado como revisor humano de PRs y ADRs. Paso 0.1 queda sin pendientes bloqueantes para iniciar el 0.2.
+- 2026-10-01 — Paso 0.2 ejecutado: commit inicial en `main` con los documentos del paso 0.1; monorepo Nx + pnpm (apps api/web/worker/mobile, módulo `ordenes-servicio` con sus 4 capas, paquetes contracts/ui/tokens, devcontainer, docker-compose de desarrollo) en la rama `fase0/0.2`; `pnpm install/build/test/lint` en verde (11/11 proyectos); PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) abierto. Pendiente de aprobación y merge.
