@@ -42,3 +42,6 @@ playwright-report/
 
 # Storybook
 storybook-static/
+
+# TypeScript
+*.tsbuildinfo
