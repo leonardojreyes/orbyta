@@ -5,7 +5,7 @@ describe('EstadoOrdenServicio', () => {
     expect(Object.values(EstadoOrdenServicio)).toEqual([
       'registrada',
       'en_curso',
-      'cerrada',
+      'cerrada_x',
     ]);
   });
 });
