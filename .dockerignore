@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+dist
+tmp
+coverage
+.nx
+.git
+.next
+**/.next
+.env
+.env.*
+.claude/settings.local.json

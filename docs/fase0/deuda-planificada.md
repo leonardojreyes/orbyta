@@ -18,3 +18,4 @@
 | 12 | Vistas de calendario y cronograma; diseño en Penpot | — (paso 0.5) | Cuando `proyectos` o la planificación de OS requieran esas vistas (fuera del esqueleto caminante de Fase 0). |
 | 13 | Prueba de penetración externa | — (paso 0.9) | Antes de un despliegue a producción con datos reales de abonados. |
 | 14 | Infraestructura on-premise real (servidores dedicados, separación pruebas/producción) | [011](../adr/011-ejecucion.md) | Antes de cerrar el paso 0.8; por ahora solo se dispone de la computadora de desarrollo (ver riesgo en `estado.md`). |
+| 15 | Corregir `node-forge` y `uuid` 7.x/8.x (excepciones de OSV-Scanner en `osv-scanner.toml`) | [022](../adr/022-pipeline-calidad.md) (paso 0.4) | Antes del 2026-12-31 o cuando Expo publique versiones corregidas. |

@@ -1,0 +1,11 @@
+title = "Orbyta gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Archivos sin secretos reales"
+paths = [
+  '''pnpm-lock\.yaml''',
+  '''\.env\.example''',
+]

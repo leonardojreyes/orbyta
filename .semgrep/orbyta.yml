@@ -1,0 +1,27 @@
+rules:
+  - id: orbyta-consulta-sql-sin-empresa
+    languages: [typescript]
+    severity: WARNING
+    message: >-
+      Consulta SQL cruda sin referencia a empresa. Toda lectura y escritura debe acotarse a la
+      empresa del contexto autenticado (CLAUDE.md, Multiempresa).
+    patterns:
+      - pattern-either:
+          - pattern: $X.query($SQL, ...)
+          - pattern: $X.query($SQL)
+          - pattern: $X.$METHOD(`...`)
+      - metavariable-regex:
+          metavariable: $SQL
+          regex: (?is)^(?!.*(empresa_id|empresaId|tenant)).*\b(select|update|delete|insert)\b.*
+    paths:
+      include:
+        - modules/**/infrastructure/**
+        - apps/api/**
+  - id: orbyta-log-datos-personales
+    languages: [typescript]
+    severity: WARNING
+    message: Posible dato personal de abonado en un log (LOPDP). No registrar cédula, nombre ni correo.
+    pattern-either:
+      - pattern: console.$M(..., $X.cedula, ...)
+      - pattern: console.$M(..., $X.abonado, ...)
+      - pattern: $LOGGER.$M(..., $X.cedula, ...)
