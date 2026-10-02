@@ -38,6 +38,15 @@
       ],
       "@orbyta/ordenes-servicio-interface": [
         "./modules/ordenes-servicio/interface/src/index.ts"
+      ],
+      "@orbyta/ui/textos": [
+        "packages/ui/src/i18n/index.ts"
+      ],
+      "@orbyta/ui/ejemplos": [
+        "packages/ui/src/ejemplos/index.ts"
+      ],
+      "@orbyta/tokens/tema": [
+        "packages/tokens/src/generado/tema.ts"
       ]
     }
   },

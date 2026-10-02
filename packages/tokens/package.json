@@ -2,10 +2,19 @@
   "name": "@orbyta/tokens",
   "version": "0.0.1",
   "private": true,
-  "type": "commonjs",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "style-dictionary": "^5.5.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./tailwind-preset": "./src/generado/tailwind-preset.cjs",
+    "./variables.css": "./src/generado/variables.css",
+    "./package.json": "./package.json"
   }
 }
