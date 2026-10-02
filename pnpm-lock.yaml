@@ -471,42 +471,6 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  modules/ping/application:
-    dependencies:
-      '@orbyta/ping-domain':
-        specifier: workspace:*
-        version: link:../domain
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
-  modules/ping/domain:
-    dependencies:
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
-  modules/ping/infrastructure:
-    dependencies:
-      '@orbyta/ping-application':
-        specifier: workspace:*
-        version: link:../application
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
-  modules/ping/interface:
-    dependencies:
-      '@orbyta/ping-application':
-        specifier: workspace:*
-        version: link:../application
-      '@orbyta/ping-domain':
-        specifier: workspace:*
-        version: link:../domain
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-
   packages/contracts:
     dependencies:
       tslib:

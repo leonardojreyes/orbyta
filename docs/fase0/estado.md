@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.3 — Capa de context engineering.** Plan pendiente de "adelante". El paso 0.2 está **aprobado y mergeado** (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1), `a04ecaf`).
+**0.3 — Capa de context engineering.** Ejecutado (2026-10-01), **pendiente de aprobación humana** y merge del PR de la rama `fase0/0.3`. El paso 0.2 está aprobado y mergeado (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1)).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -37,9 +37,13 @@ Registradas también como ADR cuando aplica.
 6. **Identidad de git autoconfigurada.** El primer commit se hizo con `leo@Leonardos-MacBook-Pro-5.local` (autodetectado), no con el correo real del usuario. No bloqueante; corregible con `git config --global user.email/user.name` si se quiere otra identidad de autor en los commits.
 7. **Devcontainer y docker-compose sin probar de punta a punta.** Este entorno no tiene motor de contenedores (Docker/Podman/Rancher Desktop) instalado, así que no se pudo levantar `.devcontainer/` ni `docker-compose.yml` para verificarlos. **Pendiente de que el revisor humano los pruebe en un equipo con Rancher Desktop o Podman Desktop** antes de cerrar el paso 0.2 como verificado end-to-end.
 
+8. **Hooks `PreToolUse` solo cubren Edit/Write/Bash.** El subagente `ingeniero-pruebas` y `documentador` tienen "escritura solo en pruebas / solo en `docs/`" como instrucción en su prompt, no como barrera técnica. Endurecer (hook por agente) si se observan desvíos.
+9. **Escaneo de secretos del hook `Stop`** usa gitleaks si está instalado; si no, un conjunto básico de patrones. gitleaks real entra en el pipeline en 0.4.
+10. **Nombres de proyecto Nx de `ordenes-servicio`** son `domain`, `application`, etc. (sin prefijo del módulo); los módulos nuevos usan `<modulo>-<capa>`. Renombrar antes de agregar un segundo módulo real para evitar choques.
+
 ## Próximo paso
 
-**0.3 — Capa de context engineering.** Rama `fase0/0.3`; plan presentado, pendiente de "adelante".
+**0.4 — Pipeline y controles de calidad.** Pendiente de que se apruebe el paso 0.3 y se mergee su PR.
 
 ## Historial
 
@@ -49,3 +53,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — `leonardojreyes` confirmado como revisor humano de PRs y ADRs. Paso 0.1 queda sin pendientes bloqueantes para iniciar el 0.2.
 - 2026-10-01 — Paso 0.2 ejecutado: commit inicial en `main` con los documentos del paso 0.1; monorepo Nx + pnpm (apps api/web/worker/mobile, módulo `ordenes-servicio` con sus 4 capas, paquetes contracts/ui/tokens, devcontainer, docker-compose de desarrollo) en la rama `fase0/0.2`; `pnpm install/build/test/lint` en verde (11/11 proyectos); PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) abierto. Pendiente de aprobación y merge.
 - 2026-10-01 — Paso 0.2 **aprobado** y PR #1 mergeado a `main` (`a04ecaf`) por el revisor. Pendiente 7 (devcontainer/compose sin probar) sigue abierto. Se crea la rama `fase0/0.3`.
+- 2026-10-01 — Paso 0.3 ejecutado en la rama `fase0/0.3`: `CLAUDE.md` raíz (72 líneas) y por `apps/api`, `apps/web`, `apps/mobile` y `modules/`; `.claude/settings.json` (permisos y hooks); 4 hooks Node con pruebas (`pnpm test:hooks`); 7 subagentes; comandos `spec`, `plan`, `tasks`, `implement`, `review`, `adr`; skills `crear-modulo` y `crear-endpoint`; `prettier` como devDependency (MIT). Entregable verificado con el módulo `ping` creado vía `/spec`→`/plan`→`/tasks`→`/implement` (T1–T6), con lint, límites y pruebas en verde, y eliminado en un commit posterior. Correcciones durante la prueba: la skill `crear-modulo` declaraba dependencias entre capas antes de usarlas (el lint `@nx/dependency-checks` falla); se corrigió. Pendiente de aprobación y merge.
