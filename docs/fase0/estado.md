@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.3 — Capa de context engineering.** Ejecutado (2026-10-01), **pendiente de aprobación humana** y merge del PR de la rama `fase0/0.3`. El paso 0.2 está aprobado y mergeado (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1)).
+**0.4 — Pipeline y controles de calidad.** En planificación (rama `fase0/0.4`); plan pendiente de "adelante". Los pasos 0.2 y 0.3 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) y [#2](https://github.com/leonardojreyes/orbyta/pull/2)).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -43,7 +43,7 @@ Registradas también como ADR cuando aplica.
 
 ## Próximo paso
 
-**0.4 — Pipeline y controles de calidad.** Pendiente de que se apruebe el paso 0.3 y se mergee su PR.
+**0.5 — Look and feel y sistema de diseño.** Después de aprobar el 0.4.
 
 ## Historial
 
@@ -54,3 +54,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Paso 0.2 ejecutado: commit inicial en `main` con los documentos del paso 0.1; monorepo Nx + pnpm (apps api/web/worker/mobile, módulo `ordenes-servicio` con sus 4 capas, paquetes contracts/ui/tokens, devcontainer, docker-compose de desarrollo) en la rama `fase0/0.2`; `pnpm install/build/test/lint` en verde (11/11 proyectos); PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) abierto. Pendiente de aprobación y merge.
 - 2026-10-01 — Paso 0.2 **aprobado** y PR #1 mergeado a `main` (`a04ecaf`) por el revisor. Pendiente 7 (devcontainer/compose sin probar) sigue abierto. Se crea la rama `fase0/0.3`.
 - 2026-10-01 — Paso 0.3 ejecutado en la rama `fase0/0.3`: `CLAUDE.md` raíz (72 líneas) y por `apps/api`, `apps/web`, `apps/mobile` y `modules/`; `.claude/settings.json` (permisos y hooks); 4 hooks Node con pruebas (`pnpm test:hooks`); 7 subagentes; comandos `spec`, `plan`, `tasks`, `implement`, `review`, `adr`; skills `crear-modulo` y `crear-endpoint`; `prettier` como devDependency (MIT). Entregable verificado con el módulo `ping` creado vía `/spec`→`/plan`→`/tasks`→`/implement` (T1–T6), con lint, límites y pruebas en verde, y eliminado en un commit posterior. Correcciones durante la prueba: la skill `crear-modulo` declaraba dependencias entre capas antes de usarlas (el lint `@nx/dependency-checks` falla); se corrigió. Pendiente de aprobación y merge.
+- 2026-10-01 — Paso 0.3 **aprobado** y PR #2 mergeado a `main` (`57c5595`). Verificado: `pnpm lint` y `pnpm test` 11/11, `pnpm test:hooks` 5/5. Se crea la rama `fase0/0.4`.
