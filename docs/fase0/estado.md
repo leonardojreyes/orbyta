@@ -4,28 +4,28 @@
 
 ## Paso actual
 
-**0.4 — Pipeline y controles de calidad.** Ejecutado en la rama `fase0/0.4` (2026-10-01); falta verificar el CI en el PR, activar la protección de `main` y los 3 PR de prueba. Los pasos 0.2 y 0.3 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) y [#2](https://github.com/leonardojreyes/orbyta/pull/2)).
+**0.4 — Pipeline y controles de calidad.** Ejecutado (2026-10-01), **pendiente de aprobación humana** y merge del PR [#3](https://github.com/leonardojreyes/orbyta/pull/3) de la rama `fase0/0.4`. Los pasos 0.2 y 0.3 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) y [#2](https://github.com/leonardojreyes/orbyta/pull/2)).
 
 ## Decisiones tomadas en el paso 0.1
 
 Registradas también como ADR cuando aplica.
 
-| Decisión | Respuesta | ADR |
-| --- | --- | --- |
-| Backend | TypeScript + NestJS | [002](../adr/002-backend.md) |
-| Tema visual | Claro y oscuro (ambos) | [019](../adr/019-sistema-diseno.md) |
-| Keycloak: organización vs. realm por empresa | Realm por empresa | [007](../adr/007-identidad.md) |
-| Móvil sin conexión | Sí, los técnicos trabajan sin señal; necesario modo offline | [021](../adr/021-movil-sin-conexion.md) |
-| Kubernetes existente | No existe; se instala k3s | [011](../adr/011-ejecucion.md) |
-| Ambientes separados pruebas/producción | No, por ahora solo un ambiente | [011](../adr/011-ejecucion.md) (riesgo, ver abajo) |
-| GPU para Ollama | No se sabe todavía; se asume solo CPU | [014](../adr/014-ia.md) |
-| Módulos candidatos | Confirmados + se agrega **contratos** | `docs/architecture/modulos.md` |
-| Glosario inicial | Confirmado + se agrega **Contrato** | `docs/fase0/glosario.md` |
-| ERP | Palmera (desarrollo interno de la empresa) | [020](../adr/020-integracion-erp.md) |
-| Mecanismo de integración ERP | Tablas/vistas de base de datos | [020](../adr/020-integracion-erp.md) |
-| Servidores disponibles | Por ahora solo la computadora de desarrollo actual | [011](../adr/011-ejecucion.md) (riesgo, ver abajo) |
-| Revisores humanos | **leonardojreyes** (único revisor humano de PRs y ADRs en esta Fase 0) | resuelto |
-| Repositorio GitHub | `https://github.com/leonardojreyes/orbyta` (privado, vacío). `gh` autenticado como `leonardojreyes`; el token de la variable `GITHUB_TOKEN` tiene alcance limitado, usar el de keyring (`env -u GITHUB_TOKEN gh ...`) para operaciones de repo | resuelto |
+| Decisión                                     | Respuesta                                                                                                                                                                                                                                      | ADR                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Backend                                      | TypeScript + NestJS                                                                                                                                                                                                                            | [002](../adr/002-backend.md)                       |
+| Tema visual                                  | Claro y oscuro (ambos)                                                                                                                                                                                                                         | [019](../adr/019-sistema-diseno.md)                |
+| Keycloak: organización vs. realm por empresa | Realm por empresa                                                                                                                                                                                                                              | [007](../adr/007-identidad.md)                     |
+| Móvil sin conexión                           | Sí, los técnicos trabajan sin señal; necesario modo offline                                                                                                                                                                                    | [021](../adr/021-movil-sin-conexion.md)            |
+| Kubernetes existente                         | No existe; se instala k3s                                                                                                                                                                                                                      | [011](../adr/011-ejecucion.md)                     |
+| Ambientes separados pruebas/producción       | No, por ahora solo un ambiente                                                                                                                                                                                                                 | [011](../adr/011-ejecucion.md) (riesgo, ver abajo) |
+| GPU para Ollama                              | No se sabe todavía; se asume solo CPU                                                                                                                                                                                                          | [014](../adr/014-ia.md)                            |
+| Módulos candidatos                           | Confirmados + se agrega **contratos**                                                                                                                                                                                                          | `docs/architecture/modulos.md`                     |
+| Glosario inicial                             | Confirmado + se agrega **Contrato**                                                                                                                                                                                                            | `docs/fase0/glosario.md`                           |
+| ERP                                          | Palmera (desarrollo interno de la empresa)                                                                                                                                                                                                     | [020](../adr/020-integracion-erp.md)               |
+| Mecanismo de integración ERP                 | Tablas/vistas de base de datos                                                                                                                                                                                                                 | [020](../adr/020-integracion-erp.md)               |
+| Servidores disponibles                       | Por ahora solo la computadora de desarrollo actual                                                                                                                                                                                             | [011](../adr/011-ejecucion.md) (riesgo, ver abajo) |
+| Revisores humanos                            | **leonardojreyes** (único revisor humano de PRs y ADRs en esta Fase 0)                                                                                                                                                                         | resuelto                                           |
+| Repositorio GitHub                           | `https://github.com/leonardojreyes/orbyta` (privado, vacío). `gh` autenticado como `leonardojreyes`; el token de la variable `GITHUB_TOKEN` tiene alcance limitado, usar el de keyring (`env -u GITHUB_TOKEN gh ...`) para operaciones de repo | resuelto                                           |
 
 ## Pendientes / riesgos abiertos
 
@@ -42,7 +42,10 @@ Registradas también como ADR cuando aplica.
 10. **Nombres de proyecto Nx de `ordenes-servicio`** son `domain`, `application`, etc. (sin prefijo del módulo); los módulos nuevos usan `<modulo>-<capa>`. Renombrar antes de agregar un segundo módulo real para evitar choques.
 
 11. **Repositorio público.** Se hizo público (2026-10-01) para poder proteger `main` sin GitHub Pro; el historial fue escaneado con gitleaks sin hallazgos. El runner autohospedado del 0.8 exige cuidado con PR de forks (ADR 022).
-12. **Imágenes Docker sin probar localmente.** Docker no pudo bajar `node:22-alpine` (timeout de red); las imágenes de api/worker/web se validan por primera vez en el job `trivy` del CI.
+12. **Imágenes Docker sin probar localmente.** Docker local no pudo bajar `node:22-alpine` (timeout de red); las imágenes de api/worker/web se construyeron y escanearon en el job `trivy` del CI (verde).
+13. **Autoaprobación en `main`.** La protección exige una aprobación pero no aplica a administradores, para que `leonardojreyes` pueda mergear sus propios PR (ADR 022).
+14. **Excepciones de seguridad con vencimiento 2026-12-31:** `node-forge` y `uuid` 7.x/8.x (solo herramientas de desarrollo de Expo), en `osv-scanner.toml`. Revisar antes de esa fecha.
+15. **Hook `guard-bash` con falso positivo:** bloquea comandos que contienen el texto de un borrado recursivo forzado aunque sea contenido de un archivo (p. ej. un Dockerfile en un heredoc). Se evitó editando con Write/Edit; considerar afinarlo.
 
 ## Próximo paso
 
@@ -59,3 +62,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Paso 0.3 ejecutado en la rama `fase0/0.3`: `CLAUDE.md` raíz (72 líneas) y por `apps/api`, `apps/web`, `apps/mobile` y `modules/`; `.claude/settings.json` (permisos y hooks); 4 hooks Node con pruebas (`pnpm test:hooks`); 7 subagentes; comandos `spec`, `plan`, `tasks`, `implement`, `review`, `adr`; skills `crear-modulo` y `crear-endpoint`; `prettier` como devDependency (MIT). Entregable verificado con el módulo `ping` creado vía `/spec`→`/plan`→`/tasks`→`/implement` (T1–T6), con lint, límites y pruebas en verde, y eliminado en un commit posterior. Correcciones durante la prueba: la skill `crear-modulo` declaraba dependencias entre capas antes de usarlas (el lint `@nx/dependency-checks` falla); se corrigió. Pendiente de aprobación y merge.
 - 2026-10-01 — Paso 0.3 **aprobado** y PR #2 mergeado a `main` (`57c5595`). Verificado: `pnpm lint` y `pnpm test` 11/11, `pnpm test:hooks` 5/5. Se crea la rama `fase0/0.4`.
 - 2026-10-01 — Paso 0.4 ejecutado en `fase0/0.4`: workflow `ci.yml` (lint-tipos, pruebas con 80 % en domain/application, semgrep, osv-scanner, licencias, gitleaks, trivy x3, sbom, contrato-openapi), Dependabot, Dockerfiles mínimos, contrato OpenAPI base, scripts `typecheck` y `licencias`, ADR 022. Corregidos 3 errores de tipos en tsconfig de pruebas (api, mobile). Repositorio hecho público.
+- 2026-10-01 — Paso 0.4 verificado: CI con 11 controles en verde en el PR #3; `main` protegida (PR, 11 controles, 1 aprobación, sin aplicar a administradores). Tres PR de prueba bloqueados y cerrados sin mergear: #4 importación prohibida (`@nx/enforce-module-boundaries`), #5 prueba fallida (`pruebas`), #6 secreto simulado (`gitleaks`, regla `github-pat`). OSV encontró 51 vulnerabilidades: corregidas subiendo `next` a ~16.3.8 y con overrides; 2 excepciones documentadas.
