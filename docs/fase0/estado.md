@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.4 — Pipeline y controles de calidad.** Ejecutado (2026-10-01), **pendiente de aprobación humana** y merge del PR [#3](https://github.com/leonardojreyes/orbyta/pull/3) de la rama `fase0/0.4`. Los pasos 0.2 y 0.3 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) y [#2](https://github.com/leonardojreyes/orbyta/pull/2)).
+**0.5 — Look and feel y sistema de diseño.** En planificación (rama `fase0/0.5`); plan pendiente de "adelante". Los pasos 0.2, 0.3 y 0.4 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1), [#2](https://github.com/leonardojreyes/orbyta/pull/2) y [#3](https://github.com/leonardojreyes/orbyta/pull/3)).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -49,7 +49,7 @@ Registradas también como ADR cuando aplica.
 
 ## Próximo paso
 
-**0.5 — Look and feel y sistema de diseño.** Después de aprobar el 0.4.
+**0.6 — Plataforma transversal.** Después de aprobar el 0.5.
 
 ## Historial
 
@@ -63,3 +63,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Paso 0.3 **aprobado** y PR #2 mergeado a `main` (`57c5595`). Verificado: `pnpm lint` y `pnpm test` 11/11, `pnpm test:hooks` 5/5. Se crea la rama `fase0/0.4`.
 - 2026-10-01 — Paso 0.4 ejecutado en `fase0/0.4`: workflow `ci.yml` (lint-tipos, pruebas con 80 % en domain/application, semgrep, osv-scanner, licencias, gitleaks, trivy x3, sbom, contrato-openapi), Dependabot, Dockerfiles mínimos, contrato OpenAPI base, scripts `typecheck` y `licencias`, ADR 022. Corregidos 3 errores de tipos en tsconfig de pruebas (api, mobile). Repositorio hecho público.
 - 2026-10-01 — Paso 0.4 verificado: CI con 11 controles en verde en el PR #3; `main` protegida (PR, 11 controles, 1 aprobación, sin aplicar a administradores). Tres PR de prueba bloqueados y cerrados sin mergear: #4 importación prohibida (`@nx/enforce-module-boundaries`), #5 prueba fallida (`pruebas`), #6 secreto simulado (`gitleaks`, regla `github-pat`). OSV encontró 51 vulnerabilidades: corregidas subiendo `next` a ~16.3.8 y con overrides; 2 excepciones documentadas.
+- 2026-10-01 — Paso 0.4 **aprobado** y PR #3 mergeado a `main` (`6ca19e6`) con aprobación del administrador (sin revisión de GitHub, por ser el único revisor). Se crea la rama `fase0/0.5`.
