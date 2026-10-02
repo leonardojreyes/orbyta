@@ -5,7 +5,8 @@
   "scripts": {
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
-    "lint": "nx run-many -t lint"
+    "lint": "nx run-many -t lint",
+    "test:hooks": "node --test .claude/hooks/hooks.test.mjs"
   },
   "devDependencies": {
     "@babel/runtime": "~7.27.6",
@@ -54,6 +55,7 @@
     "jest-util": "~30.3.0",
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "23.2.1",
+    "prettier": "^3.9.9",
     "react-test-renderer": "^19.2.0",
     "ts-jest": "^29.4.14",
     "ts-node": "10.9.1",
