@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  title: Orbyta API
+  version: 0.0.1
+  description: Contrato base de la API REST de Orbyta (Fase 0). Se amplía en el paso 0.6.
+paths:
+  /api/salud:
+    get:
+      summary: Estado del servicio
+      operationId: obtenerSalud
+      responses:
+        '200':
+          description: El servicio está activo
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [estado]
+                properties:
+                  estado:
+                    type: string
+                    enum: [ok]

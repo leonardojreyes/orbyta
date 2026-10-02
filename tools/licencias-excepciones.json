@@ -1,0 +1,15 @@
+{
+  "$comment": "Excepciones de licencia justificadas en docs/adr/022-pipeline-calidad.md. Cada una debe tener paquete, licencia declarada y motivo.",
+  "excepciones": [
+    {
+      "paquete": "union",
+      "licencia": "Unknown",
+      "motivo": "El paquete no declara el campo license, pero su archivo LICENSE es MIT (verificado a mano)."
+    },
+    {
+      "paquete": "@img/sharp-libvips-darwin-arm64",
+      "licencia": "LGPL-3.0-or-later",
+      "motivo": "Binario nativo sin modificar, enlazado dinámicamente por sharp (dependencia de Next.js). Solo desarrollo en macOS; no se redistribuye modificado."
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.4 — Pipeline y controles de calidad.** En planificación (rama `fase0/0.4`); plan pendiente de "adelante". Los pasos 0.2 y 0.3 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) y [#2](https://github.com/leonardojreyes/orbyta/pull/2)).
+**0.4 — Pipeline y controles de calidad.** Ejecutado en la rama `fase0/0.4` (2026-10-01); falta verificar el CI en el PR, activar la protección de `main` y los 3 PR de prueba. Los pasos 0.2 y 0.3 están aprobados y mergeados (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) y [#2](https://github.com/leonardojreyes/orbyta/pull/2)).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -41,6 +41,9 @@ Registradas también como ADR cuando aplica.
 9. **Escaneo de secretos del hook `Stop`** usa gitleaks si está instalado; si no, un conjunto básico de patrones. gitleaks real entra en el pipeline en 0.4.
 10. **Nombres de proyecto Nx de `ordenes-servicio`** son `domain`, `application`, etc. (sin prefijo del módulo); los módulos nuevos usan `<modulo>-<capa>`. Renombrar antes de agregar un segundo módulo real para evitar choques.
 
+11. **Repositorio público.** Se hizo público (2026-10-01) para poder proteger `main` sin GitHub Pro; el historial fue escaneado con gitleaks sin hallazgos. El runner autohospedado del 0.8 exige cuidado con PR de forks (ADR 022).
+12. **Imágenes Docker sin probar localmente.** Docker no pudo bajar `node:22-alpine` (timeout de red); las imágenes de api/worker/web se validan por primera vez en el job `trivy` del CI.
+
 ## Próximo paso
 
 **0.5 — Look and feel y sistema de diseño.** Después de aprobar el 0.4.
@@ -55,3 +58,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Paso 0.2 **aprobado** y PR #1 mergeado a `main` (`a04ecaf`) por el revisor. Pendiente 7 (devcontainer/compose sin probar) sigue abierto. Se crea la rama `fase0/0.3`.
 - 2026-10-01 — Paso 0.3 ejecutado en la rama `fase0/0.3`: `CLAUDE.md` raíz (72 líneas) y por `apps/api`, `apps/web`, `apps/mobile` y `modules/`; `.claude/settings.json` (permisos y hooks); 4 hooks Node con pruebas (`pnpm test:hooks`); 7 subagentes; comandos `spec`, `plan`, `tasks`, `implement`, `review`, `adr`; skills `crear-modulo` y `crear-endpoint`; `prettier` como devDependency (MIT). Entregable verificado con el módulo `ping` creado vía `/spec`→`/plan`→`/tasks`→`/implement` (T1–T6), con lint, límites y pruebas en verde, y eliminado en un commit posterior. Correcciones durante la prueba: la skill `crear-modulo` declaraba dependencias entre capas antes de usarlas (el lint `@nx/dependency-checks` falla); se corrigió. Pendiente de aprobación y merge.
 - 2026-10-01 — Paso 0.3 **aprobado** y PR #2 mergeado a `main` (`57c5595`). Verificado: `pnpm lint` y `pnpm test` 11/11, `pnpm test:hooks` 5/5. Se crea la rama `fase0/0.4`.
+- 2026-10-01 — Paso 0.4 ejecutado en `fase0/0.4`: workflow `ci.yml` (lint-tipos, pruebas con 80 % en domain/application, semgrep, osv-scanner, licencias, gitleaks, trivy x3, sbom, contrato-openapi), Dependabot, Dockerfiles mínimos, contrato OpenAPI base, scripts `typecheck` y `licencias`, ADR 022. Corregidos 3 errores de tipos en tsconfig de pruebas (api, mobile). Repositorio hecho público.

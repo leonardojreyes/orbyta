@@ -6,7 +6,10 @@
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
     "lint": "nx run-many -t lint",
-    "test:hooks": "node --test .claude/hooks/hooks.test.mjs"
+    "test:hooks": "node --test .claude/hooks/hooks.test.mjs",
+    "typecheck": "node tools/scripts/typecheck.mjs",
+    "test:cov": "nx run-many -t test --coverage",
+    "licencias": "node tools/scripts/verificar-licencias.mjs"
   },
   "devDependencies": {
     "@babel/runtime": "~7.27.6",

@@ -14,9 +14,9 @@ El código debe vivir en un sistema que soporte pull requests, revisión obligat
 - **Runners alojados por GitHub (sin autohospedado):** más simple de configurar, pero no pueden alcanzar la red interna on-premise para desplegar sin exponer la infraestructura a internet.
 
 ## Consecuencias
-- Pendiente: URL del repositorio vacío en GitHub y confirmación de `gh` autenticado (bloqueante para el paso 0.2, no para el 0.1).
+- Repositorio: `https://github.com/leonardojreyes/orbyta`. Se hizo **público** en el paso 0.4 porque la protección de ramas en repos privados exige GitHub Pro. Consecuencia: todo el historial es público y el runner autohospedado del 0.8 requiere cuidado (ver ADR 022).
 - El runner autohospedado se configura en el paso 0.8, en un host aislado, solo para este repositorio.
-- La protección de `main` (PR obligatorio, controles en verde, una aprobación) se configura en el paso 0.4.
+- La protección de `main` (PR obligatorio, controles en verde, una aprobación) se configura en el paso 0.4 (ver ADR 022).
 
 ## Licencia
 GitHub Actions: servicio (no aplica licencia de software propio en este ADR).

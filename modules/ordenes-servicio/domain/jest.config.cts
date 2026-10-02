@@ -3,8 +3,12 @@ module.exports = {
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }]
+    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/modules/ordenes-servicio/domain'
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/index.ts'],
+  coverageThreshold: {
+    global: { statements: 80, branches: 80, functions: 80, lines: 80 },
+  },
+  coverageDirectory: '../../../coverage/modules/ordenes-servicio/domain',
 };
