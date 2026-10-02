@@ -11,5 +11,7 @@ ENV NODE_ENV=production
 COPY --from=build /repo/apps/web/.next/standalone ./
 COPY --from=build /repo/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build /repo/apps/web/public ./apps/web/public
+# La imagen no necesita npm ni corepack; se eliminan para reducir superficie de ataque.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 USER node
 CMD ["node", "apps/web/server.js"]
