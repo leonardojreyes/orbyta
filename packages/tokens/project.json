@@ -1,0 +1,26 @@
+{
+  "name": "tokens",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/tokens/src",
+  "projectType": "library",
+  "tags": [
+    "type:lib",
+    "scope:tokens"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/tokens",
+        "main": "packages/tokens/src/index.ts",
+        "tsConfig": "packages/tokens/tsconfig.lib.json",
+        "assets": [
+          "packages/tokens/*.md"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "interface",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "modules/ordenes-servicio/interface/src",
+  "projectType": "library",
+  "tags": [
+    "scope:ordenes-servicio",
+    "type:interface"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/modules/ordenes-servicio/interface",
+        "main": "modules/ordenes-servicio/interface/src/index.ts",
+        "tsConfig": "modules/ordenes-servicio/interface/tsconfig.lib.json",
+        "assets": [
+          "modules/ordenes-servicio/interface/*.md"
+        ]
+      }
+    }
+  }
+}

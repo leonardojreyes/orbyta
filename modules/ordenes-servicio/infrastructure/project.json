@@ -1,0 +1,26 @@
+{
+  "name": "infrastructure",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "modules/ordenes-servicio/infrastructure/src",
+  "projectType": "library",
+  "tags": [
+    "scope:ordenes-servicio",
+    "type:infrastructure"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/modules/ordenes-servicio/infrastructure",
+        "main": "modules/ordenes-servicio/infrastructure/src/index.ts",
+        "tsConfig": "modules/ordenes-servicio/infrastructure/tsconfig.lib.json",
+        "assets": [
+          "modules/ordenes-servicio/infrastructure/*.md"
+        ]
+      }
+    }
+  }
+}

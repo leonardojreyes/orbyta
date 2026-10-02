@@ -1,0 +1,26 @@
+{
+  "name": "domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "modules/ordenes-servicio/domain/src",
+  "projectType": "library",
+  "tags": [
+    "scope:ordenes-servicio",
+    "type:domain"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/modules/ordenes-servicio/domain",
+        "main": "modules/ordenes-servicio/domain/src/index.ts",
+        "tsConfig": "modules/ordenes-servicio/domain/tsconfig.lib.json",
+        "assets": [
+          "modules/ordenes-servicio/domain/*.md"
+        ]
+      }
+    }
+  }
+}
