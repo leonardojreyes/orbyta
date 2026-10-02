@@ -4,7 +4,7 @@
 
 ## Paso actual
 
-**0.2 — Repositorio y esqueleto.** Ejecutado (2026-10-01), **pendiente de aprobación humana** y merge del PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) (`fase0/0.2` → `main`).
+**0.3 — Capa de context engineering.** Plan pendiente de "adelante". El paso 0.2 está **aprobado y mergeado** (PR [#1](https://github.com/leonardojreyes/orbyta/pull/1), `a04ecaf`).
 
 ## Decisiones tomadas en el paso 0.1
 
@@ -39,7 +39,7 @@ Registradas también como ADR cuando aplica.
 
 ## Próximo paso
 
-**0.3 — Capa de context engineering.** Pendiente de que se apruebe el paso 0.2 y se mergee el PR [#1](https://github.com/leonardojreyes/orbyta/pull/1).
+**0.3 — Capa de context engineering.** Rama `fase0/0.3`; plan presentado, pendiente de "adelante".
 
 ## Historial
 
@@ -48,3 +48,4 @@ Registradas también como ADR cuando aplica.
 - 2026-10-01 — Repositorio GitHub `leonardojreyes/orbyta` confirmado vacío y privado; `gh` autenticado (usar `env -u GITHUB_TOKEN gh ...` por el alcance limitado del token de la variable de entorno).
 - 2026-10-01 — `leonardojreyes` confirmado como revisor humano de PRs y ADRs. Paso 0.1 queda sin pendientes bloqueantes para iniciar el 0.2.
 - 2026-10-01 — Paso 0.2 ejecutado: commit inicial en `main` con los documentos del paso 0.1; monorepo Nx + pnpm (apps api/web/worker/mobile, módulo `ordenes-servicio` con sus 4 capas, paquetes contracts/ui/tokens, devcontainer, docker-compose de desarrollo) en la rama `fase0/0.2`; `pnpm install/build/test/lint` en verde (11/11 proyectos); PR [#1](https://github.com/leonardojreyes/orbyta/pull/1) abierto. Pendiente de aprobación y merge.
+- 2026-10-01 — Paso 0.2 **aprobado** y PR #1 mergeado a `main` (`a04ecaf`) por el revisor. Pendiente 7 (devcontainer/compose sin probar) sigue abierto. Se crea la rama `fase0/0.3`.

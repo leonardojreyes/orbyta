@@ -1,0 +1,19 @@
+{
+  "name": "ping-domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "modules/ping/domain/src",
+  "projectType": "library",
+  "tags": ["scope:ping", "type:domain"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/modules/ping/domain",
+        "main": "modules/ping/domain/src/index.ts",
+        "tsConfig": "modules/ping/domain/tsconfig.lib.json",
+        "assets": ["modules/ping/domain/*.md"]
+      }
+    }
+  }
+}

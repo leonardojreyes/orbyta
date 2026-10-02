@@ -10,23 +10,15 @@
     "importHelpers": true,
     "target": "es2022",
     "module": "commonjs",
-    "lib": [
-      "es2022"
-    ],
+    "lib": ["es2022"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "strict": true,
     "paths": {
-      "@orbyta/contracts": [
-        "packages/contracts/src/index.ts"
-      ],
-      "@orbyta/ui": [
-        "packages/ui/src/index.ts"
-      ],
-      "@orbyta/tokens": [
-        "packages/tokens/src/index.ts"
-      ],
+      "@orbyta/contracts": ["packages/contracts/src/index.ts"],
+      "@orbyta/ui": ["packages/ui/src/index.ts"],
+      "@orbyta/tokens": ["packages/tokens/src/index.ts"],
       "@orbyta/ordenes-servicio-domain": [
         "./modules/ordenes-servicio/domain/src/index.ts"
       ],
@@ -38,11 +30,14 @@
       ],
       "@orbyta/ordenes-servicio-interface": [
         "./modules/ordenes-servicio/interface/src/index.ts"
-      ]
+      ],
+      "@orbyta/ping-domain": ["./modules/ping/domain/src/index.ts"],
+      "@orbyta/ping-application": ["./modules/ping/application/src/index.ts"],
+      "@orbyta/ping-infrastructure": [
+        "./modules/ping/infrastructure/src/index.ts"
+      ],
+      "@orbyta/ping-interface": ["./modules/ping/interface/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

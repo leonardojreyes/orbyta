@@ -1,0 +1,19 @@
+{
+  "name": "ping-application",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "modules/ping/application/src",
+  "projectType": "library",
+  "tags": ["scope:ping", "type:application"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/modules/ping/application",
+        "main": "modules/ping/application/src/index.ts",
+        "tsConfig": "modules/ping/application/tsconfig.lib.json",
+        "assets": ["modules/ping/application/*.md"]
+      }
+    }
+  }
+}
