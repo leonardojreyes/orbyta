@@ -15,6 +15,11 @@ const fijarTema = (page: Page, tema: (typeof temas)[number]) =>
   page.addInitScript((t) => localStorage.setItem('orbyta-tema', t), tema);
 
 const revisar = async (page: Page) => {
+  // Sin transiciones: axe no debe medir colores a mitad de una animación.
+  await page.addStyleTag({
+    content:
+      '*, ::before, ::after { transition: none !important; animation: none !important; }',
+  });
   const resultado = await new AxeBuilder({ page })
     .withTags(etiquetas)
     .analyze();

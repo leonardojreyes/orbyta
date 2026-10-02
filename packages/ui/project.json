@@ -21,6 +21,23 @@
           "packages/ui/*.md"
         ]
       }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "storybook dev -p 6006 -c packages/ui/.storybook --no-open",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "{workspaceRoot}/dist/storybook"
+      ],
+      "options": {
+        "command": "storybook build -c packages/ui/.storybook -o dist/storybook --quiet",
+        "cwd": "{workspaceRoot}"
+      }
     }
   }
 }

@@ -35,3 +35,10 @@ npm-debug.*
 web-build/
 cache/
 
+
+# Playwright
+test-results/
+playwright-report/
+
+# Storybook
+storybook-static/

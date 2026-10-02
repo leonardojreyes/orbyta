@@ -1,0 +1,17 @@
+@import '@orbyta/tokens/variables.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root[data-theme='claro'] {
+    color-scheme: light;
+  }
+  :root[data-theme='oscuro'] {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-fondo font-sans text-md text-texto antialiased;
+  }
+}
