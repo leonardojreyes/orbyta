@@ -1,1 +1,17 @@
-export * from './lib/ui';
+export * from './lib/utilidades';
+export * from './lib/boton';
+export * from './lib/campo';
+export * from './lib/selector';
+export * from './lib/casilla';
+export * from './lib/chip-estado';
+export * from './lib/avatar';
+export * from './lib/insignia';
+export * from './lib/aviso';
+export * from './lib/tabla-densa';
+export * from './lib/tarjeta-tablero';
+export * from './lib/modal';
+export * from './lib/barra-lateral';
+export * from './lib/paleta-comandos';
+export * from './lib/logo-empresa';
+export { es } from './i18n';
+export type { Textos } from './i18n';

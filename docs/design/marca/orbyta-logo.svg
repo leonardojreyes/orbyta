@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 760" width="1000" height="760">
+<defs>
+ <radialGradient id="gN" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#2F86B3"/><stop offset="1" stop-color="#004B72"/></radialGradient>
+ <radialGradient id="gT" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#6FF0D8"/><stop offset="1" stop-color="#009C82"/></radialGradient>
+ <radialGradient id="gG" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#8EF0B4"/><stop offset="1" stop-color="#1FA85A"/></radialGradient>
+ <linearGradient id="word" x1="0" x2="1"><stop offset="0" stop-color="#004B72"/><stop offset=".38" stop-color="#004B72"/><stop offset=".5" stop-color="#00C9A7"/><stop offset=".62" stop-color="#2ECC71"/><stop offset=".7" stop-color="#A2ADB5"/><stop offset="1" stop-color="#A2ADB5"/></linearGradient>
+</defs>
+<rect width="1000" height="760" fill="#F5F4F0"/>
+<ellipse cx="492" cy="262" rx="205" ry="82" transform="rotate(-32 492 262)" fill="none" stroke="#004B72" stroke-width="9" stroke-linecap="round"/>
+<ellipse cx="512" cy="282" rx="190" ry="74" transform="rotate(34 512 282)" fill="none" stroke="#00C9A7" stroke-width="9" stroke-linecap="round"/>
+<ellipse cx="500" cy="250" rx="150" ry="58" transform="rotate(88 500 250)" fill="none" stroke="#2ECC71" stroke-width="9" stroke-linecap="round"/>
+<circle cx="313.8" cy="340.3" r="37" fill="#F5F4F0"/><circle cx="313.8" cy="340.3" r="30" fill="url(#gN)"/>
+<circle cx="669.1" cy="343.3" r="28" fill="#F5F4F0"/><circle cx="669.1" cy="343.3" r="21" fill="url(#gT)"/>
+<circle cx="484.8" cy="102.7" r="21" fill="#F5F4F0"/><circle cx="484.8" cy="102.7" r="14" fill="url(#gG)"/>
+<text x="500" y="596" text-anchor="middle" font-family="Poppins, Montserrat, Arial, sans-serif" font-weight="700" font-size="150" letter-spacing="-2" ><tspan fill="#004B72">Or</tspan><tspan fill="#0A7A86">b</tspan><tspan fill="#2ECC71">y</tspan><tspan fill="#A2ADB5">ta</tspan></text>
+<text x="500" y="688" text-anchor="middle" font-family="Poppins, Montserrat, Arial, sans-serif" font-weight="500" font-size="22" letter-spacing="1.5" fill="#004B72">GESTIÓN DE PROYECTOS Y ÓRDENES DE SERVICIO</text>
+</svg>

@@ -3,23 +3,31 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/ui/src",
   "projectType": "library",
-  "tags": [
-    "type:lib",
-    "scope:ui"
-  ],
+  "tags": ["type:lib", "scope:ui"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/ui",
         "main": "packages/ui/src/index.ts",
         "tsConfig": "packages/ui/tsconfig.lib.json",
-        "assets": [
-          "packages/ui/*.md"
-        ]
+        "assets": ["packages/ui/*.md"]
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "storybook dev -p 6006 -c packages/ui/.storybook --no-open",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/storybook"],
+      "options": {
+        "command": "storybook build -c packages/ui/.storybook -o dist/storybook --quiet",
+        "cwd": "{workspaceRoot}"
       }
     }
   }

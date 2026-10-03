@@ -1,0 +1,147 @@
+/* GENERADO por packages/tokens/scripts/generar.mjs. No editar a mano. */
+:root {
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-5: 24px;
+  --espacio-6: 32px;
+  --espacio-7: 48px;
+  --radio-sm: 4px;
+  --radio-md: 8px;
+  --radio-lg: 12px;
+  --fuente-sistema: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fuente-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --texto-xs: 12px;
+  --texto-sm: 13px;
+  --texto-md: 14px;
+  --texto-lg: 16px;
+  --texto-xl: 20px;
+  --texto-2xl: 24px;
+  --interlineado-xs: 16px;
+  --interlineado-sm: 20px;
+  --interlineado-md: 20px;
+  --interlineado-lg: 24px;
+  --interlineado-xl: 28px;
+  --interlineado-2xl: 32px;
+  --tactil-web: 24px;
+  --tactil-movil: 48px;
+  --tactil-movil-principal: 56px;
+  --fila-web: 36px;
+  --fila-movil: 56px;
+  --sombra-sm: 0 1px 2px rgba(11, 30, 43, 0.12);
+  --sombra-md: 0 4px 12px rgba(11, 30, 43, 0.16);
+  --sombra-lg: 0 12px 32px rgba(11, 30, 43, 0.24);
+}
+
+:root {
+  --color-fondo: #f5f4f0;
+  --color-superficie: #ffffff;
+  --color-texto: #1b2a36;
+  --color-texto-secundario: #5b6873;
+  --color-primario: #004b72;
+  --color-primario-hover: #0a7a86;
+  --color-primario-texto: #ffffff;
+  --color-acento: #00c9a7;
+  --color-exito-texto: #1a7f45;
+  --color-exito-relleno: #2ecc71;
+  --color-exito-relleno-texto: #1b2a36;
+  --color-advertencia-texto: #8f5f12;
+  --color-advertencia-relleno: #e0a93b;
+  --color-advertencia-relleno-texto: #1b2a36;
+  --color-error: #c53030;
+  --color-error-texto: #ffffff;
+  --color-borde-campo: #7c8993;
+  --color-borde-suave: #dde2e6;
+  --color-foco: #004b72;
+  --color-foco-halo: #00c9a7;
+  --color-decorativo-advertencia: #b7791f;
+  --color-decorativo-borde: #a2adb5;
+  --color-chip-neutro-texto: #3f4d59;
+  --color-chip-neutro-fondo: #e6e9ec;
+  --color-chip-curso-texto: #004b72;
+  --color-chip-curso-fondo: #dcebf4;
+  --color-chip-cerrada-texto: #17703e;
+  --color-chip-cerrada-fondo: #ddf3e5;
+  --color-chip-riesgo-texto: #8f5f12;
+  --color-chip-riesgo-fondo: #fbefd3;
+  --color-chip-vencida-texto: #a92a2a;
+  --color-chip-vencida-fondo: #fbe3e3;
+  --color-velo: rgba(11, 30, 43, 0.6);
+}
+
+/* Preferencia del sistema, salvo que el usuario fuerce el tema claro */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="claro"]) {
+    --color-fondo: #0b1e2b;
+    --color-superficie: #12293a;
+    --color-texto: #e8eef2;
+    --color-texto-secundario: #a9b7c2;
+    --color-primario: #4a9fcf;
+    --color-primario-hover: #6db3dd;
+    --color-primario-texto: #0b1e2b;
+    --color-acento: #00c9a7;
+    --color-exito-texto: #4ade80;
+    --color-exito-relleno: #2ecc71;
+    --color-exito-relleno-texto: #0b1e2b;
+    --color-advertencia-texto: #e6b04a;
+    --color-advertencia-relleno: #e6b04a;
+    --color-advertencia-relleno-texto: #0b1e2b;
+    --color-error: #f27a7a;
+    --color-error-texto: #0b1e2b;
+    --color-borde-campo: #5f7789;
+    --color-borde-suave: #2a4256;
+    --color-foco: #00c9a7;
+    --color-foco-halo: #0b1e2b;
+    --color-decorativo-advertencia: #b7791f;
+    --color-decorativo-borde: #4f6677;
+    --color-chip-neutro-texto: #a9b7c2;
+    --color-chip-neutro-fondo: #1d3649;
+    --color-chip-curso-texto: #8cc4e6;
+    --color-chip-curso-fondo: #1d3649;
+    --color-chip-cerrada-texto: #4ade80;
+    --color-chip-cerrada-fondo: #1d3649;
+    --color-chip-riesgo-texto: #e6b04a;
+    --color-chip-riesgo-fondo: #1d3649;
+    --color-chip-vencida-texto: #f27a7a;
+    --color-chip-vencida-fondo: #1d3649;
+    --color-velo: rgba(11, 30, 43, 0.6);
+  }
+}
+
+/* Tema oscuro forzado por el usuario */
+[data-theme="oscuro"] {
+  --color-fondo: #0b1e2b;
+  --color-superficie: #12293a;
+  --color-texto: #e8eef2;
+  --color-texto-secundario: #a9b7c2;
+  --color-primario: #4a9fcf;
+  --color-primario-hover: #6db3dd;
+  --color-primario-texto: #0b1e2b;
+  --color-acento: #00c9a7;
+  --color-exito-texto: #4ade80;
+  --color-exito-relleno: #2ecc71;
+  --color-exito-relleno-texto: #0b1e2b;
+  --color-advertencia-texto: #e6b04a;
+  --color-advertencia-relleno: #e6b04a;
+  --color-advertencia-relleno-texto: #0b1e2b;
+  --color-error: #f27a7a;
+  --color-error-texto: #0b1e2b;
+  --color-borde-campo: #5f7789;
+  --color-borde-suave: #2a4256;
+  --color-foco: #00c9a7;
+  --color-foco-halo: #0b1e2b;
+  --color-decorativo-advertencia: #b7791f;
+  --color-decorativo-borde: #4f6677;
+  --color-chip-neutro-texto: #a9b7c2;
+  --color-chip-neutro-fondo: #1d3649;
+  --color-chip-curso-texto: #8cc4e6;
+  --color-chip-curso-fondo: #1d3649;
+  --color-chip-cerrada-texto: #4ade80;
+  --color-chip-cerrada-fondo: #1d3649;
+  --color-chip-riesgo-texto: #e6b04a;
+  --color-chip-riesgo-fondo: #1d3649;
+  --color-chip-vencida-texto: #f27a7a;
+  --color-chip-vencida-fondo: #1d3649;
+  --color-velo: rgba(11, 30, 43, 0.6);
+}

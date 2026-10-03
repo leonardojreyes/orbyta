@@ -19,3 +19,6 @@
 | 13 | Prueba de penetración externa | — (paso 0.9) | Antes de un despliegue a producción con datos reales de abonados. |
 | 14 | Infraestructura on-premise real (servidores dedicados, separación pruebas/producción) | [011](../adr/011-ejecucion.md) | Antes de cerrar el paso 0.8; por ahora solo se dispone de la computadora de desarrollo (ver riesgo en `estado.md`). |
 | 15 | Corregir `node-forge` y `uuid` 7.x/8.x (excepciones de OSV-Scanner en `osv-scanner.toml`) | [022](../adr/022-pipeline-calidad.md) (paso 0.4) | Antes del 2026-12-31 o cuando Expo publique versiones corregidas. |
+| 16 | Versión del logo de Orbyta para tema oscuro y logo definitivo por empresa (carga desde la configuración por empresa) | [023](../adr/023-implementacion-sistema-diseno.md) (paso 0.5) | Logo por empresa: paso 0.6 (configuración por empresa). Versión oscura: cuando diseño la entregue. |
+| 17 | Migrar a Tailwind 4 | [023](../adr/023-implementacion-sistema-diseno.md) (paso 0.5) | Cuando NativeWind 5 sea estable. |
+| 18 | Pruebas de las pantallas móviles en simulador/dispositivo (Detox o Maestro) | [023](../adr/023-implementacion-sistema-diseno.md) (paso 0.5) | Cuando exista un build móvil distribuible (paso 0.8). |

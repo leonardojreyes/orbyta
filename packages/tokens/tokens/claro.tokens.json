@@ -1,0 +1,104 @@
+{
+  "color": {
+    "$type": "color",
+    "fondo": {
+      "$value": "#F5F4F0"
+    },
+    "superficie": {
+      "$value": "#FFFFFF"
+    },
+    "texto": {
+      "$value": "#1B2A36"
+    },
+    "texto-secundario": {
+      "$value": "#5B6873"
+    },
+    "primario": {
+      "$value": "#004B72"
+    },
+    "primario-hover": {
+      "$value": "#0A7A86"
+    },
+    "primario-texto": {
+      "$value": "#FFFFFF"
+    },
+    "acento": {
+      "$value": "#00C9A7"
+    },
+    "exito-texto": {
+      "$value": "#1A7F45"
+    },
+    "exito-relleno": {
+      "$value": "#2ECC71"
+    },
+    "exito-relleno-texto": {
+      "$value": "#1B2A36"
+    },
+    "advertencia-texto": {
+      "$value": "#8F5F12"
+    },
+    "advertencia-relleno": {
+      "$value": "#E0A93B"
+    },
+    "advertencia-relleno-texto": {
+      "$value": "#1B2A36"
+    },
+    "error": {
+      "$value": "#C53030"
+    },
+    "error-texto": {
+      "$value": "#FFFFFF"
+    },
+    "borde-campo": {
+      "$value": "#7C8993"
+    },
+    "borde-suave": {
+      "$value": "#DDE2E6"
+    },
+    "foco": {
+      "$value": "#004B72"
+    },
+    "foco-halo": {
+      "$value": "#00C9A7"
+    },
+    "decorativo-advertencia": {
+      "$value": "#B7791F"
+    },
+    "decorativo-borde": {
+      "$value": "#A2ADB5"
+    },
+    "chip-neutro-texto": {
+      "$value": "#3F4D59"
+    },
+    "chip-neutro-fondo": {
+      "$value": "#E6E9EC"
+    },
+    "chip-curso-texto": {
+      "$value": "#004B72"
+    },
+    "chip-curso-fondo": {
+      "$value": "#DCEBF4"
+    },
+    "chip-cerrada-texto": {
+      "$value": "#17703E"
+    },
+    "chip-cerrada-fondo": {
+      "$value": "#DDF3E5"
+    },
+    "chip-riesgo-texto": {
+      "$value": "#8F5F12"
+    },
+    "chip-riesgo-fondo": {
+      "$value": "#FBEFD3"
+    },
+    "chip-vencida-texto": {
+      "$value": "#A92A2A"
+    },
+    "chip-vencida-fondo": {
+      "$value": "#FBE3E3"
+    },
+    "velo": {
+      "$value": "rgba(11, 30, 43, 0.6)"
+    }
+  }
+}

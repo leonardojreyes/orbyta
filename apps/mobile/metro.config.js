@@ -1,4 +1,5 @@
 const { withNxMetro } = require('@nx/expo');
+const { withNativeWind } = require('nativewind/metro');
 // Expo SDK 55+ ships Metro via `@expo/metro`. `getDefaultConfig` and
 // `mergeConfig` must come from the Expo-provided Metro instance.
 const { getDefaultConfig } = require('expo/metro-config');
@@ -14,7 +15,7 @@ const { assetExts, sourceExts } = defaultConfig.resolver;
  * @type {import('metro-config').MetroConfig}
  */
 const customConfig = {
-  cacheVersion: "mobile",
+  cacheVersion: 'mobile',
   transformer: {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
   },
@@ -24,8 +25,7 @@ const customConfig = {
   },
 };
 
-
-module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
+const configNx = withNxMetro(mergeConfig(defaultConfig, customConfig), {
   // Change this to true to see debugging info.
   // Useful if you have issues resolving modules
   debug: false,
@@ -34,3 +34,5 @@ module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
   // Specify folders to watch, in addition to Nx defaults (workspace libraries and node_modules)
   watchFolders: [],
 });
+
+module.exports = withNativeWind(configNx, { input: './global.css' });
