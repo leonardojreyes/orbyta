@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Aviso, Boton, Campo, LogoEmpresa } from '@orbyta/ui';
+import { Aviso, Boton, Campo, LogoEmpresa, LogoOrbyta } from '@orbyta/ui';
 import { es } from '@orbyta/ui/textos';
 
 const EMPRESA = 'Agua Potable Ejemplo';
@@ -61,13 +61,7 @@ export function FormularioLogin() {
         </Boton>
       </form>
       {/* Marca de Orbyta: fija para todas las empresas. */}
-      <img
-        src="/marca/orbyta-logo.svg"
-        alt={es.marca.logoOrbyta}
-        width={160}
-        height={122}
-        className="overflow-hidden rounded-md"
-      />
+      <LogoOrbyta />
     </div>
   );
 }
