@@ -44,7 +44,7 @@ Registradas también como ADR cuando aplica.
 11. **Repositorio público.** Se hizo público (2026-10-01) para poder proteger `main` sin GitHub Pro; el historial fue escaneado con gitleaks sin hallazgos. El runner autohospedado del 0.8 exige cuidado con PR de forks (ADR 022).
 12. **Imágenes Docker sin probar localmente.** Docker local no pudo bajar `node:22-alpine` (timeout de red); las imágenes de api/worker/web se construyeron y escanearon en el job `trivy` del CI (verde).
 13. **Autoaprobación en `main`.** La protección exige una aprobación pero no aplica a administradores, para que `leonardojreyes` pueda mergear sus propios PR (ADR 022).
-14. **Excepciones de seguridad con vencimiento 2026-12-31:** `node-forge` y `uuid` 7.x/8.x (solo herramientas de desarrollo de Expo), en `osv-scanner.toml`. Revisar antes de esa fecha.
+14. **Excepciones de seguridad con vencimiento 2026-12-31:** `node-forge` y `uuid` 7.x/8.x (herramientas de desarrollo de Expo), `braces` y `http-cache-semantics` (herramientas de compilación; avisos nuevos del 2026-09-18 sin corrección), en `osv-scanner.toml`. Revisar antes de esa fecha.
 15. **Hook `guard-bash` con falso positivo:** bloquea comandos que contienen el texto de un borrado recursivo forzado aunque sea contenido de un archivo (p. ej. un Dockerfile en un heredoc). Se evitó editando con Write/Edit; considerar afinarlo.
 16. **Móvil sin probar en dispositivo.** Las pantallas móviles se validaron con pruebas de componentes y exportadas como web en Chrome; falta probarlas en un simulador o dispositivo iOS/Android (el revisor, con Expo Go o un build local).
 17. **Logo de Orbyta sin versión para tema oscuro.** Hoy conserva su fondo claro en ambos temas. En móvil se usa una copia PNG rasterizada del SVG.

@@ -14,6 +14,7 @@ import {
   ChipEstado,
   Insignia,
   LogoEmpresa,
+  LogoOrbyta,
   Modal,
   PaletaComandos,
   PanelLateral,
@@ -213,6 +214,12 @@ describe('Avatar, Insignia, Aviso y LogoEmpresa', () => {
   it('el logo cae al nombre cuando no hay imagen', () => {
     render(<LogoEmpresa nombre="Agua Quito" />);
     expect(screen.getByText('Agua Quito')).toBeInTheDocument();
+  });
+
+  it('el logo de Orbyta apunta al archivo de marca y tiene texto alternativo', () => {
+    render(<LogoOrbyta />);
+    const logo = screen.getByRole('img', { name: 'Orbyta' });
+    expect(logo).toHaveAttribute('src', '/marca/orbyta-logo.svg');
   });
 
   it('el logo con imagen tiene texto alternativo', () => {

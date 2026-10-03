@@ -13,5 +13,6 @@ export * from './lib/modal';
 export * from './lib/barra-lateral';
 export * from './lib/paleta-comandos';
 export * from './lib/logo-empresa';
+export * from './lib/logo-orbyta';
 export { es } from './i18n';
 export type { Textos } from './i18n';
