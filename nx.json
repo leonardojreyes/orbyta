@@ -12,19 +12,13 @@
     },
     "@nx/esbuild:esbuild": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "inputs": [
         "default",
         "^default",
         {
           "json": "{workspaceRoot}/tsconfig.json",
-          "fields": [
-            "extends",
-            "files",
-            "include"
-          ]
+          "fields": ["extends", "files", "include"]
         },
         "{workspaceRoot}/pnpm-workspace.yaml",
         {
@@ -45,13 +39,8 @@
     },
     "@nx/js:tsc": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "default",
-        "^default"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"]
     }
   },
   "plugins": [
@@ -113,5 +102,6 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "analytics": true
 }

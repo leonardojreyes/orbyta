@@ -39,9 +39,10 @@ Registradas en `tools/licencias-excepciones.json`:
 
 ### Vulnerabilidades corregidas y excepciones
 
-El primer OSV-Scanner encontró 51 vulnerabilidades en 10 paquetes. Se corrigieron subiendo `next` a ~16.3.8 y con `overrides` en `pnpm-workspace.yaml` (axios, smol-toml, brace-expansion, esbuild). Quedan dos excepciones con vencimiento 2026-12-31 en `osv-scanner.toml`:
+El primer OSV-Scanner encontró 51 vulnerabilidades en 10 paquetes. Se corrigieron subiendo `next` a ~16.3.8 y con `overrides` en `pnpm-workspace.yaml` (axios, smol-toml, brace-expansion, esbuild). Quedan excepciones con vencimiento 2026-12-31 en `osv-scanner.toml`:
 
 - `node-forge` 1.4.0 (GHSA-86w9-cpqp-85rv): solo herramienta de desarrollo de Expo, sin corrección publicada.
+- `braces` 3.0.3 (GHSA-vfj7-8cjw-p6xm) y `http-cache-semantics` 4.2.0 (GHSA-ch52-4w7c-c8xp), publicados el 2026-09-18 sin versión corregida: solo herramientas de compilación (Tailwind y `@swc/cli`).
 - `uuid` 7.x/8.x (GHSA-w5hq-g745-h8pq): transitiva de Expo/Metro; el uso vulnerable no aplica y la corrección es un cambio mayor.
 
 ## Alternativas consideradas

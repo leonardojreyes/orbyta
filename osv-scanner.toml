@@ -9,3 +9,13 @@ reason = "node-forge 1.4.0 llega solo por @expo/cli (herramienta de desarrollo m
 id = "GHSA-w5hq-g745-h8pq"
 ignoreUntil = 2026-12-31
 reason = "uuid 7.x y 8.x llegan por dependencias transitivas de herramientas de desarrollo (Expo/Metro). La falla exige pasar un buffer propio a v3/v5/v6; no se usa. Corrección solo en 11.x (cambio mayor)."
+
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2026-12-31
+reason = "braces 3.0.3 (denegación de servicio por patrones anidados) llega solo por chokidar de Tailwind, herramienta de compilación que procesa patrones propios del repositorio. Sin versión corregida publicada (3.0.3 es la última)."
+
+[[IgnoredVulns]]
+id = "GHSA-ch52-4w7c-c8xp"
+ignoreUntil = 2026-12-31
+reason = "http-cache-semantics 4.2.0 (divulgación entre usuarios en caché) llega solo por el descargador de binarios de @swc/cli, herramienta de compilación; no hay caché compartida de usuarios. Sin versión corregida publicada (4.2.0 es la última)."
