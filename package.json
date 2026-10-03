@@ -102,7 +102,7 @@
     "cmdk": "^1.1.1",
     "expo": "~56.0.0",
     "expo-splash-screen": "~56.0.10",
-    "expo-status-bar": "~56.0.4",
+    "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~56.0.5",
     "lucide-react": "^1.49.0",
     "nativewind": "4.2.7",
