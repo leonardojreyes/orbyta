@@ -1,0 +1,30 @@
+{
+  "name": "orbyta",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "iniciar": "node scripts/iniciar.mjs",
+    "recursos": "node scripts/recursos.mjs",
+    "contexto": "node scripts/contexto.mjs",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "eslint .",
+    "typecheck": "turbo run typecheck",
+    "limites": "depcruise apps modules platform packages --config .dependency-cruiser.cjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "dependency-cruiser": "^16.0.0",
+    "eslint": "^9.0.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.0.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0"
+  }
+}
