@@ -1,0 +1,20 @@
+import { describe, expect, it } from 'vitest';
+import { cargarConfiguracion } from './config';
+
+const base = { PERFIL: 'local', DATABASE_URL: 'postgres://u:p@localhost:5432/orbyta' };
+
+describe('cargarConfiguracion', () => {
+  it('acepta un entorno válido y aplica valores por defecto', () => {
+    const c = cargarConfiguracion(base);
+    expect(c.perfil).toBe('local');
+    expect(c.puerto).toBe(3000);
+  });
+
+  it('falla si falta PERFIL', () => {
+    expect(() => cargarConfiguracion({ DATABASE_URL: base.DATABASE_URL })).toThrow(/PERFIL/);
+  });
+
+  it('falla con un perfil desconocido', () => {
+    expect(() => cargarConfiguracion({ ...base, PERFIL: 'prod' })).toThrow(/PERFIL/);
+  });
+});

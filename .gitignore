@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+
+# Documento interno de fase, no se publica
+FASE0.md
