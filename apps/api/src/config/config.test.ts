@@ -17,4 +17,18 @@ describe('cargarConfiguracion', () => {
   it('falla con un perfil desconocido', () => {
     expect(() => cargarConfiguracion({ ...base, PERFIL: 'prod' })).toThrow(/PERFIL/);
   });
+
+  it('exige OIDC en el perfil servidor', () => {
+    expect(() => cargarConfiguracion({ ...base, PERFIL: 'servidor' })).toThrow(/OIDC_EMISOR/);
+  });
+
+  it('expone la configuración OIDC cuando está completa', () => {
+    const c = cargarConfiguracion({
+      ...base,
+      OIDC_EMISOR: 'https://id.test/realms/orbyta',
+      OIDC_AUDIENCIA: 'orbyta-api',
+      OIDC_JWKS_URL: 'https://id.test/realms/orbyta/certs',
+    });
+    expect(c.oidc?.audiencia).toBe('orbyta-api');
+  });
 });
