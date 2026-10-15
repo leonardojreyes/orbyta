@@ -13,3 +13,6 @@ FASE0.md
 
 # Caché de TypeScript
 *.tsbuildinfo
+
+# Datos locales (archivos subidos en el perfil local)
+datos/
