@@ -1,4 +1,5 @@
 import { CrearNota, ListarNotas, RepositorioNotasPostgres } from '@orbyta/modulo-ejemplo';
+import { AuditorPostgres } from '@orbyta/auditoria';
 import { AutorizacionPostgres } from '@orbyta/autorizacion';
 import { ValidadorTokenOidc, clavesDesdeJwks } from '@orbyta/identidad';
 import { EjecutorEmpresaPostgres } from '@orbyta/tenancy';
@@ -25,6 +26,7 @@ export function componer(config: Configuracion) {
     validador,
     autorizador: autorizacion,
     administradorRoles: autorizacion,
+    auditor: new AuditorPostgres(ejecutor),
     casosDeUso: {
       crearNota: new CrearNota(notas),
       listarNotas: new ListarNotas(notas),
