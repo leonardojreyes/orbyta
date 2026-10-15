@@ -14,7 +14,8 @@ import { middlewarePeticion } from '../peticion.middleware';
 const EMPRESA_A = '11111111-1111-4111-8111-111111111111';
 const EMPRESA_B = '22222222-2222-4222-8222-222222222222';
 const AUDIENCIA = 'orbyta-api';
-const DATABASE_URL = process.env.DATABASE_URL ?? 'postgres://orbyta_app:orbyta_app@localhost:5432/orbyta';
+const DATABASE_URL =
+  process.env.DATABASE_URL ?? 'postgres://orbyta_app:orbyta_app@localhost:5432/orbyta';
 /** Si está definida, la prueba usa Keycloak real (CI); si no, oauth2-mock-server (perfil local). */
 const KEYCLOAK_URL = process.env.OIDC_E2E_KEYCLOAK_URL;
 
@@ -46,7 +47,10 @@ async function proveedorMock(): Promise<Proveedor> {
 
 async function proveedorKeycloak(url: string): Promise<Proveedor> {
   const emisor = `${url}/realms/orbyta`;
-  const usuarios: Record<string, string> = { [EMPRESA_A]: 'ana@empresa-a.test', [EMPRESA_B]: 'beto@empresa-b.test' };
+  const usuarios: Record<string, string> = {
+    [EMPRESA_A]: 'ana@empresa-a.test',
+    [EMPRESA_B]: 'beto@empresa-b.test',
+  };
   return {
     entorno: {
       OIDC_EMISOR: emisor,
@@ -59,12 +63,13 @@ async function proveedorKeycloak(url: string): Promise<Proveedor> {
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           grant_type: 'password',
-          client_id: 'orbyta-web',
+          client_id: 'orbyta-e2e',
           username: usuarios[empresaId] ?? '',
           password: 'prueba-ci-no-secreta',
         }),
       });
-      if (!respuesta.ok) throw new Error(`Keycloak rechazó el inicio de sesión: ${respuesta.status}`);
+      if (!respuesta.ok)
+        throw new Error(`Keycloak rechazó el inicio de sesión: ${respuesta.status}`);
       return ((await respuesta.json()) as { access_token: string }).access_token;
     },
     cerrar: async () => undefined,
@@ -84,7 +89,9 @@ describe(`e2e dos empresas (${KEYCLOAK_URL ? 'Keycloak' : 'mock OIDC'})`, () => 
       ...proveedor.entorno,
     });
     const { ejecutor, validador, casosDeUso } = componer(config);
-    const modulo = await Test.createTestingModule({ imports: [AppModulo.con(validador, casosDeUso)] }).compile();
+    const modulo = await Test.createTestingModule({
+      imports: [AppModulo.con(validador, casosDeUso)],
+    }).compile();
     app = modulo.createNestApplication();
     app.use(middlewarePeticion);
     await app.init();
@@ -111,11 +118,25 @@ describe(`e2e dos empresas (${KEYCLOAK_URL ? 'Keycloak' : 'mock OIDC'})`, () => 
     const tituloA = `nota-a-${randomUUID()}`;
     const tituloB = `nota-b-${randomUUID()}`;
 
-    await request(servidor()).post('/notas').set('authorization', `Bearer ${tokenA}`).send({ titulo: tituloA }).expect(201);
-    await request(servidor()).post('/notas').set('authorization', `Bearer ${tokenB}`).send({ titulo: tituloB }).expect(201);
+    await request(servidor())
+      .post('/notas')
+      .set('authorization', `Bearer ${tokenA}`)
+      .send({ titulo: tituloA })
+      .expect(201);
+    await request(servidor())
+      .post('/notas')
+      .set('authorization', `Bearer ${tokenB}`)
+      .send({ titulo: tituloB })
+      .expect(201);
 
-    const deA = await request(servidor()).get('/notas').set('authorization', `Bearer ${tokenA}`).expect(200);
-    const deB = await request(servidor()).get('/notas').set('authorization', `Bearer ${tokenB}`).expect(200);
+    const deA = await request(servidor())
+      .get('/notas')
+      .set('authorization', `Bearer ${tokenA}`)
+      .expect(200);
+    const deB = await request(servidor())
+      .get('/notas')
+      .set('authorization', `Bearer ${tokenB}`)
+      .expect(200);
     const titulosA = (deA.body as { titulo: string }[]).map((n) => n.titulo);
     const titulosB = (deB.body as { titulo: string }[]).map((n) => n.titulo);
 
