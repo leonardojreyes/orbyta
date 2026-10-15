@@ -1,6 +1,6 @@
 **Fase:** 0 — Fundación · **Paso:** 0.4 cerrado; 0.5 sin empezar · **Actualizado:** 2026-10-15
 
-**En curso:** nada. Paso 0.4 fusionado (#16–#24): identidad OIDC, RBAC, auditoría, logs JSON, cola pg-boss, puertos de archivos e IA, Keycloak en CI y e2e de dos empresas. `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`); el job `keycloak` corre en cada PR pero no es requerido.
+**En curso:** nada (PR de cierre #25 pendiente de fusión). Paso 0.4 fusionado (#16–#24): identidad OIDC, RBAC, auditoría, logs JSON, cola pg-boss, puertos de archivos e IA, Keycloak en CI y e2e de dos empresas. `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`); el job `keycloak` corre en cada PR pero no es requerido.
 
 **Próximo:** 0.5 Look and feel (`FASE0.md` §5.4): empezar con `/spec` y las preguntas de la sección 5.4, en modo plan.
 
@@ -12,7 +12,7 @@
 - `detalle` de auditoría es libre: "sin datos personales" no se valida.
 - `GITHUB_TOKEN` del entorno devuelve 403 en PRs y protección de ramas; usar el del keyring (`env -u GITHUB_TOKEN gh ...`).
 - PRs de Dependabot #1–#5 (typescript 6, vite 8, @types/node 26, plugin-react 6, dependency-cruiser 18) desfasados por `cooldown` y `minimumReleaseAge`: evaluar o cerrar.
-- PostgreSQL 17 se arranca a mano con `pg_ctl`; RAM libre medida 0,17 GB: cerrar aplicaciones antes de abrir servidores.
+- PostgreSQL 17 se arranca a mano con `pg_ctl`; RAM libre medida 0,12 GB: cerrar aplicaciones antes de abrir servidores.
 - Un único revisor humano (Leonardo Reyes); clave de Claude diferida hasta el adaptador real de IA.
 - Definir problema y usuarios en `docs/producto.md`.
 - El hook `.claude/hooks/antes-de-ejecutar.mjs` bloquea comandos que mencionan push y la rama principal aunque el push sea de otra rama (falso positivo): separar los comandos o afinar el patrón.
@@ -22,4 +22,4 @@
 - 008 (precisión): el outbox es el encolado transaccional en pg-boss (misma transacción del negocio); sin tabla outbox ni relevo.
 - Logger JSON propio (sin pino) con `empresaId` y `requestId`; contexto por petición con `AsyncLocalStorage`.
 
-**Recursos medidos:** RAM total 8 GB (0,17 GB libres) · disco libre 44,3 GB · proyecto 0,27 GB · 0 servidores de desarrollo
+**Recursos medidos:** RAM total 8 GB (0,12 GB libres) · disco libre 44,3 GB · proyecto 0,27 GB · 0 servidores de desarrollo
