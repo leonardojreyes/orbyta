@@ -1,4 +1,5 @@
 import { CrearNota, ListarNotas, RepositorioNotasPostgres } from '@orbyta/modulo-ejemplo';
+import { AutorizacionPostgres } from '@orbyta/autorizacion';
 import { ValidadorTokenOidc, clavesDesdeJwks } from '@orbyta/identidad';
 import { EjecutorEmpresaPostgres } from '@orbyta/tenancy';
 import type { Configuracion } from './config/config';
@@ -18,9 +19,12 @@ export function componer(config: Configuracion) {
         claves: clavesDesdeJwks(config.oidc.jwksUrl),
       })
     : undefined;
+  const autorizacion = new AutorizacionPostgres(ejecutor);
   return {
     ejecutor,
     validador,
+    autorizador: autorizacion,
+    administradorRoles: autorizacion,
     casosDeUso: {
       crearNota: new CrearNota(notas),
       listarNotas: new ListarNotas(notas),
