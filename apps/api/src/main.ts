@@ -8,8 +8,8 @@ import { middlewarePeticion } from './peticion.middleware';
 
 async function arrancar() {
   const config = cargarConfiguracion();
-  const { ejecutor, validador, cola } = componer(config);
-  const app = await NestFactory.create(AppModulo.con(validador), { logger: new LoggerJson() });
+  const { ejecutor, validador, cola, casosDeUso } = componer(config);
+  const app = await NestFactory.create(AppModulo.con(validador, casosDeUso), { logger: new LoggerJson() });
   app.use(middlewarePeticion);
   app.enableShutdownHooks();
   app.getHttpAdapter().getInstance().on('close', () => void Promise.all([ejecutor.cerrar(), cola.cerrar()]));
