@@ -5,6 +5,7 @@ const esquema = z.object({
   DATABASE_URL: z.string().url(),
   PUERTO_API: z.coerce.number().int().min(1).max(65535).default(3000),
   ANTHROPIC_API_KEY: z.string().optional(),
+  ARCHIVOS_DIR: z.string().min(1).default('datos/archivos'),
   OIDC_EMISOR: z.string().url().optional(),
   OIDC_AUDIENCIA: z.string().min(1).optional(),
   OIDC_JWKS_URL: z.string().url().optional(),
@@ -20,6 +21,7 @@ export type Configuracion = {
   databaseUrl: string;
   puerto: number;
   anthropicApiKey?: string;
+  archivosDir: string;
   /** Presente cuando hay proveedor OIDC configurado (obligatorio en `servidor`). */
   oidc?: { emisor: string; audiencia: string; jwksUrl: string };
 };
@@ -37,6 +39,7 @@ export function cargarConfiguracion(entorno: NodeJS.ProcessEnv = process.env): C
     databaseUrl: v.DATABASE_URL,
     puerto: v.PUERTO_API,
     anthropicApiKey: v.ANTHROPIC_API_KEY || undefined,
+    archivosDir: v.ARCHIVOS_DIR,
     oidc:
       v.OIDC_EMISOR && v.OIDC_AUDIENCIA && v.OIDC_JWKS_URL
         ? { emisor: v.OIDC_EMISOR, audiencia: v.OIDC_AUDIENCIA, jwksUrl: v.OIDC_JWKS_URL }

@@ -8,6 +8,7 @@ describe('cargarConfiguracion', () => {
     const c = cargarConfiguracion(base);
     expect(c.perfil).toBe('local');
     expect(c.puerto).toBe(3000);
+    expect(c.archivosDir).toBe('datos/archivos');
   });
 
   it('falla si falta PERFIL', () => {

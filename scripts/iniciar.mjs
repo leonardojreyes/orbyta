@@ -121,4 +121,12 @@ if (!sinInstalar) {
   const inst = spawnSync('pnpm', ['install'], { stdio: 'inherit', shell: process.platform === 'win32' });
   if (inst.status !== 0) falla('pnpm install falló');
 }
+
+// 7. Esquema de la cola de tareas (pg-boss) y sus colas; requiere las dependencias instaladas
+const instalarColas = join(raiz, 'platform', 'eventos', 'instalar-colas.mjs');
+if (existsSync(instalarColas)) {
+  paso('Instalando la cola de tareas');
+  const c = spawnSync('node', [instalarColas], { stdio: 'inherit' });
+  if (c.status !== 0) falla('No se pudo instalar la cola de tareas');
+}
 console.log('\n✓ Entorno listo.');
