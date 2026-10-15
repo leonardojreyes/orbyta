@@ -10,3 +10,6 @@ coverage/
 
 # Documento interno de fase, no se publica
 FASE0.md
+
+# Caché de TypeScript
+*.tsbuildinfo
