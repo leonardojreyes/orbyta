@@ -1,0 +1,14 @@
+{
+  "name": "@orbyta/eventos",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --maxWorkers=2"
+  },
+  "dependencies": { "@orbyta/tenancy": "workspace:*", "pg-boss": "12.37.0" },
+  "devDependencies": { "@types/node": "^22.0.0", "vitest": "^4.1.11" }
+}
