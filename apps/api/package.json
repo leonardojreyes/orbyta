@@ -20,7 +20,7 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@swc/cli": "^0.7.0",
+    "@swc/cli": "^0.8.1",
     "@swc/core": "^1.10.0",
     "@types/node": "^22.0.0",
     "vitest": "^3.0.0"
