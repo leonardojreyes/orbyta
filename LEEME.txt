@@ -1,0 +1,9 @@
+Kit inicial de la plataforma corporativa SynapTech
+
+1. Copia esta carpeta donde vayas a trabajar (puedes renombrarla con el nombre de código).
+2. Inicializa Git:  git init
+3. Abre Claude Code en esta carpeta y escribe:  Lee FASE0.md y ejecuta el paso 0.1
+4. Al terminar cada sesión de trabajo, escribe:  /cerrar-sesion
+
+La carpeta .claude/ está oculta en macOS: en Finder usa Cmd + Shift + punto para verla.
+Cómo está organizado el contexto: docs/guia-contexto.md
