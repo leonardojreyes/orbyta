@@ -6,6 +6,6 @@
     "target": "es2022"
   },
   "module": { "type": "commonjs" },
-  "exclude": [".*\\.test\\.ts$"],
+  "exclude": [".*\\.test\\.ts$", "e2e/"],
   "sourceMaps": true
 }
