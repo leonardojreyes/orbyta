@@ -88,6 +88,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Base de datos, roles sin BYPASSRLS y migraciones
         run: node scripts/iniciar.mjs --sin-instalar
+      - name: Compilar paquetes del workspace (el e2e los resuelve desde dist)
+        run: pnpm build
       - name: Keycloak con el realm como código
         # Imagen fijada por digest (tag 26.8.1); ver deploy/keycloak/README.md
         run: |
