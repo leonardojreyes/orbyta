@@ -6,8 +6,8 @@ import { cargarConfiguracion } from './config/config';
 
 async function arrancar() {
   const config = cargarConfiguracion();
-  const { ejecutor } = componer(config);
-  const app = await NestFactory.create(AppModulo, { logger: ['error', 'warn', 'log'] });
+  const { ejecutor, validador } = componer(config);
+  const app = await NestFactory.create(AppModulo.con(validador), { logger: ['error', 'warn', 'log'] });
   app.enableShutdownHooks();
   app.getHttpAdapter().getInstance().on('close', () => void ejecutor.cerrar());
   await app.listen(config.puerto);

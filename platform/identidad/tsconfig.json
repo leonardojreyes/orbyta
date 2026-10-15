@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "outDir": "dist", "rootDir": ".", "tsBuildInfoFile": "dist/.tsbuildinfo" },
+  "include": ["index.ts", "port.ts", "adapters/**/*.ts"],
+  "exclude": ["**/*.test.ts"]
+}
