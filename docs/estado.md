@@ -1,10 +1,12 @@
-**Fase:** 0 — Fundación · **Paso:** 0.4 en curso (queda 0.4.6b) · **Actualizado:** 2026-10-15
+**Fase:** 0 — Fundación · **Paso:** 0.4 cerrado (PR #24 pendiente de fusión); sigue 0.5 · **Actualizado:** 2026-10-15
 
-**En curso:** Paso 0.4 (plataforma transversal), plan en `~/.claude/plans/quizzical-chasing-kettle.md` (fuera del repo). Fusionadas: 0.4.1 identidad OIDC (#16), 0.4.2 RBAC (#17), 0.4.3 auditoría (#18), 0.4.4 logs JSON (#20), 0.4.5 cola pg-boss (#21), 0.4.6a puertos de archivos e IA (#22). `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`).
+**En curso:** Paso 0.4 (plataforma transversal), plan en `~/.claude/plans/quizzical-chasing-kettle.md` (fuera del repo). Fusionadas: 0.4.1 identidad OIDC (#16), 0.4.2 RBAC (#17), 0.4.3 auditoría (#18), 0.4.4 logs JSON (#20), 0.4.5 cola pg-boss (#21), 0.4.6a puertos de archivos e IA (#22), 0.4.6b Keycloak en CI y e2e de dos empresas (#24). `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`).
 
-**Próximo:** 0.4.6b — job de Keycloak en CI (realm como código en `deploy/keycloak/`, imagen fijada por digest), perfil `local` con `oauth2-mock-server` y prueba e2e de dos empresas con inicio de sesión. Verificar licencias y `minimumReleaseAge` de lo nuevo. Al cerrar 0.4: `revisor-seguridad` sobre el paso y pasar a 0.5.
+**Próximo:** fusionar #24 y pasar a 0.5. `revisor-seguridad` ya revisó el paso 0.4: sin cruces de datos activos; hallazgos abajo.
 
 **Pendientes y bloqueos:**
+- Seguridad (revisión 0.4), corregir antes de producción: `unmanagedAttributePolicy: ENABLED` deja al usuario editar `empresa_id` en el realm (usar perfil con edición solo admin); cliente `orbyta-web` con password grant (separar `orbyta-e2e`); exigir https en `servidor`; verificar membresía usuario-empresa en BD; `Autorizador` por endpoint; `encolar` no contrasta empresa con la transacción; registrar fallos de autenticación y límite de tasa; política LOPDP en `docs/security/`.
+- El job `keycloak` no es check requerido en `main`; decidir cuando sea estable.
 - Nadie da mantenimiento a pg-boss (expirar y archivar jobs): la app corre con `supervise: false`. Definir proceso con rol de migraciones antes de producción (0.6).
 - Las tablas de pg-boss no tienen RLS: la carga solo lleva identificadores.
 - pg-boss fijado en 12.37.0 (la 12.38.0 incumple `minimumReleaseAge`); subir cuando cumpla 7 días.
