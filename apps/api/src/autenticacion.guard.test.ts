@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { TokenInvalidoError, type ValidadorToken } from '@orbyta/identidad';
 import { describe, expect, it } from 'vitest';
 import { AutenticacionGuard } from './autenticacion.guard';
-import { contextoActual } from './contexto';
+import { contextoActual, iniciarPeticion } from './contexto';
 
 const IDENTIDAD = { usuarioId: 'u1', empresaId: '11111111-1111-1111-1111-111111111111', roles: ['admin'] };
 const validador: ValidadorToken = {
@@ -46,7 +46,9 @@ describe('AutenticacionGuard', () => {
 
   it('con token válido fija la empresa en el contexto de la petición', async () => {
     const guard = new AutenticacionGuard(reflector(false), validador);
-    await expect(guard.canActivate(contexto('Bearer bueno'))).resolves.toBe(true);
-    expect(contextoActual()).toEqual(IDENTIDAD);
+    await iniciarPeticion('req-1', async () => {
+      await expect(guard.canActivate(contexto('Bearer bueno'))).resolves.toBe(true);
+      expect(contextoActual()).toEqual(IDENTIDAD);
+    });
   });
 });
