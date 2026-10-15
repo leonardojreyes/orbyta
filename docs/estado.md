@@ -1,12 +1,11 @@
-**Fase:** 0 — Fundación · **Paso:** 0.3 en curso · **Actualizado:** 2026-10-14
+**Fase:** 0 — Fundación · **Paso:** 0.3 cerrado, 0.4 pendiente · **Actualizado:** 2026-10-15
 
-**En curso:** Paso 0.3 (pipeline). PR #6 (`chore/fundacion` → `main`) con los 5 checks en verde: `calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`. `main` aún **sin protección** y PR #6 sin fusionar.
+**En curso:** nada. `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`) y 0 aprobaciones; PR #6 fusionado; PR violador (#13) bloqueado por `gitleaks` y cerrado.
 
-**Próximo:** (1) proteger `main` con esos 5 checks y 0 aprobaciones, usando el token del keyring (`env -u GITHUB_TOKEN gh api -X PUT repos/leonardojreyes/orbyta/branches/main/protection`); (2) fusionar PR #6; (3) PR violador que deba bloquearse; (4) cerrar 0.3 y pasar a 0.4.
+**Próximo:** paso 0.4.
 
 **Pendientes y bloqueos:**
 - El `GITHUB_TOKEN` del entorno devuelve 403 en protección de ramas; el del keyring sí funciona. Corregir permisos del token o usar el keyring.
-- `apps/api` y `apps/web` versionan `tsconfig.tsbuildinfo` (cambia en cada typecheck): sacarlos del repo y añadirlos a `.gitignore`.
 - PRs de Dependabot #1–#5 (typescript 6, vite 8, @types/node 26, plugin-react 6, dependency-cruiser 18) desfasados por `cooldown` y `minimumReleaseAge`: evaluar o cerrar.
 - PostgreSQL 17 se arranca a mano con `pg_ctl`; RAM libre medida 0,37 GB.
 - Un único revisor humano (Leonardo Reyes); clave de Claude diferida hasta el adaptador real de IA.
