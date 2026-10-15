@@ -1,0 +1,10 @@
+# Excepciones de licencia revisadas (ADR 014): metadato ausente, licencia real MIT.
+[[PackageOverrides]]
+name = "busboy"
+ecosystem = "npm"
+license.override = ["MIT"]
+
+[[PackageOverrides]]
+name = "streamsearch"
+ecosystem = "npm"
+license.override = ["MIT"]
