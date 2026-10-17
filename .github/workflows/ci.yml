@@ -48,6 +48,7 @@ jobs:
       - name: Base de datos, roles sin BYPASSRLS y migraciones
         run: node scripts/iniciar.mjs --sin-instalar
       - run: pnpm lint
+      - run: pnpm probar:lint
       - run: pnpm typecheck
       - run: pnpm limites
       - run: pnpm contexto
