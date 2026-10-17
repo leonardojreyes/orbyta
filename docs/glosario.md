@@ -11,3 +11,8 @@
 | Adaptador | `adaptador` | Implementación concreta de un puerto; debe pasar su prueba de contrato |
 | Módulo | `modulo` | Unidad de negocio en `modules/<m>/` con cuatro capas |
 | ADR | `adr` | Registro corto de una decisión de arquitectura |
+| Token | `token` | Valor visual con nombre (color, tamaño, fuente) del que sale todo estilo; formato W3C |
+| Tema | `tema` | Variante visual de los tokens: `claro` u `oscuro` |
+| Marca de empresa | `marca` | Logo y color primario de una empresa; el color debe cumplir contraste AA |
+| Catálogo de componentes | `catalogo` | Página de la app web que muestra tokens y componentes base |
+| Plantilla de pantalla | `plantilla` | Pantalla modelo reutilizable: inicio de sesión, listado con filtros o formulario |

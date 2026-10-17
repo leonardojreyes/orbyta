@@ -4,3 +4,4 @@ Una carpeta por funcionalidad: `requisitos.md`, `diseno.md`, `tareas.md`. Las cr
 
 | Funcionalidad | Fase | Estado |
 | --- | --- | --- |
+| [Look and feel](look-and-feel/requisitos.md) | 0 | Especificada |
