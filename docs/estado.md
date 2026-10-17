@@ -1,28 +1,25 @@
-**Fase:** 0 — Fundación · **Paso:** 0.4 cerrado (PR #24 pendiente de fusión); sigue 0.5 · **Actualizado:** 2026-10-15
+**Fase:** 0 — Fundación · **Paso:** 0.4 cerrado; 0.5 sin empezar · **Actualizado:** 2026-10-15
 
-**En curso:** Paso 0.4 (plataforma transversal), plan en `~/.claude/plans/quizzical-chasing-kettle.md` (fuera del repo). Fusionadas: 0.4.1 identidad OIDC (#16), 0.4.2 RBAC (#17), 0.4.3 auditoría (#18), 0.4.4 logs JSON (#20), 0.4.5 cola pg-boss (#21), 0.4.6a puertos de archivos e IA (#22), 0.4.6b Keycloak en CI y e2e de dos empresas (#24). `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`).
+**En curso:** nada (PR de cierre #25 pendiente de fusión). Paso 0.4 fusionado (#16–#24): identidad OIDC, RBAC, auditoría, logs JSON, cola pg-boss, puertos de archivos e IA, Keycloak en CI y e2e de dos empresas. `main` protegida con los 5 checks (`calidad`, `semgrep`, `osv`, `gitleaks`, `trivy`); el job `keycloak` corre en cada PR pero no es requerido.
 
-**Próximo:** fusionar #24 y pasar a 0.5. `revisor-seguridad` ya revisó el paso 0.4: sin cruces de datos activos; hallazgos abajo.
+**Próximo:** 0.5 Look and feel (`FASE0.md` §5.4): empezar con `/spec` y las preguntas de la sección 5.4, en modo plan.
 
 **Pendientes y bloqueos:**
-- Seguridad (revisión 0.4), corregir antes de producción: `unmanagedAttributePolicy: ENABLED` deja al usuario editar `empresa_id` en el realm (usar perfil con edición solo admin); cliente `orbyta-web` con password grant (separar `orbyta-e2e`); exigir https en `servidor`; verificar membresía usuario-empresa en BD; `Autorizador` por endpoint; `encolar` no contrasta empresa con la transacción; registrar fallos de autenticación y límite de tasa; política LOPDP en `docs/security/`.
-- El job `keycloak` no es check requerido en `main`; decidir cuando sea estable.
-- Nadie da mantenimiento a pg-boss (expirar y archivar jobs): la app corre con `supervise: false`. Definir proceso con rol de migraciones antes de producción (0.6).
-- Las tablas de pg-boss no tienen RLS: la carga solo lleva identificadores.
-- pg-boss fijado en 12.37.0 (la 12.38.0 incumple `minimumReleaseAge`); subir cuando cumpla 7 días.
-- El guard aún no consulta el `Autorizador`; se conecta con el primer endpoint con permisos.
+- Seguridad antes de producción (revisión del 0.4): exigir https y rechazar credenciales de desarrollo en `servidor`; verificar membresía usuario-empresa en BD; `Autorizador` en cada endpoint (el guard aún no lo consulta); `encolar` debe contrastar empresa con la transacción; registrar fallos de autenticación y límite de tasa; política LOPDP en `docs/security/` (0.6).
+- Decidir si el job `keycloak` pasa a check requerido en `main`.
+- pg-boss sin mantenimiento (`supervise: false`) y sin RLS: definir proceso con rol de migraciones antes de producción (0.6); la carga solo lleva identificadores.
+- Versiones fijadas por `minimumReleaseAge`: pg-boss 12.37.0 (12.38.0) y `oauth2-mock-server` 9.2.0 (9.3.0); subir cuando cumplan 7 días.
 - `detalle` de auditoría es libre: "sin datos personales" no se valida.
-- El plan del 0.4 vive en `~/.claude/plans/`; moverlo a `docs/fase0/` si se trabaja desde otra máquina.
-- El `GITHUB_TOKEN` del entorno devuelve 403 en protección de ramas; el del keyring sí funciona. Corregir permisos del token o usar el keyring.
+- `GITHUB_TOKEN` del entorno devuelve 403 en PRs y protección de ramas; usar el del keyring (`env -u GITHUB_TOKEN gh ...`).
 - PRs de Dependabot #1–#5 (typescript 6, vite 8, @types/node 26, plugin-react 6, dependency-cruiser 18) desfasados por `cooldown` y `minimumReleaseAge`: evaluar o cerrar.
-- PostgreSQL 17 se arranca a mano con `pg_ctl`; RAM libre medida 0,50 GB.
+- PostgreSQL 17 se arranca a mano con `pg_ctl`; RAM libre medida 0,12 GB: cerrar aplicaciones antes de abrir servidores.
 - Un único revisor humano (Leonardo Reyes); clave de Claude diferida hasta el adaptador real de IA.
 - Definir problema y usuarios en `docs/producto.md`.
 - El hook `.claude/hooks/antes-de-ejecutar.mjs` bloquea comandos que mencionan push y la rama principal aunque el push sea de otra rama (falso positivo): separar los comandos o afinar el patrón.
 
 **Decisiones recientes** (las tres últimas; el resto en `docs/adr/README.md`):
+- 006 (precisión): claims `sub`, `empresa_id`, `roles`, `aud=orbyta-api`; el realm de `deploy/keycloak/` es solo para CI, con `empresa_id` editable solo por admin y password grant en un cliente aparte (`orbyta-e2e`).
 - 008 (precisión): el outbox es el encolado transaccional en pg-boss (misma transacción del negocio); sin tabla outbox ni relevo.
 - Logger JSON propio (sin pino) con `empresaId` y `requestId`; contexto por petición con `AsyncLocalStorage`.
-- 014: licencias `Unlicense` y `CC-BY-4.0`; `busboy` y `streamsearch` como MIT; `semver@6.3.1` y `undici-types@6.21.0` excluidos de `trustPolicy`.
 
-**Recursos medidos:** RAM total 8 GB (0,50 GB libres) · disco libre 44,5 GB · proyecto 0,26 GB · 0 servidores de desarrollo
+**Recursos medidos:** RAM total 8 GB (0,12 GB libres) · disco libre 44,3 GB · proyecto 0,27 GB · 0 servidores de desarrollo
