@@ -5,8 +5,23 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "build": "node construir.mjs && tsc -p tsconfig.json",
+    "typecheck": "node construir.mjs && tsc -p tsconfig.json --noEmit",
+    "test": "node construir.mjs && vitest run --maxWorkers=2"
   },
-  "devDependencies": { "@types/node": "^22.0.0" }
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@types/node": "^22.0.0",
+    "style-dictionary": "^5.6.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./fonts/*": "./dist/fonts/*"
+  }
 }
