@@ -17,3 +17,4 @@
 | [012](012-entorno-perfiles.md) | mise.toml, PostgreSQL nativo y perfiles local/servidor | Aceptado |
 | [013](013-sistema-diseno.md) | Tokens W3C + Style Dictionary, Tailwind + shadcn/ui | Aceptado |
 | [014](014-licencias-permitidas.md) | Licencias permitidas y excepciones de confianza por paquete | Aceptado |
+| [015](015-fuente-y-dependencias-visuales.md) | Licencia OFL-1.1 solo para fuentes y dependencias visuales admitidas | Aceptado |
