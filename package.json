@@ -14,6 +14,7 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "eslint .",
+    "probar:lint": "vitest run scripts --maxWorkers=2",
     "typecheck": "turbo run typecheck",
     "limites": "depcruise apps modules platform packages --config .dependency-cruiser.cjs"
   },
@@ -21,10 +22,12 @@
     "@eslint/js": "^9.0.0",
     "dependency-cruiser": "^16.0.0",
     "eslint": "^9.0.0",
+    "eslint-plugin-react": "^7.37.5",
     "globals": "^17.13.0",
     "prettier": "^3.0.0",
     "turbo": "^2.0.0",
     "typescript": "^5.6.0",
-    "typescript-eslint": "^8.0.0"
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^4.1.11"
   }
 }
