@@ -22,7 +22,7 @@
 
 ## Contraste de la marca
 - Texto sobre el primario (blanco u oscuro del tema) ≥ 4,5:1.
-- Primario contra el fondo de cada tema ≥ 3:1.
+- Primario contra el fondo claro ≥ 3:1. El tema oscuro usa su propio primario aclarado (`color.oscuro.primario`), así que el color de empresa no se valida contra el fondo oscuro (decisión de la tarea 5: #1d4ed8 da 2,82:1 sobre #0f1115).
 - Si no pasa, `GuardarMarca` no guarda.
 
 ## Datos y migración

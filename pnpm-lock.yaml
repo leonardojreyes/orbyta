@@ -317,6 +317,19 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(yaml@2.9.1))
 
+  modules/marca:
+    dependencies:
+      '@orbyta/archivos':
+        specifier: workspace:*
+        version: link:../../platform/archivos
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.5
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@22.20.5)(vite@7.3.7(@types/node@22.20.5)(yaml@2.9.1))
+
   packages/contracts:
     devDependencies:
       '@types/node':

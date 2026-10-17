@@ -8,7 +8,7 @@ Una tarea por sesión. Ninguna toca más de un módulo. Criterios: ver [requisit
 | 2 ✅ | Contrato OpenAPI de `/marca` y `/marca/logo` (esquemas, 401/403/404, Problem Details); regenerar tipos | `packages/contracts` | El contrato valida con el linter de OpenAPI; los tipos se generan sin error | 3, 5 |
 | 3 | Tokens W3C, Style Dictionary, CSS claro/oscuro, fuente autoalojada | `packages/tokens` | Prueba: todos los pares semánticos cumplen 4,5:1 (texto) y 3:1 (componentes) en ambos temas | 2, 10 |
 | 4 | Lint de colores, tamaños y cadenas JSX literales en `apps/web` y `packages/ui` | raíz (ESLint) | Un archivo de prueba con `#fff` y texto literal hace fallar `pnpm lint`; el código limpio pasa | 1, 9 |
-| 5 | Módulo `marca`: dominio y casos de uso con repositorio en memoria | `modules/marca` | Pruebas unitarias: contraste, `validarLogo`, `ObtenerMarca` (predeterminada), `GuardarMarca` (rechazo y limpieza del logo) | 3, 4 |
+| 5 ✅ | Módulo `marca`: dominio y casos de uso con repositorio en memoria | `modules/marca` | Pruebas unitarias: contraste, `validarLogo`, `ObtenerMarca` (predeterminada), `GuardarMarca` (rechazo y limpieza del logo) | 3, 4 |
 | 6 | `marca`: migración, `RepositorioMarcaPostgres` y prueba de aislamiento | `modules/marca` | `aislamiento.test.ts` contra PostgreSQL real: A no lee marca ni logo de B | 5 |
 | 7 | Rutas `GET /marca` y `/marca/logo`, script de carga, composición, límites; prueba cruzada de contraste | `apps/api` | Prueba e2e con dos empresas; `pnpm limites` verde; el color predeterminado coincide con el token | 3, 4, 5 |
 | 8 | Componentes base con Tailwind y shadcn | `packages/ui` | Por componente: axe sin violaciones, operable con teclado, foco visible, en claro y oscuro | 7 |
