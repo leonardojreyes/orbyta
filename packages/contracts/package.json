@@ -1,1 +1,17 @@
-{ "name": "@orbyta/contracts", "version": "0.0.0", "private": true }
+{
+  "name": "@orbyta/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "generar": "openapi-typescript openapi.yaml -o src/api.d.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --maxWorkers=2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "openapi-typescript": "^7.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.11",
+    "yaml": "^2.0.0"
+  }
+}
