@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ORDER_PRIORITY, ORDER_STATUS, LABELS, type ServiceOrder } from "@orbyta/shared";
 import { api, patch, post } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
+import { OrderPanel } from "./OrderPanel";
 
 const empty = { customerName: "", address: "", description: "", priority: "medium", assignedTo: "" };
 
@@ -11,6 +12,7 @@ export function OrdersView() {
   const [form, setForm] = useState(empty);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const load = () => api<ServiceOrder[]>("/service-orders").then(setOrders);
   useEffect(() => { load(); }, []);
@@ -27,6 +29,7 @@ export function OrdersView() {
   };
 
   const counts = Object.fromEntries(ORDER_STATUS.map((s) => [s, orders.filter((o) => o.status === s).length]));
+  const selected = orders.find((o) => o.id === selectedId);
   const shown = filter === "all" ? orders : orders.filter((o) => o.status === filter);
 
   return (
@@ -71,13 +74,14 @@ export function OrdersView() {
           </thead>
           <tbody>
             {shown.map((o) => (
-              <tr key={o.id} className="border-t border-slate-100 hover:bg-slate-50/60">
+              <tr key={o.id} onClick={() => setSelectedId(o.id)}
+                className={`cursor-pointer border-t border-slate-100 hover:bg-slate-50/60 ${o.id === selectedId ? "bg-brand-50/60" : ""}`}>
                 <td className="px-4 py-3 font-mono text-xs text-slate-500">{o.code}</td>
                 <td className="px-4 py-3"><div className="font-medium">{o.customerName}</div><div className="text-xs text-slate-500">{o.address}</div></td>
                 <td className="px-4 py-3">{o.description}</td>
                 <td className="px-4 py-3"><Badge value={o.priority} /></td>
                 <td className="px-4 py-3 text-slate-600">{o.assignedTo ?? "—"}</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                   <select className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs" value={o.status} onChange={(e) => setStatus(o, e.target.value)}>
                     {ORDER_STATUS.map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
                   </select>
@@ -88,6 +92,8 @@ export function OrdersView() {
           </tbody>
         </table>
       </div>
+
+      {selected && <OrderPanel order={selected} onClose={() => setSelectedId(null)} onSaved={load} />}
     </div>
   );
 }

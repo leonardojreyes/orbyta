@@ -51,3 +51,14 @@ export const serviceOrders = pgTable("service_orders", {
   lng: doublePrecision("lng"),
   ...timestamps,
 });
+
+const orderStatus = ["open", "assigned", "in_progress", "done", "cancelled"] as const;
+
+export const serviceOrderEvents = pgTable("service_order_events", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  orderId: uuid("order_id").notNull(),
+  fromStatus: text("from_status", { enum: orderStatus }),
+  toStatus: text("to_status", { enum: orderStatus }).notNull(),
+  ...timestamps,
+});

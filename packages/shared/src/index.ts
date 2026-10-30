@@ -49,7 +49,8 @@ export const OrderCreate = z.object({
   lng: z.number().min(-180).max(180).optional(),
 });
 export type OrderCreate = z.infer<typeof OrderCreate>;
-export const OrderUpdate = OrderCreate.partial().omit({ id: true });
+// assignedTo acepta null para poder quitar al técnico asignado.
+export const OrderUpdate = OrderCreate.partial().omit({ id: true }).extend({ assignedTo: z.string().max(120).nullable().optional() });
 
 // ---- Tipos de respuesta ----
 export interface Tenant { id: string; name: string; slug: string; logoUrl: string | null }
@@ -65,5 +66,9 @@ export interface Task {
 export interface ServiceOrder {
   id: string; code: string; customerName: string; address: string; description: string;
   priority: (typeof ORDER_PRIORITY)[number]; status: (typeof ORDER_STATUS)[number];
-  assignedTo: string | null; projectId: string | null; createdAt: string;
+  assignedTo: string | null; projectId: string | null; createdAt: string; updatedAt: string;
+}
+export interface ServiceOrderEvent {
+  id: string; orderId: string; fromStatus: (typeof ORDER_STATUS)[number] | null;
+  toStatus: (typeof ORDER_STATUS)[number]; createdAt: string;
 }

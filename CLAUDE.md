@@ -1,3 +1,4 @@
+
 # Orbyta — gestión de proyectos y órdenes de servicio (SynapTech)
 
 Plataforma multiempresa (web + móvil) para empresas de servicios. MVP liviano que crece a nivel corporativo.
