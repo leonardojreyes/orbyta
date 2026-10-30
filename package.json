@@ -1,0 +1,15 @@
+{
+  "name": "orbyta",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.28.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @orbyta/api --filter @orbyta/web dev",
+    "db:migrate": "pnpm --filter @orbyta/api db:migrate",
+    "db:seed": "pnpm --filter @orbyta/api db:seed",
+    "db:reset": "pnpm --filter @orbyta/api db:reset",
+    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm -r build"
+  }
+}

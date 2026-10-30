@@ -1,0 +1,29 @@
+{
+  "name": "@orbyta/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:reset": "tsx src/db/migrate.ts --reset && tsx src/db/seed.ts",
+    "typecheck": "tsc -p .",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "@orbyta/shared": "workspace:*",
+    "@fastify/cors": "^11.0.0",
+    "drizzle-orm": "^0.44.0",
+    "fastify": "^5.4.0",
+    "pg": "^8.16.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.15.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Read", "Edit", "Write", "Glob", "Grep",
+      "Bash(pnpm:*)", "Bash(npx tsc:*)", "Bash(node:*)",
+      "Bash(psql:*)", "Bash(createdb:*)",
+      "Bash(curl -s http://localhost:*)", "Bash(curl -s localhost:*)",
+      "Bash(ls:*)", "Bash(cat:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)", "Bash(mkdir:*)", "Bash(cp:*)", "Bash(mv:*)",
+      "Bash(git status)", "Bash(git diff:*)", "Bash(git add:*)", "Bash(git commit:*)", "Bash(git log:*)",
+      "Bash(git checkout -b:*)", "Bash(git switch:*)", "Bash(git branch:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)", "Bash(sudo:*)", "Bash(git push --force:*)", "Bash(git reset --hard:*)",
+      "Bash(docker:*)", "Bash(brew install:*)", "Read(./.env)"
+    ]
+  }
+}
