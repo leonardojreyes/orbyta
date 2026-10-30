@@ -56,6 +56,7 @@ export type OrderCreate = z.infer<typeof OrderCreate>;
 // assignedTo acepta null para poder quitar al técnico asignado.
 export const OrderUpdate = OrderCreate.partial().omit({ id: true }).extend({
   assignedTo: z.string().max(120).nullable().optional(),
+  projectId: id.nullable().optional(),
   customerId: id.nullable().optional(),
   technicianId: id.nullable().optional(),
 });
@@ -86,7 +87,7 @@ export interface Tenant { id: string; name: string; slug: string; logoUrl: strin
 export interface Project {
   id: string; code: string; name: string; description: string | null;
   status: (typeof PROJECT_STATUS)[number]; startDate: string | null; endDate: string | null;
-  taskCount?: number; doneCount?: number;
+  taskCount?: number; doneCount?: number; orderCount?: number;
 }
 export interface Task {
   id: string; projectId: string; title: string; status: (typeof TASK_STATUS)[number];

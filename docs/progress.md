@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · 1.4 Órdenes vinculadas a proyectos
+- Migración `004_order_project_fk.sql`: la FK de `project_id` pasa a ser compuesta `(tenant_id, id)`, como cliente y técnico; una orden no puede apuntar a un proyecto de otra empresa.
+- API: las órdenes validan el proyecto (400 si no existe); nuevo `GET /projects/:id/service-orders` (404 si el proyecto no existe) y `orderCount` en `GET /projects`.
+- Web: selector de proyecto en el alta y en el panel de la orden, columna "Proyecto" en la tabla, y en cada proyecto la lista de sus órdenes con conteo por estado, vincular una orden existente y desvincular.
+- `db:check-rls` suma la comprobación del proyecto de otra empresa (20 comprobaciones). Probado con curl; las pantallas aún no se han visto en el navegador.
+- **Pendiente:** informe del `revisor` de este paso sin recibir al hacer el commit; sus hallazgos irán en un commit aparte. La base local se sembró antes de 1.4, así que OS-0001 de Aguas no está vinculada a PRY-001 (el seed nuevo sí la vincula).
+- **Siguiente paso:** 1.5 Logo por empresa y datos de empresa.
+
 ## 2026-10-30 · 1.3 Catálogos de clientes y técnicos
 - Migración `003_catalogs.sql`: `customers` y `technicians` con RLS; las órdenes tienen `customer_id` y `technician_id` con llave foránea compuesta `(tenant_id, id)`, que impide referenciar datos de otra empresa. Catálogos iniciales creados desde las órdenes existentes.
 - API: GET/POST/PATCH de `/customers` y `/technicians`. Las órdenes validan que cliente y técnico existan (400) y copian su nombre a `customer_name` / `assigned_to`. Un técnico inactivo no se puede asignar, pero no bloquea editar órdenes que ya lo tenían.

@@ -11,7 +11,7 @@ export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; o
   const [form, setForm] = useState(order);
   const [events, setEvents] = useState<ServiceOrderEvent[]>([]);
   const [err, setErr] = useState("");
-  const { customers, technicians, error: catalogErr } = useCatalogs();
+  const { customers, technicians, projects, error: catalogErr } = useCatalogs();
 
   const loadEvents = async () => {
     try { setEvents(await api<ServiceOrderEvent[]>(`/service-orders/${order.id}/events`)); }
@@ -23,7 +23,7 @@ export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; o
   const save = async () => {
     try {
       await patch(`/service-orders/${order.id}`, {
-        customerId: form.customerId, customerName: form.customerName, address: form.address, description: form.description,
+        projectId: form.projectId, customerId: form.customerId, customerName: form.customerName, address: form.address, description: form.description,
         priority: form.priority, status: form.status, technicianId: form.technicianId,
       });
       setErr(""); onSaved(); loadEvents();
@@ -64,6 +64,12 @@ export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; o
             </select>
           </Field>
         </div>
+        <Field label="Proyecto">
+          <select className={inputCls} value={form.projectId ?? ""} onChange={(e) => setForm({ ...form, projectId: e.target.value || null })}>
+            <option value="">Sin proyecto</option>
+            {projects.map((p) => <option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
+          </select>
+        </Field>
         <Field label="Técnico asignado">
           <select className={inputCls} value={form.technicianId ?? ""} onChange={(e) => {
             const technicianId = e.target.value || null;

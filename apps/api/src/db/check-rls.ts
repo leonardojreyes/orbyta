@@ -2,7 +2,7 @@
 // Falla (exit 1) si el rol puede saltarse RLS o si una empresa ve/modifica datos de otra.
 import { and, eq, sql } from "drizzle-orm";
 import { admin, db, pool, withTenant } from "./client.js";
-import { customers, serviceOrders, technicians, tenants } from "./schema.js";
+import { customers, projects, serviceOrders, technicians, tenants } from "./schema.js";
 
 let failed = 0;
 const check = (name: string, ok: boolean) => {
@@ -75,6 +75,12 @@ check("la orden de A no puede apuntar a un cliente de B", await rejects(async ()
   const [cb] = await withTenant(b.id, (tx) => tx.select().from(customers));
   const [oa] = seenA;
   await probe(a.id, (tx) => tx.update(serviceOrders).set({ customerId: cb!.id }).where(eq(serviceOrders.id, oa!.id)));
+}));
+
+check("la orden de A no puede apuntar a un proyecto de B", await rejects(async () => {
+  const [pb] = await withTenant(b.id, (tx) => tx.select().from(projects));
+  const [oa] = seenA;
+  await probe(a.id, (tx) => tx.update(serviceOrders).set({ projectId: pb!.id }).where(eq(serviceOrders.id, oa!.id)));
 }));
 
 check("sin empresa fijada no se ve ninguna fila", (await db.select().from(serviceOrders)).length === 0);

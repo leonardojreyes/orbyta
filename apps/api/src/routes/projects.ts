@@ -2,7 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { ProjectCreate, TaskCreate, TaskUpdate } from "@orbyta/shared";
 import { withTenant } from "../db/client.js";
-import { projects, tasks } from "../db/schema.js";
+import { projects, serviceOrders, tasks } from "../db/schema.js";
 
 export async function projectRoutes(app: FastifyInstance) {
   app.get("/projects", async (req) =>
@@ -13,6 +13,7 @@ export async function projectRoutes(app: FastifyInstance) {
           status: projects.status, startDate: projects.startDate, endDate: projects.endDate,
           taskCount: sql<number>`(select count(*)::int from tasks t where t.project_id = ${projects.id} and t.deleted_at is null)`,
           doneCount: sql<number>`(select count(*)::int from tasks t where t.project_id = ${projects.id} and t.status = 'done' and t.deleted_at is null)`,
+          orderCount: sql<number>`(select count(*)::int from service_orders o where o.project_id = ${projects.id} and o.deleted_at is null)`,
         })
         .from(projects)
         .where(isNull(projects.deletedAt))
@@ -39,6 +40,18 @@ export async function projectRoutes(app: FastifyInstance) {
         .orderBy(asc(tasks.createdAt)),
     ),
   );
+
+  app.get<{ Params: { id: string } }>("/projects/:id/service-orders", async (req, reply) => {
+    const rows = await withTenant(req.tenantId, async (tx) => {
+      const [project] = await tx.select({ id: projects.id }).from(projects)
+        .where(and(eq(projects.id, req.params.id), isNull(projects.deletedAt)));
+      if (!project) return undefined;
+      return tx.select().from(serviceOrders)
+        .where(and(eq(serviceOrders.projectId, project.id), isNull(serviceOrders.deletedAt)))
+        .orderBy(desc(serviceOrders.createdAt));
+    });
+    return rows ?? reply.code(404).send({ error: "Proyecto no encontrado" });
+  });
 
   app.post<{ Params: { id: string } }>("/projects/:id/tasks", async (req, reply) => {
     const body = TaskCreate.parse(req.body);

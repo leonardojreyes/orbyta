@@ -5,7 +5,7 @@ import { Badge, Button, Field, inputCls } from "../ui";
 import { OrderPanel } from "./OrderPanel";
 import { useCatalogs } from "../catalogs";
 
-const empty = { customerId: "", customerName: "", address: "", description: "", priority: "medium", technicianId: "" };
+const empty = { customerId: "", customerName: "", address: "", description: "", priority: "medium", technicianId: "", projectId: "" };
 
 export function OrdersView() {
   const [orders, setOrders] = useState<ServiceOrder[]>([]);
@@ -13,7 +13,7 @@ export function OrdersView() {
   const [form, setForm] = useState(empty);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
-  const { customers, technicians, error: catalogErr } = useCatalogs();
+  const { customers, technicians, projects, error: catalogErr } = useCatalogs();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const load = () => api<ServiceOrder[]>("/service-orders").then(setOrders);
@@ -22,7 +22,7 @@ export function OrdersView() {
   const save = async () => {
     try {
       await post("/service-orders", {
-        ...form, customerId: form.customerId || undefined, technicianId: form.technicianId || undefined,
+        ...form, customerId: form.customerId || undefined, technicianId: form.technicianId || undefined, projectId: form.projectId || undefined,
         status: form.technicianId ? "assigned" : "open",
       });
       setForm(empty); setOpen(false); setErr(""); load();
@@ -80,6 +80,12 @@ export function OrdersView() {
               </select>
             </Field>
           </div>
+          <Field label="Proyecto (opcional)">
+            <select className={inputCls} value={form.projectId} onChange={(e) => setForm({ ...form, projectId: e.target.value })}>
+              <option value="">Sin proyecto</option>
+              {projects.map((p) => <option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
+            </select>
+          </Field>
           {(err || catalogErr) && <p className="col-span-2 text-sm text-rose-600">{err || catalogErr}</p>}
           <div className="col-span-2"><Button onClick={save}>Guardar orden</Button></div>
         </div>
@@ -88,7 +94,7 @@ export function OrdersView() {
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-            <tr>{["Código", "Cliente", "Falla", "Prioridad", "Técnico", "Estado"].map((h) => <th key={h} className="px-4 py-2.5 font-medium">{h}</th>)}</tr>
+            <tr>{["Código", "Cliente", "Falla", "Proyecto", "Prioridad", "Técnico", "Estado"].map((h) => <th key={h} className="px-4 py-2.5 font-medium">{h}</th>)}</tr>
           </thead>
           <tbody>
             {shown.map((o) => (
@@ -97,6 +103,7 @@ export function OrdersView() {
                 <td className="px-4 py-3 font-mono text-xs text-slate-500">{o.code}</td>
                 <td className="px-4 py-3"><div className="font-medium">{o.customerName}</div><div className="text-xs text-slate-500">{o.address}</div></td>
                 <td className="px-4 py-3">{o.description}</td>
+                <td className="px-4 py-3 text-xs text-slate-500">{projects.find((p) => p.id === o.projectId)?.code ?? "—"}</td>
                 <td className="px-4 py-3"><Badge value={o.priority} /></td>
                 <td className="px-4 py-3 text-slate-600">{o.assignedTo ?? "—"}</td>
                 <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
@@ -106,7 +113,7 @@ export function OrdersView() {
                 </td>
               </tr>
             ))}
-            {!shown.length && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">Sin órdenes.</td></tr>}
+            {!shown.length && <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-500">Sin órdenes.</td></tr>}
           </tbody>
         </table>
       </div>

@@ -2,14 +2,19 @@ import type { FastifyInstance } from "fastify";
 import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { OrderCreate, OrderUpdate } from "@orbyta/shared";
 import { withTenant } from "../db/client.js";
-import { customers, serviceOrderEvents, serviceOrders, technicians } from "../db/schema.js";
+import { customers, projects, serviceOrderEvents, serviceOrders, technicians } from "../db/schema.js";
 import type { Tx } from "../db/client.js";
 
-type Refs = { customerId?: string | null; technicianId?: string | null };
+type Refs = { projectId?: string | null; customerId?: string | null; technicianId?: string | null };
 
-/** Valida cliente/técnico del catálogo (RLS limita la búsqueda a la empresa) y copia su nombre a la orden. */
+/** Valida proyecto, cliente y técnico (RLS limita la búsqueda a la empresa) y copia su nombre a la orden. */
 async function resolveRefs(tx: Tx, body: Refs, current?: { technicianId: string | null }): Promise<{ error: string } | { names: { customerName?: string; assignedTo?: string | null } }> {
   const names: { customerName?: string; assignedTo?: string | null } = {};
+  if (body.projectId) {
+    const [p] = await tx.select({ id: projects.id }).from(projects)
+      .where(and(eq(projects.id, body.projectId), isNull(projects.deletedAt)));
+    if (!p) return { error: "Proyecto no encontrado" };
+  }
   if (body.customerId) {
     const [c] = await tx.select({ name: customers.name }).from(customers)
       .where(and(eq(customers.id, body.customerId), isNull(customers.deletedAt)));

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TASK_STATUS, LABELS, type Project, type Task } from "@orbyta/shared";
+import { TASK_STATUS, ORDER_STATUS, LABELS, type Project, type ServiceOrder, type Task } from "@orbyta/shared";
 import { api, patch, post } from "../api";
 import { Badge, Button, inputCls } from "../ui";
 
@@ -41,7 +41,7 @@ export function ProjectsView() {
                   <div className="flex items-center justify-between text-xs text-slate-500"><span>{p.code}</span><Badge value={p.status} /></div>
                   <div className="mt-1 text-sm font-medium">{p.name}</div>
                   <div className="mt-2 h-1.5 rounded-full bg-slate-100"><div className="h-1.5 rounded-full bg-brand-500" style={{ width: `${pct}%` }} /></div>
-                  <div className="mt-1 text-[11px] text-slate-500">{p.doneCount ?? 0}/{p.taskCount ?? 0} tareas · {pct}%</div>
+                  <div className="mt-1 text-[11px] text-slate-500">{p.doneCount ?? 0}/{p.taskCount ?? 0} tareas · {pct}% · {p.orderCount ?? 0} órdenes</div>
                 </button>
               </li>
             );
@@ -106,6 +106,66 @@ function Board({ project, onChange }: { project: Project; onChange: () => void }
           </div>
         ))}
       </div>
+      <ProjectOrders project={project} onChange={onChange} />
     </>
+  );
+}
+
+/** Órdenes de servicio del proyecto, con opción de vincular una orden que aún no tiene proyecto. */
+function ProjectOrders({ project, onChange }: { project: Project; onChange: () => void }) {
+  const [orders, setOrders] = useState<ServiceOrder[]>([]);
+  const [free, setFree] = useState<ServiceOrder[]>([]);
+  const [err, setErr] = useState("");
+
+  const load = async () => {
+    try {
+      const [mine, all] = await Promise.all([
+        api<ServiceOrder[]>(`/projects/${project.id}/service-orders`),
+        api<ServiceOrder[]>("/service-orders"),
+      ]);
+      setOrders(mine); setFree(all.filter((o) => !o.projectId));
+    } catch (e) { setErr((e as Error).message); }
+  };
+  useEffect(() => { setErr(""); load(); }, [project.id]);
+
+  const link = async (id: string, projectId: string | null) => {
+    try { await patch(`/service-orders/${id}`, { projectId }); await load(); onChange(); }
+    catch (e) { setErr((e as Error).message); }
+  };
+
+  return (
+    <section className="mt-8">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-semibold">Órdenes de servicio ({orders.length})</h3>
+        {free.length > 0 && (
+          <select className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs" value=""
+            onChange={(e) => e.target.value && link(e.target.value, project.id)}>
+            <option value="">Vincular orden existente…</option>
+            {free.map((o) => <option key={o.id} value={o.id}>{o.code} · {o.customerName}</option>)}
+          </select>
+        )}
+      </div>
+      {err && <p className="mb-2 text-sm text-rose-600">{err}</p>}
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <table className="w-full text-sm">
+          <tbody>
+            {orders.map((o) => (
+              <tr key={o.id} className="border-t border-slate-100 first:border-t-0">
+                <td className="px-4 py-2.5 font-mono text-xs text-slate-500">{o.code}</td>
+                <td className="px-4 py-2.5"><div className="font-medium">{o.customerName}</div><div className="text-xs text-slate-500">{o.description}</div></td>
+                <td className="px-4 py-2.5 text-slate-600">{o.assignedTo ?? "—"}</td>
+                <td className="px-4 py-2.5"><Badge value={o.priority} /></td>
+                <td className="px-4 py-2.5"><Badge value={o.status} /></td>
+                <td className="px-4 py-2.5 text-right"><button className="text-xs text-slate-500 hover:text-rose-600" onClick={() => link(o.id, null)}>Desvincular</button></td>
+              </tr>
+            ))}
+            {!orders.length && <tr><td className="px-4 py-6 text-center text-slate-500">Este proyecto no tiene órdenes de servicio.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-2 flex gap-3 text-xs text-slate-500">
+        {ORDER_STATUS.map((s) => <span key={s}>{LABELS[s]}: {orders.filter((o) => o.status === s).length}</span>)}
+      </div>
+    </section>
   );
 }
