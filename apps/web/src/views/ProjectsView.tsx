@@ -117,16 +117,21 @@ function ProjectOrders({ project, onChange }: { project: Project; onChange: () =
   const [free, setFree] = useState<ServiceOrder[]>([]);
   const [err, setErr] = useState("");
 
-  const load = async () => {
+  // `live` descarta la respuesta si el usuario ya cambió de proyecto.
+  const load = async (live: () => boolean = () => true) => {
     try {
       const [mine, all] = await Promise.all([
         api<ServiceOrder[]>(`/projects/${project.id}/service-orders`),
         api<ServiceOrder[]>("/service-orders"),
       ]);
-      setOrders(mine); setFree(all.filter((o) => !o.projectId));
-    } catch (e) { setErr((e as Error).message); }
+      if (live()) { setOrders(mine); setFree(all.filter((o) => !o.projectId)); }
+    } catch (e) { if (live()) setErr((e as Error).message); }
   };
-  useEffect(() => { setErr(""); load(); }, [project.id]);
+  useEffect(() => {
+    let live = true;
+    setErr(""); load(() => live);
+    return () => { live = false; };
+  }, [project.id]);
 
   const link = async (id: string, projectId: string | null) => {
     try { await patch(`/service-orders/${id}`, { projectId }); await load(); onChange(); }

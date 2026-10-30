@@ -71,17 +71,15 @@ for (const [label, table] of [["clientes", customers], ["técnicos", technicians
       tx.update(table).set({ name: "x" }).where(eq(table.id, other.id)).returning({ id: table.id }))).length === 0);
   }
 }
-check("la orden de A no puede apuntar a un cliente de B", await rejects(async () => {
-  const [cb] = await withTenant(b.id, (tx) => tx.select().from(customers));
-  const [oa] = seenA;
-  await probe(a.id, (tx) => tx.update(serviceOrders).set({ customerId: cb!.id }).where(eq(serviceOrders.id, oa!.id)));
-}));
+const [cb] = await withTenant(b.id, (tx) => tx.select().from(customers));
+const [pb] = await withTenant(b.id, (tx) => tx.select().from(projects));
+const [oa] = seenA;
+check("hay un cliente, un proyecto de B y una orden de A para las pruebas cruzadas", !!cb && !!pb && !!oa);
+check("la orden de A no puede apuntar a un cliente de B", !!cb && !!oa && await rejects(() =>
+  probe(a.id, (tx) => tx.update(serviceOrders).set({ customerId: cb.id }).where(eq(serviceOrders.id, oa.id)))));
 
-check("la orden de A no puede apuntar a un proyecto de B", await rejects(async () => {
-  const [pb] = await withTenant(b.id, (tx) => tx.select().from(projects));
-  const [oa] = seenA;
-  await probe(a.id, (tx) => tx.update(serviceOrders).set({ projectId: pb!.id }).where(eq(serviceOrders.id, oa!.id)));
-}));
+check("la orden de A no puede apuntar a un proyecto de B", !!pb && !!oa && await rejects(() =>
+  probe(a.id, (tx) => tx.update(serviceOrders).set({ projectId: pb.id }).where(eq(serviceOrders.id, oa.id)))));
 
 check("sin empresa fijada no se ve ninguna fila", (await db.select().from(serviceOrders)).length === 0);
 check("el rol no puede hacer DELETE físico", await rejects(() =>

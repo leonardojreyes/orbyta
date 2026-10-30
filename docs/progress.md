@@ -5,7 +5,7 @@
 - API: las órdenes validan el proyecto (400 si no existe); nuevo `GET /projects/:id/service-orders` (404 si el proyecto no existe) y `orderCount` en `GET /projects`.
 - Web: selector de proyecto en el alta y en el panel de la orden, columna "Proyecto" en la tabla, y en cada proyecto la lista de sus órdenes con conteo por estado, vincular una orden existente y desvincular.
 - `db:check-rls` suma la comprobación del proyecto de otra empresa (20 comprobaciones). Probado con curl; las pantallas aún no se han visto en el navegador.
-- **Pendiente:** informe del `revisor` de este paso sin recibir al hacer el commit; sus hallazgos irán en un commit aparte. La base local se sembró antes de 1.4, así que OS-0001 de Aguas no está vinculada a PRY-001 (el seed nuevo sí la vincula).
+- **Revisor:** sin fallos de reglas. Corregido en un commit aparte: respuesta obsoleta al cambiar de proyecto y pruebas cruzadas de `db:check-rls` que pasaban por casualidad. Sin hacer: la lista de órdenes sin proyecto se filtra en el cliente (no escala), y una orden con proyecto borrado lógicamente muestra "—" en la tabla. La base local se sembró antes de 1.4, así que OS-0001 de Aguas no está vinculada a PRY-001 (el seed nuevo sí la vincula).
 - **Siguiente paso:** 1.5 Logo por empresa y datos de empresa.
 
 ## 2026-10-30 · 1.3 Catálogos de clientes y técnicos
