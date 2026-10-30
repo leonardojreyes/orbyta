@@ -47,6 +47,8 @@ export const serviceOrders = pgTable("service_orders", {
   status: text("status", { enum: ["open", "assigned", "in_progress", "done", "cancelled"] }).notNull().default("open"),
   assignedTo: text("assigned_to"),
   projectId: uuid("project_id"),
+  customerId: uuid("customer_id"),
+  technicianId: uuid("technician_id"),
   lat: doublePrecision("lat"),
   lng: doublePrecision("lng"),
   ...timestamps,
@@ -60,5 +62,26 @@ export const serviceOrderEvents = pgTable("service_order_events", {
   orderId: uuid("order_id").notNull(),
   fromStatus: text("from_status", { enum: orderStatus }),
   toStatus: text("to_status", { enum: orderStatus }).notNull(),
+  ...timestamps,
+});
+
+export const customers = pgTable("customers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  name: text("name").notNull(),
+  taxId: text("tax_id"),
+  phone: text("phone"),
+  email: text("email"),
+  address: text("address"),
+  ...timestamps,
+});
+
+export const technicians = pgTable("technicians", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  name: text("name").notNull(),
+  phone: text("phone"),
+  email: text("email"),
+  status: text("status", { enum: ["active", "inactive"] }).notNull().default("active"),
   ...timestamps,
 });

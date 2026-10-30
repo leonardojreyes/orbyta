@@ -3,8 +3,10 @@ import type { Tenant } from "@orbyta/shared";
 import { api, setTenant } from "./api";
 import { ProjectsView } from "./views/ProjectsView";
 import { OrdersView } from "./views/OrdersView";
+import { CustomersView } from "./views/CustomersView";
+import { TechniciansView } from "./views/TechniciansView";
 
-type View = "projects" | "orders";
+type View = "projects" | "orders" | "customers" | "technicians";
 
 export function App() {
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -38,7 +40,7 @@ export function App() {
           </select>
         </div>
         <nav className="mt-6 flex flex-col gap-1 px-3 text-sm">
-          {([["projects", "📁  Proyectos"], ["orders", "🛠️  Órdenes de servicio"]] as const).map(([k, label]) => (
+          {([["projects", "📁  Proyectos"], ["orders", "🛠️  Órdenes de servicio"], ["customers", "👥  Clientes"], ["technicians", "🧑‍🔧  Técnicos"]] as const).map(([k, label]) => (
             <button key={k} onClick={() => setView(k)}
               className={`rounded-lg px-3 py-2 text-left ${view === k ? "bg-white/10 text-white" : "hover:bg-white/5"}`}>
               {label}
@@ -50,7 +52,10 @@ export function App() {
 
       <main className="flex-1 overflow-auto">
         {error && <div className="m-6 rounded-lg bg-rose-50 p-4 text-sm text-rose-700">{error}</div>}
-        {tenant && (view === "projects" ? <ProjectsView key={tenant.id} /> : <OrdersView key={tenant.id} />)}
+        {tenant && view === "projects" && <ProjectsView key={tenant.id} />}
+        {tenant && view === "orders" && <OrdersView key={tenant.id} />}
+        {tenant && view === "customers" && <CustomersView key={tenant.id} />}
+        {tenant && view === "technicians" && <TechniciansView key={tenant.id} />}
       </main>
     </div>
   );

@@ -5,7 +5,7 @@ Cada paso = una sesión de Claude Code que termina con algo visible en pantalla.
 ## Fase 1 · MVP web (en curso)
 - [x] 1.1 Esqueleto: monorepo, PostgreSQL con RLS multiempresa, proyectos con tablero Kanban, órdenes de servicio
 - [x] 1.2 Detalle de orden de servicio (panel lateral: editar datos, historial de cambios de estado)
-- [ ] 1.3 Catálogos: clientes y técnicos (skill `nuevo-modulo`); orden de servicio referencia cliente y técnico
+- [x] 1.3 Catálogos: clientes y técnicos (skill `nuevo-modulo`); orden de servicio referencia cliente y técnico
 - [ ] 1.4 Vincular órdenes a proyectos y ver órdenes dentro del proyecto
 - [ ] 1.5 Logo por empresa y datos de empresa
 - [ ] 1.6 Autenticación local (usuarios, login, roles básicos: admin, supervisor, técnico) — la empresa sale de la sesión, no del header

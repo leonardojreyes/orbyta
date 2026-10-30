@@ -5,6 +5,7 @@ const TONES: Record<string, string> = {
   planned: "bg-slate-100 text-slate-700", active: "bg-emerald-100 text-emerald-700",
   on_hold: "bg-amber-100 text-amber-700", done: "bg-brand-100 text-brand-700",
   todo: "bg-slate-100 text-slate-700", in_progress: "bg-sky-100 text-sky-700",
+  inactive: "bg-slate-100 text-slate-500",
   open: "bg-slate-100 text-slate-700", assigned: "bg-amber-100 text-amber-700", cancelled: "bg-rose-100 text-rose-700",
   low: "bg-slate-100 text-slate-600", medium: "bg-sky-100 text-sky-700", high: "bg-orange-100 text-orange-700",
   urgent: "bg-rose-100 text-rose-700",

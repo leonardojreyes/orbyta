@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · 1.3 Catálogos de clientes y técnicos
+- Migración `003_catalogs.sql`: `customers` y `technicians` con RLS; las órdenes tienen `customer_id` y `technician_id` con llave foránea compuesta `(tenant_id, id)`, que impide referenciar datos de otra empresa. Catálogos iniciales creados desde las órdenes existentes.
+- API: GET/POST/PATCH de `/customers` y `/technicians`. Las órdenes validan que cliente y técnico existan (400) y copian su nombre a `customer_name` / `assigned_to`. Un técnico inactivo no se puede asignar, pero no bloquea editar órdenes que ya lo tenían.
+- Web: vistas Clientes y Técnicos (alta y edición), y selectores de cliente y técnico en el alta de orden y en el panel de detalle.
+- Seed con catálogos, órdenes vinculadas y evento "creada" (corrige el hueco de 1.2 tras `db:reset`). `db:check-rls` ahora cubre las tablas nuevas (19 comprobaciones) y sus pruebas de escritura siempre se revierten. `.env.*` ignorado salvo `.env.example`.
+- **Pendiente menor:** no hay acción de borrado lógico en la UI de catálogos ni estado para desactivar clientes; el backfill de clientes une los que tengan el mismo nombre.
+- **Siguiente paso:** 1.4 Vincular órdenes a proyectos y ver órdenes dentro del proyecto.
+
 ## 2026-10-30 · 1.2 Detalle de orden de servicio
 - Migración `002_service_order_events.sql`: historial de estados por orden (con RLS) y evento "creada" para las órdenes existentes.
 - API: `PATCH /service-orders/:id` registra el cambio de estado en la misma transacción (con `FOR UPDATE`); nuevo `GET /service-orders/:id/events` (404 si la orden no existe).

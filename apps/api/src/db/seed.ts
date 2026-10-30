@@ -1,8 +1,23 @@
 // Datos de ejemplo: dos empresas para comprobar el aislamiento multiempresa.
 import { admin } from "./client.js";
-import { tenants, projects, tasks, serviceOrders } from "./schema.js";
+import { tenants, projects, tasks, serviceOrders, serviceOrderEvents, customers, technicians } from "./schema.js";
 
 const { db, pool, withTenant } = admin;
+
+type OrderSeed = Omit<typeof serviceOrders.$inferInsert, "customerId" | "technicianId" | "assignedTo"> & { technician?: string };
+
+/** Crea catálogos de la empresa y sus órdenes vinculadas, con el evento "creada" de cada una. */
+async function seedCatalogsAndOrders(tx: Parameters<Parameters<typeof withTenant>[1]>[0], tenantId: string, techs: string[], orders: OrderSeed[]) {
+  const cs = await tx.insert(customers).values(
+    orders.map((o) => ({ tenantId, name: o.customerName, address: o.address })),
+  ).returning();
+  const ts = techs.length ? await tx.insert(technicians).values(techs.map((name) => ({ tenantId, name }))).returning() : [];
+  const created = await tx.insert(serviceOrders).values(orders.map(({ technician, ...o }) => {
+    const t = ts.find((x) => x.name === technician);
+    return { ...o, customerId: cs.find((c) => c.name === o.customerName)!.id, technicianId: t?.id, assignedTo: t?.name };
+  })).returning();
+  await tx.insert(serviceOrderEvents).values(created.map((o) => ({ tenantId, orderId: o.id, toStatus: o.status })));
+}
 
 const [aguas, redes] = await db
   .insert(tenants)
@@ -33,15 +48,15 @@ await withTenant(aguas.id, async (tx) => {
     { tenantId: aguas.id, projectId: p1!.id, title: "Pruebas de presión", status: "todo" },
     { tenantId: aguas.id, projectId: p2!.id, title: "Inspección con cámara CCTV", status: "todo", assignee: "J. Mora" },
   ]);
-  await tx.insert(serviceOrders).values([
+  await seedCatalogsAndOrders(tx, aguas.id, ["Técnico R. Salas", "Técnico L. Cruz"], [
     { tenantId: aguas.id, code: "OS-0001", customerName: "Carlos Andrade", address: "Mz. 12 Villa 4, Los Ceibos",
-      description: "Fuga en medidor domiciliario", priority: "high", status: "assigned", assignedTo: "Técnico R. Salas", projectId: p1!.id },
+      description: "Fuga en medidor domiciliario", priority: "high", status: "assigned", technician: "Técnico R. Salas", projectId: p1!.id },
     { tenantId: aguas.id, code: "OS-0002", customerName: "María Paredes", address: "Av. Las Aguas 210",
       description: "Sin servicio de agua desde ayer", priority: "urgent", status: "open" },
     { tenantId: aguas.id, code: "OS-0003", customerName: "Condominio Brisas", address: "Km 4.5 vía a la Costa",
-      description: "Baja presión en torre B", priority: "medium", status: "in_progress", assignedTo: "Técnico L. Cruz" },
+      description: "Baja presión en torre B", priority: "medium", status: "in_progress", technician: "Técnico L. Cruz" },
     { tenantId: aguas.id, code: "OS-0004", customerName: "Pedro Gómez", address: "Calle 5ta y Ficus",
-      description: "Cambio de medidor", priority: "low", status: "done", assignedTo: "Técnico R. Salas" },
+      description: "Cambio de medidor", priority: "low", status: "done", technician: "Técnico R. Salas" },
   ]);
 });
 
@@ -49,7 +64,7 @@ await withTenant(redes.id, async (tx) => {
   await tx.insert(projects).values([
     { tenantId: redes.id, code: "PRY-001", name: "Tendido de fibra óptica · Samborondón", status: "active" },
   ]);
-  await tx.insert(serviceOrders).values([
+  await seedCatalogsAndOrders(tx, redes.id, [], [
     { tenantId: redes.id, code: "OS-0001", customerName: "Lucía Torres", address: "Cdla. Entre Ríos",
       description: "Corte de servicio de internet", priority: "high", status: "open" },
   ]);

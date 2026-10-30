@@ -3,8 +3,9 @@ import { ORDER_PRIORITY, ORDER_STATUS, LABELS, type ServiceOrder } from "@orbyta
 import { api, patch, post } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
 import { OrderPanel } from "./OrderPanel";
+import { useCatalogs } from "../catalogs";
 
-const empty = { customerName: "", address: "", description: "", priority: "medium", assignedTo: "" };
+const empty = { customerId: "", customerName: "", address: "", description: "", priority: "medium", technicianId: "" };
 
 export function OrdersView() {
   const [orders, setOrders] = useState<ServiceOrder[]>([]);
@@ -12,6 +13,7 @@ export function OrdersView() {
   const [form, setForm] = useState(empty);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
+  const { customers, technicians, error: catalogErr } = useCatalogs();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const load = () => api<ServiceOrder[]>("/service-orders").then(setOrders);
@@ -19,7 +21,10 @@ export function OrdersView() {
 
   const save = async () => {
     try {
-      await post("/service-orders", { ...form, assignedTo: form.assignedTo || undefined, status: form.assignedTo ? "assigned" : "open" });
+      await post("/service-orders", {
+        ...form, customerId: form.customerId || undefined, technicianId: form.technicianId || undefined,
+        status: form.technicianId ? "assigned" : "open",
+      });
       setForm(empty); setOpen(false); setErr(""); load();
     } catch (e) { setErr((e as Error).message); }
   };
@@ -51,7 +56,15 @@ export function OrdersView() {
 
       {open && (
         <div className="mb-5 grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-white p-4">
-          <Field label="Cliente"><input className={inputCls} value={form.customerName} onChange={(e) => setForm({ ...form, customerName: e.target.value })} /></Field>
+          <Field label="Cliente">
+            <select className={inputCls} value={form.customerId} onChange={(e) => {
+              const c = customers.find((x) => x.id === e.target.value);
+              setForm({ ...form, customerId: e.target.value, customerName: c?.name ?? "", address: c?.address ?? form.address });
+            }}>
+              <option value="">Selecciona un cliente…</option>
+              {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </Field>
           <Field label="Dirección"><input className={inputCls} value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></Field>
           <Field label="Descripción de la falla"><input className={inputCls} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></Field>
           <div className="grid grid-cols-2 gap-3">
@@ -60,9 +73,14 @@ export function OrdersView() {
                 {ORDER_PRIORITY.map((p) => <option key={p} value={p}>{LABELS[p]}</option>)}
               </select>
             </Field>
-            <Field label="Técnico asignado"><input className={inputCls} value={form.assignedTo} onChange={(e) => setForm({ ...form, assignedTo: e.target.value })} /></Field>
+            <Field label="Técnico asignado">
+              <select className={inputCls} value={form.technicianId} onChange={(e) => setForm({ ...form, technicianId: e.target.value })}>
+                <option value="">Sin asignar</option>
+                {technicians.filter((t) => t.status === "active").map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+              </select>
+            </Field>
           </div>
-          {err && <p className="col-span-2 text-sm text-rose-600">{err}</p>}
+          {(err || catalogErr) && <p className="col-span-2 text-sm text-rose-600">{err || catalogErr}</p>}
           <div className="col-span-2"><Button onClick={save}>Guardar orden</Button></div>
         </div>
       )}
