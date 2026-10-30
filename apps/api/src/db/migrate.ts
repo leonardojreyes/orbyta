@@ -1,7 +1,9 @@
 // Migrador mínimo: aplica en orden los .sql de /migrations que no se hayan aplicado.
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { pool } from "./client.js";
+import { admin } from "./client.js";
+
+const { pool } = admin;
 
 const dir = resolve(import.meta.dirname, "../../migrations");
 const client = await pool.connect();
@@ -20,7 +22,9 @@ try {
     await client.query("COMMIT");
     console.log(`✓ ${file}`);
   }
-  console.log("Migraciones al día.");
+  // Rol de la API: se reaplica siempre porque --reset borra el esquema y sus permisos.
+  await client.query(readFileSync(resolve(dir, "../roles.sql"), "utf8"));
+  console.log("Migraciones al día · permisos de orbyta_app aplicados.");
 } catch (e) {
   await client.query("ROLLBACK").catch(() => {});
   throw e;

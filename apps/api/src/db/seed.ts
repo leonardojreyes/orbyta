@@ -1,6 +1,8 @@
 // Datos de ejemplo: dos empresas para comprobar el aislamiento multiempresa.
-import { db, pool, withTenant } from "./client.js";
+import { admin } from "./client.js";
 import { tenants, projects, tasks, serviceOrders } from "./schema.js";
+
+const { db, pool, withTenant } = admin;
 
 const [aguas, redes] = await db
   .insert(tenants)

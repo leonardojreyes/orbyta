@@ -7,6 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
     "db:migrate": "tsx src/db/migrate.ts",
+    "db:check-rls": "tsx src/db/check-rls.ts",
     "db:seed": "tsx src/db/seed.ts",
     "db:reset": "tsx src/db/migrate.ts --reset && tsx src/db/seed.ts",
     "typecheck": "tsc -p .",

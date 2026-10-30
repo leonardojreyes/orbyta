@@ -4,15 +4,22 @@ import { sql } from "drizzle-orm";
 import { env } from "../env.js";
 import * as schema from "./schema.js";
 
-// Pool pequeño: suficiente para desarrollo en una Mac de 8 GB.
-export const pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: 5 });
-export const db = drizzle(pool, { schema });
 export type Tx = Parameters<Parameters<NodePgDatabase<typeof schema>["transaction"]>[0]>[0];
 
-/** Ejecuta fn dentro de una transacción con RLS fijado a la empresa indicada. */
-export function withTenant<T>(tenantId: string, fn: (tx: Tx) => Promise<T>): Promise<T> {
-  return db.transaction(async (tx) => {
-    await tx.execute(sql`select set_config('app.tenant_id', ${tenantId}, true)`);
-    return fn(tx);
-  });
+function connect(connectionString: string) {
+  // Pool pequeño: suficiente para desarrollo en una Mac de 8 GB.
+  const pool = new pg.Pool({ connectionString, max: 5 });
+  const db = drizzle(pool, { schema });
+  /** Ejecuta fn dentro de una transacción con RLS fijado a la empresa indicada. */
+  const withTenant = <T>(tenantId: string, fn: (tx: Tx) => Promise<T>): Promise<T> =>
+    db.transaction(async (tx) => {
+      await tx.execute(sql`select set_config('app.tenant_id', ${tenantId}, true)`);
+      return fn(tx);
+    });
+  return { pool, db, withTenant };
 }
+
+// API: rol sin privilegios, RLS siempre aplicado.
+export const { pool, db, withTenant } = connect(env.DATABASE_URL);
+// Solo scripts de base de datos (migrar, seed): rol dueño del esquema.
+export const admin = connect(env.DATABASE_ADMIN_URL);
