@@ -12,6 +12,7 @@ import { projectRoutes } from "./routes/projects.js";
 import { orderRoutes } from "./routes/orders.js";
 import { companyRoutes } from "./routes/company.js";
 import { attachmentRoutes } from "./routes/attachments.js";
+import { dashboardRoutes } from "./routes/dashboard.js";
 import { lookupRoutes } from "./routes/lookups.js";
 import { customerRoutes } from "./routes/customers.js";
 import { technicianRoutes } from "./routes/technicians.js";
@@ -64,6 +65,7 @@ await app.register(async (api) => {
       await staff.register(customerRoutes);
       await staff.register(technicianRoutes);
       await staff.register(lookupRoutes);
+      await staff.register(dashboardRoutes);
     });
     await scoped.register(async (admin) => {
       admin.addHook("onRequest", allow("admin"));

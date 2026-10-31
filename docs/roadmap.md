@@ -15,7 +15,7 @@ Cada paso = una sesión de Claude Code que termina con algo visible en pantalla.
 - [x] Adjuntos (fotos de la falla) en disco local, con la interfaz `Storage` lista para S3 / MinIO (falta la implementación S3 al llegar al servidor)
 - [x] Filtros, búsqueda y paginación en órdenes, clientes y técnicos
 - [ ] Vista lista agrupada por estado (tipo ClickUp)
-- [ ] Panel de indicadores (órdenes por estado, tiempos de atención)
+- [x] Panel de indicadores (órdenes por estado, tiempos de atención)
 
 ## Fase 3 · Sincronización (prepara el móvil offline)
 - [ ] Endpoint `GET /api/sync?since=` (cambios por `updated_at`, incluye borrados lógicos) y `POST /api/sync` (lote de cambios del cliente)

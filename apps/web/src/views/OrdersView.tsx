@@ -125,7 +125,7 @@ export function OrdersView({ me }: { me: SessionUser }) {
       )}
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <SearchBox value={filters.q} onChange={(v) => setFilter({ q: v })} placeholder="Buscar por código, cliente, dirección, falla…" />
+        <SearchBox value={filters.q} onChange={(v) => setFilter({ q: v })} placeholder="Buscar orden, cliente, falla…" />
         <select className={inputCls} value={filters.priority} onChange={(e) => setFilter({ priority: e.target.value })}>
           <option value="">Toda prioridad</option>
           {ORDER_PRIORITY.map((p) => <option key={p} value={p}>{LABELS[p]}</option>)}

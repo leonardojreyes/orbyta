@@ -156,6 +156,12 @@ export type OrderListQuery = z.infer<typeof OrderListQuery>;
 export const CustomerListQuery = z.object({ q: searchText, ...pageParams });
 export const TechnicianListQuery = z.object({ q: searchText, status: z.enum(TECHNICIAN_STATUS).optional(), ...pageParams });
 
+// ---- Panel de indicadores ----
+export const DASHBOARD_PERIODS = [7, 30, 90] as const;
+export const DashboardQuery = z.object({
+  days: z.coerce.number().int().refine((v) => (DASHBOARD_PERIODS as readonly number[]).includes(v), "Periodo inválido").default(30),
+});
+
 // ---- Adjuntos (fotos de la falla) ----
 export const ATTACHMENT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export const ATTACHMENT_MAX_PER_ORDER = 20;
@@ -224,4 +230,20 @@ export interface TechnicianOption { id: string; name: string; status: (typeof TE
 export interface Attachment {
   id: string; orderId: string; fileName: string; contentType: (typeof ATTACHMENT_TYPES)[number]; sizeBytes: number;
   uploadedBy: string | null; uploadedByName: string | null; createdAt: string;
+}
+/**
+ * Indicadores de la empresa. `resolution` y `byTechnician.avgHours` miden calendario corrido (no horas hábiles) desde que se
+ * crea la orden hasta la primera vez que pasa a "terminada" según su historial; las órdenes anteriores al historial (migración 002)
+ * no tienen ese paso y no entran en la muestra.
+ */
+export interface DashboardData {
+  days: number;
+  byStatus: Record<(typeof ORDER_STATUS)[number], number>;
+  openByPriority: Record<(typeof ORDER_PRIORITY)[number], number>;
+  /** Órdenes sin cerrar por tiempo desde su creación. */
+  aging: { lt1d: number; d1to3: number; d3to7: number; gt7: number };
+  /** Una fila por día del periodo (hoy incluido), en orden. */
+  daily: { date: string; created: number; closed: number }[];
+  resolution: { sample: number; avgHours: number | null; medianHours: number | null; p90Hours: number | null };
+  byTechnician: { id: string; name: string; openCount: number; doneInPeriod: number; avgHours: number | null }[];
 }

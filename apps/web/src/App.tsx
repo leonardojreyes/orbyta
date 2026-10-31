@@ -6,16 +6,18 @@ import { ProjectsView } from "./views/ProjectsView";
 import { OrdersView } from "./views/OrdersView";
 import { CustomersView } from "./views/CustomersView";
 import { TechniciansView } from "./views/TechniciansView";
+import { DashboardView } from "./views/DashboardView";
 import { AuditView } from "./views/AuditView";
 import { UsersView } from "./views/UsersView";
 import { CompanyView } from "./views/CompanyView";
 import { AccountView } from "./views/AccountView";
 
-type View = "projects" | "orders" | "customers" | "technicians" | "users" | "audit" | "company" | "account";
+type View = "dashboard" | "projects" | "orders" | "customers" | "technicians" | "users" | "audit" | "company" | "account";
 type Role = SessionUser["role"];
 
 // Menú por rol (la API vuelve a validar cada permiso; esto solo evita mostrar lo que daría 403).
 const MENU: { key: View; label: string; roles: Role[] }[] = [
+  { key: "dashboard", label: "📊  Indicadores", roles: ["admin", "supervisor"] },
   { key: "projects", label: "📁  Proyectos", roles: ["admin", "supervisor"] },
   { key: "orders", label: "🛠️  Órdenes de servicio", roles: ["admin", "supervisor", "technician"] },
   { key: "customers", label: "👥  Clientes", roles: ["admin", "supervisor"] },
@@ -84,6 +86,7 @@ export function App() {
       </aside>
 
       <main className="flex-1 overflow-auto">
+        {view === "dashboard" && <DashboardView key={me.id} />}
         {view === "projects" && <ProjectsView key={me.id} />}
         {view === "orders" && <OrdersView key={me.id} me={me} />}
         {view === "customers" && <CustomersView key={me.id} />}

@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-31 · Fase 2 · Panel de indicadores
+- `GET /dashboard?days=7|30|90` (admin y supervisor): órdenes por estado, abiertas por prioridad y antigüedad, creadas y terminadas por día, tiempo de resolución (mediana, promedio, p90) y carga por técnico. Migración `011_dashboard_index.sql`. Números verificados contra cálculos manuales con tiempos conocidos; el técnico recibe 403 y cada empresa ve solo lo suyo.
+- Web: vista "Indicadores", pantalla de inicio de admin y supervisor. Tarjetas de cifras, línea de creadas y terminadas con cursor, barras (estado, antigüedad, prioridad) y tabla por técnico; cada gráfico con "Ver como tabla". Colores validados con la guía de dataviz (modo claro). Gráficos propios en SVG/HTML, sin librería nueva.
+- **Primera revisión visual de la web en el navegador** (Chrome, contra una base de prueba): se corrigió el gráfico de líneas, que escalaba sus textos con la pantalla (ahora mide su ancho real). También se vieron órdenes con filtros, bitácora, datos de empresa y el panel de la orden con fotos: sin problemas.
+- Revisor: títulos que ahora siguen al periodo realmente cargado, consultas en serie, accesibilidad de las barras, etiquetas con `title`, rejillas con breakpoints, índice para el cálculo de terminadas. Definiciones de las métricas en ADR-13.
+- Pendiente (menor): el azul significa "Órdenes por estado" en las barras y "Creadas" en la línea; sin teclado en el cursor de la línea (la tabla lo compensa); la subida de fotos desde el selector de archivos del navegador no se probó (sí por la API); falta `db:reset-password`.
+- **Siguiente paso:** vista de órdenes agrupada por estado (tipo ClickUp) y cerrar la Fase 2; después Fase 3 (sincronización para el móvil offline).
+
 ## 2026-10-30 · Fase 2 · Adjuntos (fotos de la falla)
 - Migración `010_attachments.sql`: tabla `attachments` (RLS, FK compuesta con la orden y el usuario, auditada). Rutas para subir, listar, ver y quitar fotos; el acceso sigue las reglas de la orden (el técnico solo en sus órdenes abiertas, y solo quita lo suyo; "quitar" es borrado lógico).
 - Almacenamiento en disco (`STORAGE_DIR`, fuera de git) detrás de la interfaz `Storage` (`apps/api/src/storage.ts`): pasar a S3 es implementar esa interfaz y elegirla con `STORAGE_DRIVER`, sin tocar rutas ni base de datos (ADR-12).
