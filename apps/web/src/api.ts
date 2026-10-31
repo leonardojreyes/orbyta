@@ -7,7 +7,12 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     ...init,
     headers: { "Content-Type": "application/json", ...(tenantId ? { "X-Tenant-Id": tenantId } : {}), ...init.headers },
   });
-  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? res.statusText);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    // Validación Zod: indica qué campos fallaron.
+    const fields = Array.isArray(body.issues) ? ` (${body.issues.map((i: { path: (string | number)[] }) => i.path.join(".")).join(", ")})` : "";
+    throw new Error((body.error ?? res.statusText) + fields);
+  }
   return res.json() as Promise<T>;
 }
 export const post = <T,>(p: string, body: unknown) => api<T>(p, { method: "POST", body: JSON.stringify(body) });

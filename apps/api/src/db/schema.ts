@@ -11,6 +11,11 @@ export const tenants = pgTable("tenants", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   logoUrl: text("logo_url"),
+  taxId: text("tax_id"),
+  address: text("address"),
+  phone: text("phone"),
+  email: text("email"),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
 });
 
 export const projects = pgTable("projects", {

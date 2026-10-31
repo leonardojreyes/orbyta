@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · 1.5 Logo y datos de empresa
+- Migración `005_company_profile.sql`: RUC, dirección, teléfono, correo y `updated_at` en `tenants`. El logo va como data URL (máx. ~200 KB) en `logo_url`, sin dependencias nuevas.
+- API: `GET/PATCH /company` filtran siempre por la empresa de la solicitud; `/tenants` ya no devuelve logo ni datos fiscales.
+- Web: vista "Empresa" (datos y logo: subir, cambiar, quitar) y logo y nombre de la empresa activa en la barra lateral. Los errores de validación indican los campos que fallaron.
+- Decisiones: `tenants` sigue sin RLS (tabla raíz), con la brecha del header hasta 1.6; el logo solo se renderiza con `<img>`. Ambas quedan en `docs/arquitectura.md` (ADR-07 y ADR-08, que también recoge el rol `orbyta_app`).
+- Revisor: sin fallos de reglas. Corregido: error de lectura del archivo sin manejar, y el formulario ya no reenvía un logo sin cambios. Sin hacer: `loadCompany` ignora errores en silencio. Probado con curl; pantallas sin ver en el navegador.
+- **Siguiente paso:** 1.6 Autenticación local (usuarios, login, roles admin/supervisor/técnico); la empresa sale de la sesión y deja de venir del header.
+
 ## 2026-10-30 · 1.4 Órdenes vinculadas a proyectos
 - Migración `004_order_project_fk.sql`: la FK de `project_id` pasa a ser compuesta `(tenant_id, id)`, como cliente y técnico; una orden no puede apuntar a un proyecto de otra empresa.
 - API: las órdenes validan el proyecto (400 si no existe); nuevo `GET /projects/:id/service-orders` (404 si el proyecto no existe) y `orderCount` en `GET /projects`.

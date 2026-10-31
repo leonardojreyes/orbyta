@@ -82,8 +82,25 @@ export const TechnicianCreate = z.object({
 export type TechnicianCreate = z.infer<typeof TechnicianCreate>;
 export const TechnicianUpdate = TechnicianCreate.partial().omit({ id: true });
 
+// Logo de la empresa: imagen pequeña embebida (data URL), sin servicio de archivos aparte.
+export const LOGO_MAX_CHARS = 280_000; // ≈ 200 KB de imagen en base64
+export const CompanyUpdate = z.object({
+  name: z.string().min(2).max(200),
+  taxId: z.string().max(40).nullable(),
+  address: z.string().max(500).nullable(),
+  phone: z.string().max(40).nullable(),
+  email: z.string().email().max(200).nullable(),
+  logoUrl: z.string().max(LOGO_MAX_CHARS)
+    .regex(/^data:image\/(png|jpeg|webp|svg\+xml);base64,[A-Za-z0-9+/=]+$/, "El logo debe ser png, jpeg, webp o svg")
+    .nullable(),
+}).partial();
+export type CompanyUpdate = z.infer<typeof CompanyUpdate>;
+
 // ---- Tipos de respuesta ----
-export interface Tenant { id: string; name: string; slug: string; logoUrl: string | null }
+export interface Tenant { id: string; name: string; slug: string }
+export interface Company extends Tenant {
+  logoUrl: string | null; taxId: string | null; address: string | null; phone: string | null; email: string | null;
+}
 export interface Project {
   id: string; code: string; name: string; description: string | null;
   status: (typeof PROJECT_STATUS)[number]; startDate: string | null; endDate: string | null;

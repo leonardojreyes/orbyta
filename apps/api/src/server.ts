@@ -5,6 +5,7 @@ import { env } from "./env.js";
 import { tenantRoutes } from "./routes/tenants.js";
 import { projectRoutes } from "./routes/projects.js";
 import { orderRoutes } from "./routes/orders.js";
+import { companyRoutes } from "./routes/company.js";
 import { customerRoutes } from "./routes/customers.js";
 import { technicianRoutes } from "./routes/technicians.js";
 
@@ -36,6 +37,7 @@ await app.register(async (api) => {
     });
     await scoped.register(projectRoutes);
     await scoped.register(orderRoutes);
+    await scoped.register(companyRoutes);
     await scoped.register(customerRoutes);
     await scoped.register(technicianRoutes);
   });
