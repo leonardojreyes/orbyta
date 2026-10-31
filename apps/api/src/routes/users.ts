@@ -59,7 +59,7 @@ export async function userRoutes(app: FastifyInstance) {
       // Cambio real de contraseña, rol o estado: se cierran sus sesiones abiertas (menos la de quien lo hace).
       const changed = passwordHash || (body.role !== undefined && body.role !== prev.role) || (body.status !== undefined && body.status !== prev.status);
       if (updated && changed) {
-        await tx.update(sessions).set({ deletedAt: new Date().toISOString() })
+        await tx.update(sessions).set({ deletedAt: new Date().toISOString(), updatedAt: sql`now()` })
           .where(and(eq(sessions.userId, updated.id), isNull(sessions.deletedAt), sql`${sessions.id} <> ${req.sessionId}`));
       }
       return updated;

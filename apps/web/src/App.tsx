@@ -8,8 +8,9 @@ import { CustomersView } from "./views/CustomersView";
 import { TechniciansView } from "./views/TechniciansView";
 import { UsersView } from "./views/UsersView";
 import { CompanyView } from "./views/CompanyView";
+import { AccountView } from "./views/AccountView";
 
-type View = "projects" | "orders" | "customers" | "technicians" | "users" | "company";
+type View = "projects" | "orders" | "customers" | "technicians" | "users" | "company" | "account";
 type Role = SessionUser["role"];
 
 // Menú por rol (la API vuelve a validar cada permiso; esto solo evita mostrar lo que daría 403).
@@ -73,7 +74,10 @@ export function App() {
         <div className="mt-auto border-t border-white/10 px-5 py-4">
           <div className="truncate text-sm text-white">{me.name}</div>
           <div className="mb-2 text-[11px] text-slate-500">{LABELS[me.role]}</div>
-          <button onClick={logout} className="text-xs text-slate-400 hover:text-white">Cerrar sesión</button>
+          <div className="flex gap-3 text-xs text-slate-400">
+            <button onClick={() => setView("account")} className={view === "account" ? "text-white" : "hover:text-white"}>Cambiar contraseña</button>
+            <button onClick={logout} className="hover:text-white">Cerrar sesión</button>
+          </div>
         </div>
       </aside>
 
@@ -83,6 +87,7 @@ export function App() {
         {view === "customers" && <CustomersView key={me.id} />}
         {view === "technicians" && <TechniciansView key={me.id} />}
         {view === "users" && <UsersView key={me.id} meId={me.id} />}
+        {view === "account" && <AccountView key={me.id} />}
         {view === "company" && <CompanyView key={me.id} onSaved={loadCompany} />}
       </main>
     </div>

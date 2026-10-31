@@ -1,10 +1,10 @@
 import type { FastifyInstance } from "fastify";
-import { and, eq, isNull } from "drizzle-orm";
-import { LoginInput } from "@orbyta/shared";
+import { and, eq, isNull, sql } from "drizzle-orm";
+import { ChangePassword, LoginInput } from "@orbyta/shared";
 import { db, withTenant } from "../db/client.js";
 import { sessions, tenants, users } from "../db/schema.js";
 import {
-  COOKIE, SESSION_DAYS, dummyHash, loginAttempt, loginSucceeded, newSessionToken, sessionCookie, verifyPassword,
+  COOKIE, SESSION_DAYS, dummyHash, hashPassword, loginAttempt, loginSucceeded, newSessionToken, sessionCookie, verifyPassword,
 } from "../auth.js";
 
 /** Rutas públicas: solo el login. */
@@ -38,8 +38,26 @@ export async function loginRoutes(app: FastifyInstance) {
 export async function sessionRoutes(app: FastifyInstance) {
   app.get("/auth/me", async (req) => req.user);
 
+  // Cambio de contraseña propio: exige la actual (con límite de intentos propio) y cierra las demás sesiones.
+  app.post("/auth/password", async (req, reply) => {
+    const body = ChangePassword.parse(req.body);
+    if (!loginAttempt(req.ip, req.tenantId, req.user.email, "password")) return reply.code(429).send({ error: "Demasiados intentos. Espera unos minutos." });
+    const newHash = await hashPassword(body.newPassword);
+    const done = await withTenant(req.tenantId, async (tx) => {
+      const [u] = await tx.select({ passwordHash: users.passwordHash }).from(users).where(eq(users.id, req.user.id)).for("update");
+      if (!u || !(await verifyPassword(body.currentPassword, u.passwordHash))) return false;
+      await tx.update(users).set({ passwordHash: newHash, updatedAt: sql`now()` }).where(eq(users.id, req.user.id));
+      await tx.update(sessions).set({ deletedAt: new Date().toISOString(), updatedAt: sql`now()` })
+        .where(and(eq(sessions.userId, req.user.id), isNull(sessions.deletedAt), sql`${sessions.id} <> ${req.sessionId}`));
+      return true;
+    });
+    if (!done) return reply.code(400).send({ error: "La contraseña actual no es correcta" });
+    loginSucceeded(req.ip, req.tenantId, req.user.email, "password");
+    return { ok: true };
+  });
+
   app.post("/auth/logout", async (req, reply) => {
-    await withTenant(req.tenantId, (tx) => tx.update(sessions).set({ deletedAt: new Date().toISOString() }).where(eq(sessions.id, req.sessionId)));
+    await withTenant(req.tenantId, (tx) => tx.update(sessions).set({ deletedAt: new Date().toISOString(), updatedAt: sql`now()` }).where(eq(sessions.id, req.sessionId)));
     reply.header("Set-Cookie", `${COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`);
     return { ok: true };
   });

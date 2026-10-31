@@ -87,13 +87,14 @@ export const allow = (...roles: SessionUser["role"][]) => async (req: FastifyReq
 // la contraseña, así las peticiones en paralelo no se cuelan; un login correcto devuelve el cupo.
 const WINDOW_MS = 15 * 60_000, MAX_BUCKETS = 5000;
 const buckets = new Map<string, { n: number; since: number }>();
-const bucketKeys = (ip: string, tenant: string, email: string) =>
-  [[`p|${ip}|${tenant}|${email}`, 5], [`a|${tenant}|${email}`, 10], [`i|${ip}`, 20]] as const;
+// `scope` separa los contadores de cada flujo (login, cambio de contraseña): uno no agota el cupo del otro.
+const bucketKeys = (ip: string, tenant: string, email: string, scope: string) =>
+  [[`p|${scope}|${ip}|${tenant}|${email}`, 5], [`a|${scope}|${tenant}|${email}`, 10], [`i|${scope}|${ip}`, 20]] as const;
 
-export function loginAttempt(ip: string, tenant: string, email: string) {
+export function loginAttempt(ip: string, tenant: string, email: string, scope = "login") {
   const now = Date.now();
   let allowed = true;
-  for (const [key, limit] of bucketKeys(ip, tenant, email)) {
+  for (const [key, limit] of bucketKeys(ip, tenant, email, scope)) {
     let b = buckets.get(key);
     if (!b || now - b.since > WINDOW_MS) { b = { n: 0, since: now }; buckets.set(key, b); }
     if (++b.n > limit) allowed = false;
@@ -105,8 +106,8 @@ export function loginAttempt(ip: string, tenant: string, email: string) {
   return allowed;
 }
 
-export function loginSucceeded(ip: string, tenant: string, email: string) {
-  const [pair, account, byIp] = bucketKeys(ip, tenant, email);
+export function loginSucceeded(ip: string, tenant: string, email: string, scope = "login") {
+  const [pair, account, byIp] = bucketKeys(ip, tenant, email, scope);
   buckets.delete(pair[0]); buckets.delete(account[0]);
   const b = buckets.get(byIp[0]);
   if (b && b.n > 0) b.n--;

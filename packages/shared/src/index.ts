@@ -4,6 +4,9 @@ import { z } from "zod";
 export const PROJECT_STATUS = ["planned", "active", "on_hold", "done"] as const;
 export const TASK_STATUS = ["todo", "in_progress", "done"] as const;
 export const ORDER_STATUS = ["open", "assigned", "in_progress", "done", "cancelled"] as const;
+// El técnico solo avanza sus órdenes entre estos estados y no toca las ya cerradas (no reabre ni cancela).
+export const TECHNICIAN_ORDER_TARGETS = ["assigned", "in_progress", "done"] as const;
+export const CLOSED_ORDER_STATUS = ["done", "cancelled"] as const;
 export const TECHNICIAN_STATUS = ["active", "inactive"] as const;
 export const USER_ROLES = ["admin", "supervisor", "technician"] as const;
 export const USER_STATUS = ["active", "inactive"] as const;
@@ -96,6 +99,12 @@ export const LoginInput = z.object({
   password: z.string().min(1).max(200),
 });
 export type LoginInput = z.infer<typeof LoginInput>;
+
+export const ChangePassword = z.object({
+  currentPassword: z.string().min(1).max(200),
+  newPassword: password,
+}).refine((v) => v.currentPassword !== v.newPassword, { message: "La contraseña nueva debe ser distinta", path: ["newPassword"] });
+export type ChangePassword = z.infer<typeof ChangePassword>;
 
 export const UserCreate = z.object({
   id: id.optional(),

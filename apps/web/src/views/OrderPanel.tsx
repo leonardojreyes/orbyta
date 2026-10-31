@@ -3,6 +3,7 @@ import { ORDER_PRIORITY, ORDER_STATUS, LABELS, type ServiceOrder, type ServiceOr
 import { api, patch } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
 import { useCatalogs } from "../catalogs";
+import { lockedFor, statusChoices } from "../orderStatus";
 
 const fmt = (iso: string) => new Date(iso).toLocaleString("es", { dateStyle: "short", timeStyle: "short" });
 
@@ -60,8 +61,8 @@ export function OrderPanel({ order, statusOnly, onClose, onSaved }: { order: Ser
             </select>
           </Field>
           <Field label="Estado">
-            <select className={inputCls} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as ServiceOrder["status"] })}>
-              {ORDER_STATUS.map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
+            <select className={inputCls} value={form.status} disabled={lockedFor(statusOnly, order.status)} onChange={(e) => setForm({ ...form, status: e.target.value as ServiceOrder["status"] })}>
+              {statusChoices(statusOnly, order.status).map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
             </select>
           </Field>
         </div>
@@ -81,7 +82,7 @@ export function OrderPanel({ order, statusOnly, onClose, onSaved }: { order: Ser
           </select>
         </Field>
         {(err || catalogErr) && <p className="text-sm text-rose-600">{err || catalogErr}</p>}
-        <Button onClick={save}>Guardar cambios</Button>
+        {!lockedFor(statusOnly, order.status) && <Button onClick={save}>Guardar cambios</Button>}
 
         <h3 className="pt-3 text-sm font-semibold">Historial de estados</h3>
         <ol className="space-y-2 border-l border-slate-200 pl-4">

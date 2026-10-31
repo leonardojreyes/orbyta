@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
-import { OrderCreate, OrderUpdate } from "@orbyta/shared";
+import { CLOSED_ORDER_STATUS, OrderCreate, OrderUpdate, TECHNICIAN_ORDER_TARGETS } from "@orbyta/shared";
 import { withTenant } from "../db/client.js";
 import { customers, projects, serviceOrderEvents, serviceOrders, technicians } from "../db/schema.js";
 import type { Tx } from "../db/client.js";
@@ -72,6 +72,10 @@ export async function orderRoutes(app: FastifyInstance) {
       const where = and(eq(serviceOrders.id, req.params.id), isNull(serviceOrders.deletedAt), mine(req));
       const [prev] = await tx.select({ status: serviceOrders.status, technicianId: serviceOrders.technicianId }).from(serviceOrders).where(where).for("update");
       if (!prev) return undefined;
+      if (req.user.role === "technician") { // el técnico no reabre ni cancela, ni toca órdenes cerradas
+        if ((CLOSED_ORDER_STATUS as readonly string[]).includes(prev.status)) return { error: "La orden ya está cerrada", forbidden: true };
+        if (body.status && body.status !== prev.status && !(TECHNICIAN_ORDER_TARGETS as readonly string[]).includes(body.status)) return { error: "No puedes poner la orden en ese estado", forbidden: true };
+      }
       const refs = await resolveRefs(tx, body, prev);
       if ("error" in refs) return refs;
       const [updated] = await tx.update(serviceOrders).set({ ...body, ...refs.names, updatedAt: sql`now()` }).where(where).returning();
@@ -83,7 +87,7 @@ export async function orderRoutes(app: FastifyInstance) {
       }
       return updated;
     });
-    if (row && "error" in row) return reply.code(400).send(row);
+    if (row && "error" in row) return reply.code("forbidden" in row ? 403 : 400).send({ error: row.error });
     return row ?? reply.code(404).send({ error: "Orden no encontrada" });
   });
 

@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · Transiciones del técnico y cambio de contraseña propio
+- El técnico solo avanza sus órdenes entre asignada, en curso y terminada; no reabre, no cancela ni toca órdenes cerradas. Admin y supervisor sin esa restricción. Reglas en `@orbyta/shared` (`TECHNICIAN_ORDER_TARGETS`, `CLOSED_ORDER_STATUS`); la web solo ofrece esos estados y bloquea las órdenes cerradas.
+- `POST /auth/password` y pantalla "Cambiar contraseña": pide la actual, valida la nueva, cierra las demás sesiones del usuario y tiene límite de intentos propio (separado del login).
+- Si la API rechaza un cambio de estado, la lista muestra el motivo y vuelve al estado real.
+- Revisor: corregido que un técnico con una orden `open` no podía guardar sin cambios (ahora se permite reenviar el estado actual), el contador de intentos compartido entre login y cambio de clave, y `updated_at` al cerrar sesiones.
+- Probado con curl en una base temporal; pantallas sin ver en el navegador. Sigue pendiente (menor): `sessions` no se purga, no se exige ficha de técnico al rol técnico, y el bloqueo por IP puede afectar a quien comparta NAT.
+- **Siguiente paso:** Fase 2, bitácora/auditoría (`audit_log` vía trigger).
+
 ## 2026-10-30 · 1.6 Autenticación local y roles
 - Migración `006_auth.sql`: `users` y `sessions` con RLS. Login con código de empresa + correo + contraseña (scrypt de `node:crypto`, sin dependencias); sesión en cookie HttpOnly `<tenantId>.<secreto>` y en BD solo el SHA-256 del secreto. La empresa sale de la sesión: se eliminaron el header `X-Tenant-Id` y la ruta `/tenants`.
 - Roles: `admin` (todo, usuarios y empresa), `supervisor` (operación) y `technician` (solo sus órdenes y su estado, según `users.technician_id`). Grupos de rutas por rol en `server.ts`; menú por rol en la web.

@@ -4,6 +4,7 @@ import { api, patch, post } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
 import { OrderPanel } from "./OrderPanel";
 import { useCatalogs } from "../catalogs";
+import { lockedFor, statusChoices } from "../orderStatus";
 
 const empty = { customerId: "", customerName: "", address: "", description: "", priority: "medium", technicianId: "", projectId: "" };
 
@@ -31,7 +32,9 @@ export function OrdersView({ role }: { role: SessionUser["role"] }) {
   };
   const setStatus = async (o: ServiceOrder, status: string) => {
     setOrders((os) => os.map((x) => (x.id === o.id ? { ...x, status: status as ServiceOrder["status"] } : x)));
-    await patch(`/service-orders/${o.id}`, { status });
+    setErr("");
+    try { await patch(`/service-orders/${o.id}`, { status }); }
+    catch (e) { setErr((e as Error).message); load(); } // la API rechazó el cambio: se vuelve al estado real
   };
 
   const counts = Object.fromEntries(ORDER_STATUS.map((s) => [s, orders.filter((o) => o.status === s).length]));
@@ -44,6 +47,8 @@ export function OrdersView({ role }: { role: SessionUser["role"] }) {
         <h1 className="text-xl font-semibold">Órdenes de servicio</h1>
         {!isTech && <Button onClick={() => setOpen(!open)}>{open ? "Cerrar" : "+ Nueva orden"}</Button>}
       </div>
+
+      {!open && err && <p className="mb-3 text-sm text-rose-600">{err}</p>}
 
       <div className="mb-5 grid grid-cols-5 gap-3">
         {ORDER_STATUS.map((s) => (
@@ -108,8 +113,8 @@ export function OrdersView({ role }: { role: SessionUser["role"] }) {
                 <td className="px-4 py-3"><Badge value={o.priority} /></td>
                 <td className="px-4 py-3 text-slate-600">{o.assignedTo ?? "—"}</td>
                 <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                  <select className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs" value={o.status} onChange={(e) => setStatus(o, e.target.value)}>
-                    {ORDER_STATUS.map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
+                  <select className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs" value={o.status} disabled={lockedFor(isTech, o.status)} onChange={(e) => setStatus(o, e.target.value)}>
+                    {statusChoices(isTech, o.status).map((s) => <option key={s} value={s}>{LABELS[s]}</option>)}
                   </select>
                 </td>
               </tr>
