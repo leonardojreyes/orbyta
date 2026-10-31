@@ -67,7 +67,7 @@ export async function loadSession(token: string | undefined) {
   });
 }
 
-/** Hook global: exige sesión válida y deja req.tenantId / req.user. */
+/** Hook onRequest: exige sesión válida y deja req.tenantId / req.user. */
 export async function requireSession(req: FastifyRequest, reply: FastifyReply) {
   const s = await loadSession(readCookieToken(req));
   if (!s) return reply.code(401).send({ error: "Sesión no válida" });
@@ -76,7 +76,7 @@ export async function requireSession(req: FastifyRequest, reply: FastifyReply) {
   req.sessionId = s.sessionId;
 }
 
-/** preHandler por rol. Se usa como `{ preHandler: allow("admin") }` o como hook de un grupo de rutas. */
+/** Control por rol. Se usa como `{ onRequest: allow("admin") }` o como hook onRequest de un grupo de rutas. */
 export const allow = (...roles: SessionUser["role"][]) => async (req: FastifyRequest, reply: FastifyReply) => {
   if (!roles.includes(req.user.role)) return reply.code(403).send({ error: "No tienes permiso para esta acción" });
 };

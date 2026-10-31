@@ -15,8 +15,8 @@ const SORTS: [string, string][] = [
 ];
 const empty = { customerId: "", customerName: "", address: "", description: "", priority: "medium", technicianId: "", projectId: "" };
 
-export function OrdersView({ role }: { role: SessionUser["role"] }) {
-  const isTech = role === "technician"; // el técnico solo ve sus órdenes y cambia su estado
+export function OrdersView({ me }: { me: SessionUser }) {
+  const isTech = me.role === "technician"; // el técnico solo ve sus órdenes y cambia su estado
   const [page, setPage] = useState<OrderPage>({ items: [], total: 0, counts: Object.fromEntries(ORDER_STATUS.map((x) => [x, 0])) as OrderPage["counts"] });
   const [filters, setFilters] = useState(noFilters);
   const [tick, setTick] = useState(0); // subir para recargar la página actual
@@ -177,7 +177,7 @@ export function OrdersView({ role }: { role: SessionUser["role"] }) {
       </div>
       <Pager total={page.total} offset={offset} limit={PAGE_SIZE} onOffset={setOffset} />
 
-      {selected && <OrderPanel order={selected} statusOnly={isTech} onClose={() => setSelected(null)} onSaved={reload} />}
+      {selected && <OrderPanel order={selected} statusOnly={isTech} me={me} onClose={() => setSelected(null)} onSaved={reload} />}
     </div>
   );
 }

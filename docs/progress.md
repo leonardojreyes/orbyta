@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · Fase 2 · Adjuntos (fotos de la falla)
+- Migración `010_attachments.sql`: tabla `attachments` (RLS, FK compuesta con la orden y el usuario, auditada). Rutas para subir, listar, ver y quitar fotos; el acceso sigue las reglas de la orden (el técnico solo en sus órdenes abiertas, y solo quita lo suyo; "quitar" es borrado lógico).
+- Almacenamiento en disco (`STORAGE_DIR`, fuera de git) detrás de la interfaz `Storage` (`apps/api/src/storage.ts`): pasar a S3 es implementar esa interfaz y elegirla con `STORAGE_DRIVER`, sin tocar rutas ni base de datos (ADR-12).
+- Subida como cuerpo en bruto (sin dependencia de multipart), tipo verificado por bytes, máx. 5 MB y 20 por orden; la web reduce las fotos a 1600 px antes de subir. Sección "Fotos" en el panel de la orden.
+- Revisor: la autenticación y los roles pasan a `onRequest` (antes un anónimo podía hacer cargar cuerpos de hasta 5 MB en memoria antes del 401); chequeo del límite, escritura y registro en una sola transacción con la orden bloqueada (25 subidas simultáneas dieron exactamente 20 + 5 rechazos, sin huérfanos); `ETag` y `no-cache` para que quitar una foto surta efecto de inmediato; `MAX_UPLOAD_MB` validado; estados obsoletos en la web.
+- Pendiente: tarea de mantenimiento para purgar archivos de adjuntos quitados y huérfanos tras una caída entre guardar el archivo y el registro; respaldar `storage/` junto con la base de datos; sin `Range` en las descargas. Probado con curl; pantallas sin ver en el navegador.
+- **Siguiente paso:** Fase 2: panel de indicadores (órdenes por estado, tiempos de atención) y la vista agrupada por estado.
+
 ## 2026-10-30 · Fase 2 · Filtros, búsqueda y paginación
 - `GET /service-orders` con filtros (estado, prioridad, técnico, proyecto incl. "sin proyecto", texto), orden en lista blanca y paginación de 25; devuelve `{ items, total, counts }` (las tarjetas por estado salen del servidor). `GET /customers` y `/technicians` con búsqueda y paginación. El técnico sigue viendo solo lo suyo.
 - Selectores de formularios con `/lookups/customers` y `/lookups/technicians` (listas completas y ligeras, tope 1000), porque las listas paginadas los dejarían cortados.

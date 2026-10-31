@@ -36,7 +36,7 @@ async function resolveRefs(tx: Tx, body: Refs, current?: { technicianId: string 
 const forbidden = { error: "No tienes permiso para esta acción" };
 
 /** El técnico solo alcanza las órdenes asignadas a su ficha de técnico; admin y supervisor, todas. */
-const mine = (req: FastifyRequest) =>
+export const mine = (req: FastifyRequest) =>
   req.user.role !== "technician" ? undefined
     : req.user.technicianId ? eq(serviceOrders.technicianId, req.user.technicianId) : sql`false`;
 

@@ -85,7 +85,7 @@ export function App() {
 
       <main className="flex-1 overflow-auto">
         {view === "projects" && <ProjectsView key={me.id} />}
-        {view === "orders" && <OrdersView key={me.id} role={me.role} />}
+        {view === "orders" && <OrdersView key={me.id} me={me} />}
         {view === "customers" && <CustomersView key={me.id} />}
         {view === "technicians" && <TechniciansView key={me.id} />}
         {view === "users" && <UsersView key={me.id} meId={me.id} />}

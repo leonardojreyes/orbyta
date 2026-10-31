@@ -17,7 +17,7 @@ export async function companyRoutes(app: FastifyInstance) {
     return row ?? reply.code(404).send({ error: "Empresa no encontrada" });
   });
 
-  app.patch("/company", { preHandler: allow("admin") }, async (req, reply) => {
+  app.patch("/company", { onRequest: allow("admin") }, async (req, reply) => {
     const body = CompanyUpdate.parse(req.body);
     const [row] = await withTenant(req.tenantId, (tx) =>
       tx.update(tenants).set({ ...body, updatedAt: sql`now()` }).where(eq(tenants.id, req.tenantId)).returning(columns),

@@ -2,7 +2,7 @@
 // Falla (exit 1) si el rol puede saltarse RLS o si una empresa ve/modifica datos de otra.
 import { and, eq, sql } from "drizzle-orm";
 import { admin, db, pool, withTenant } from "./client.js";
-import { auditLog, customers, projects, serviceOrders, sessions, technicians, tenants, users } from "./schema.js";
+import { attachments, auditLog, customers, projects, serviceOrders, sessions, technicians, tenants, users } from "./schema.js";
 
 let failed = 0;
 const check = (name: string, ok: boolean) => {
@@ -57,7 +57,7 @@ check("A no puede insertar filas con tenant_id de B", await rejects(() =>
 ));
 
 // Catálogos: misma garantía que las órdenes.
-for (const [label, table] of [["clientes", customers], ["técnicos", technicians], ["usuarios", users], ["sesiones", sessions]] as const) {
+for (const [label, table] of [["clientes", customers], ["técnicos", technicians], ["usuarios", users], ["sesiones", sessions], ["adjuntos", attachments]] as const) {
   const [mine, theirs] = await Promise.all([
     withTenant(a.id, (tx) => tx.select({ t: table.tenantId, id: table.id }).from(table)),
     withTenant(b.id, (tx) => tx.select({ t: table.tenantId, id: table.id }).from(table)),
@@ -80,6 +80,14 @@ check("la orden de A no puede apuntar a un cliente de B", !!cb && !!oa && await 
 
 check("la orden de A no puede apuntar a un proyecto de B", !!pb && !!oa && await rejects(() =>
   probe(a.id, (tx) => tx.update(serviceOrders).set({ projectId: pb.id }).where(eq(serviceOrders.id, oa.id)))));
+
+// Adjuntos: no se pueden crear con la empresa de otro ni colgar de una orden de otra empresa (FK compuesta).
+const photo = { contentType: "image/png", sizeBytes: 1, fileName: "x.png" } as const;
+const orderOfB = seenB[0]!;
+check("adjuntos: A no puede crear uno con tenant_id de B", await rejects(() => probe(a.id, (tx) => tx.insert(attachments).values({
+  ...photo, tenantId: b.id, orderId: orderOfB.id, storageKey: `rls-test/${crypto.randomUUID()}.png` }))));
+check("adjuntos: A no puede colgar un adjunto de una orden de B", await rejects(() => probe(a.id, (tx) => tx.insert(attachments).values({
+  ...photo, tenantId: a.id, orderId: orderOfB.id, storageKey: `rls-test/${crypto.randomUUID()}.png` }))));
 
 // Bitácora: aislada por empresa y de solo agregar (la API no puede modificar ni borrar entradas).
 const [auditA, auditB] = await Promise.all([a, b].map((t) => withTenant(t.id, (tx) => tx.select().from(auditLog))));

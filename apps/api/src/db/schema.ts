@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, date, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, date, timestamp, doublePrecision, jsonb, integer } from "drizzle-orm/pg-core";
 
 const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
@@ -121,5 +121,17 @@ export const auditLog = pgTable("audit_log", {
   action: text("action", { enum: ["insert", "update", "delete"] }).notNull(),
   changes: jsonb("changes").$type<Record<string, unknown>>().notNull(),
   userId: uuid("user_id"),
+  ...timestamps,
+});
+
+export const attachments = pgTable("attachments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  orderId: uuid("order_id").notNull(),
+  storageKey: text("storage_key").notNull().unique(),
+  fileName: text("file_name").notNull(),
+  contentType: text("content_type", { enum: ["image/jpeg", "image/png", "image/webp"] }).notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  uploadedBy: uuid("uploaded_by"),
   ...timestamps,
 });

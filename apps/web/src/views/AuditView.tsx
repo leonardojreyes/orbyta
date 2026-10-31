@@ -6,7 +6,7 @@ import { parsePgDate } from "../time";
 
 const TABLE_LABEL: Record<string, string> = {
   service_orders: "Orden de servicio", projects: "Proyecto", tasks: "Tarea", customers: "Cliente",
-  technicians: "Técnico", users: "Usuario", tenants: "Empresa",
+  technicians: "Técnico", users: "Usuario", tenants: "Empresa", attachments: "Foto",
 };
 const ACTION_LABEL = { insert: "Creó", update: "Modificó", delete: "Eliminó" } as const;
 const ACTION_TONE = { insert: "bg-emerald-100 text-emerald-700", update: "bg-sky-100 text-sky-700", delete: "bg-rose-100 text-rose-700" } as const;
@@ -14,7 +14,7 @@ const FIELD_LABEL: Record<string, string> = {
   status: "Estado", priority: "Prioridad", assigned_to: "Técnico", technician_id: "Ficha de técnico", customer_id: "Cliente (id)",
   project_id: "Proyecto (id)", customer_name: "Cliente", address: "Dirección", description: "Descripción", name: "Nombre",
   phone: "Teléfono", email: "Correo", tax_id: "RUC / Cédula", role: "Rol", password_hash: "Contraseña", logo_url: "Logo",
-  title: "Título", assignee: "Responsable", due_date: "Vence", start_date: "Inicio", end_date: "Fin", deleted_at: "Eliminado",
+  title: "Título", file_name: "Archivo", content_type: "Tipo", size_bytes: "Tamaño (bytes)", order_id: "Orden (id)", assignee: "Responsable", due_date: "Vence", start_date: "Inicio", end_date: "Fin", deleted_at: "Eliminado",
 };
 
 const show = (v: unknown) => {

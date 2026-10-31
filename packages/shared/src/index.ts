@@ -156,8 +156,13 @@ export type OrderListQuery = z.infer<typeof OrderListQuery>;
 export const CustomerListQuery = z.object({ q: searchText, ...pageParams });
 export const TechnicianListQuery = z.object({ q: searchText, status: z.enum(TECHNICIAN_STATUS).optional(), ...pageParams });
 
+// ---- Adjuntos (fotos de la falla) ----
+export const ATTACHMENT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+export const ATTACHMENT_MAX_PER_ORDER = 20;
+export const ATTACHMENT_DEFAULT_MAX_MB = 5; // tope por foto; la API lo puede cambiar con MAX_UPLOAD_MB
+
 // ---- Bitácora de auditoría ----
-export const AUDIT_TABLES = ["service_orders", "projects", "tasks", "customers", "technicians", "users", "tenants"] as const;
+export const AUDIT_TABLES = ["service_orders", "projects", "tasks", "customers", "technicians", "users", "tenants", "attachments"] as const;
 export const AUDIT_ACTIONS = ["insert", "update", "delete"] as const;
 export const AuditQuery = z.object({
   table: z.enum(AUDIT_TABLES).optional(),
@@ -216,3 +221,7 @@ export interface OrderPage extends Page<ServiceOrder> { counts: Record<(typeof O
 // Listas completas y ligeras para los selectores (ver /lookups/*).
 export interface CustomerOption { id: string; name: string; address: string | null }
 export interface TechnicianOption { id: string; name: string; status: (typeof TECHNICIAN_STATUS)[number] }
+export interface Attachment {
+  id: string; orderId: string; fileName: string; contentType: (typeof ATTACHMENT_TYPES)[number]; sizeBytes: number;
+  uploadedBy: string | null; uploadedByName: string | null; createdAt: string;
+}
