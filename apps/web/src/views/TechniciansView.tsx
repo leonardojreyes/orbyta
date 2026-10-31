@@ -1,21 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LABELS, TECHNICIAN_STATUS, type Technician } from "@orbyta/shared";
-import { api, patch, post } from "../api";
-import { Badge, Button, Field, inputCls } from "../ui";
+import { patch, post } from "../api";
+import { Badge, Button, Field, Pager, SearchBox, inputCls } from "../ui";
+import { useDebounced, usePagedList } from "../hooks";
 
 const empty = { name: "", phone: "", email: "", status: "active" };
 // Campos vacíos viajan como null para poder borrar un dato al editar.
 const clean = (f: typeof empty) => ({ ...f, phone: f.phone || null, email: f.email || null });
 
 export function TechniciansView() {
-  const [rows, setRows] = useState<Technician[]>([]);
+  const [q, setQ] = useState("");
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
 
-  const load = () => api<Technician[]>("/technicians").then(setRows);
-  useEffect(() => { load(); }, []);
+  const list = usePagedList<Technician>("/technicians", { q: useDebounced(q) });
+  const rows = list.items;
 
   const close = () => { setForm(empty); setEditing(null); setOpen(false); setErr(""); };
   const edit = (t: Technician) => {
@@ -25,7 +26,7 @@ export function TechniciansView() {
   const save = async () => {
     try {
       await (editing ? patch(`/technicians/${editing}`, clean(form)) : post("/technicians", clean(form)));
-      close(); load();
+      close(); list.reload();
     } catch (e) { setErr((e as Error).message); }
   };
 
@@ -35,6 +36,9 @@ export function TechniciansView() {
         <h1 className="text-xl font-semibold">Técnicos</h1>
         <Button onClick={() => (open ? close() : setOpen(true))}>{open ? "Cerrar" : "+ Nuevo técnico"}</Button>
       </div>
+
+      <div className="mb-4"><SearchBox value={q} onChange={setQ} placeholder="Buscar por nombre, teléfono o correo…" /></div>
+      {list.error && <p className="mb-3 text-sm text-rose-600">{list.error}</p>}
 
       {open && (
         <div className="mb-5 grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-white p-4">
@@ -66,10 +70,11 @@ export function TechniciansView() {
                 <td className="px-4 py-3 text-right"><button className="text-xs text-brand-600 hover:underline" onClick={() => edit(t)}>Editar</button></td>
               </tr>
             ))}
-            {!rows.length && <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">Sin técnicos.</td></tr>}
+            {!rows.length && !list.error && <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">{q ? "Ningún técnico coincide con la búsqueda." : "Sin técnicos."}</td></tr>}
           </tbody>
         </table>
       </div>
+      <Pager total={list.total} offset={list.offset} limit={list.limit} onOffset={list.setOffset} />
     </div>
   );
 }

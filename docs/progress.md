@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · Fase 2 · Filtros, búsqueda y paginación
+- `GET /service-orders` con filtros (estado, prioridad, técnico, proyecto incl. "sin proyecto", texto), orden en lista blanca y paginación de 25; devuelve `{ items, total, counts }` (las tarjetas por estado salen del servidor). `GET /customers` y `/technicians` con búsqueda y paginación. El técnico sigue viendo solo lo suyo.
+- Selectores de formularios con `/lookups/customers` y `/lookups/technicians` (listas completas y ligeras, tope 1000), porque las listas paginadas los dejarían cortados.
+- Web: barra de filtros con búsqueda diferida, orden y paginador en Órdenes; hook `usePagedList` en Clientes y Técnicos. Descarta respuestas viejas, retrocede si la última página queda vacía y la página va ligada a los filtros.
+- Probado con curl con 124 órdenes y 64 clientes (escape de `%` y `_`, orden, paginación sin duplicados ni huecos, validaciones, técnico, aislamiento). Migración `009_list_indexes.sql` (orden por defecto). Pantallas sin ver en el navegador.
+- Decisiones (ADR-11): paginación por offset en listas numeradas y cursor en la bitácora; búsqueda con `ilike` sin `pg_trgm` por ahora (se añade cuando el volumen lo pida). Limitación: el selector de vincular órdenes a un proyecto muestra las 100 más recientes sin proyecto (avisa si hay más).
+- **Siguiente paso:** Fase 2: adjuntos (fotos de la falla; decidir dónde se guardan los archivos) o el panel de indicadores; luego la vista agrupada por estado.
+
 ## 2026-10-30 · Fase 2 · Bitácora de auditoría
 - Migraciones `007_audit_log.sql` y `008_audit_log_tuning.sql`: tabla `audit_log` (RLS, solo agregar: sin UPDATE ni DELETE para `orbyta_app`) y trigger genérico en proyectos, tareas, órdenes, clientes, técnicos, usuarios y empresa. Guarda autor, fecha y campos cambiados (antes y después); `password_hash` y `logo_url` quedan ocultos. Un cambio sin diferencias reales no genera entrada.
 - El autor viaja a PostgreSQL por solicitud (`AsyncLocalStorage` + `app.user_id` en `withTenant`); probado con dos solicitudes simultáneas de usuarios distintos.

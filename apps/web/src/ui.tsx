@@ -28,3 +28,23 @@ export const Field = ({ label, children }: { label: string; children: ReactNode 
 );
 
 export const inputCls = "rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-ink outline-none focus:border-brand-500";
+
+/** Paginador: "26–50 de 120" con anterior / siguiente. */
+export const Pager = ({ total, offset, limit, onOffset }: { total: number; offset: number; limit: number; onOffset: (o: number) => void }) => {
+  if (!total) return null;
+  const to = Math.min(offset + limit, total);
+  const btn = "rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs hover:bg-slate-50 disabled:opacity-40";
+  return (
+    <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+      <span>{offset + 1}–{to} de {total}</span>
+      <div className="flex gap-2">
+        <button className={btn} disabled={offset === 0} onClick={() => onOffset(Math.max(0, offset - limit))}>← Anterior</button>
+        <button className={btn} disabled={to >= total} onClick={() => onOffset(offset + limit)}>Siguiente →</button>
+      </div>
+    </div>
+  );
+};
+
+export const SearchBox = ({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) => (
+  <input className={`${inputCls} w-72`} type="search" maxLength={100} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+);

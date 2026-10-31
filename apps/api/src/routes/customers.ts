@@ -1,13 +1,20 @@
 import type { FastifyInstance } from "fastify";
 import { and, asc, eq, isNull, sql } from "drizzle-orm";
-import { CustomerCreate, CustomerUpdate } from "@orbyta/shared";
+import { CustomerCreate, CustomerListQuery, CustomerUpdate, type Page } from "@orbyta/shared";
+import { searchAny } from "../db/search.js";
 import { withTenant } from "../db/client.js";
 import { customers } from "../db/schema.js";
 
 export async function customerRoutes(app: FastifyInstance) {
-  app.get("/customers", async (req) =>
-    withTenant(req.tenantId, (tx) => tx.select().from(customers).where(isNull(customers.deletedAt)).orderBy(asc(customers.name))),
-  );
+  app.get("/customers", async (req): Promise<Page<typeof customers.$inferSelect>> => {
+    const { q, limit, offset } = CustomerListQuery.parse(req.query);
+    const where = and(isNull(customers.deletedAt), q ? searchAny(q, customers.name, customers.taxId, customers.phone, customers.email, customers.address) : undefined);
+    return withTenant(req.tenantId, async (tx) => {
+      const items = await tx.select().from(customers).where(where).orderBy(asc(customers.name), asc(customers.id)).limit(limit).offset(offset);
+      const total = (await tx.select({ n: sql<number>`count(*)::int` }).from(customers).where(where))[0]?.n ?? 0;
+      return { items, total };
+    });
+  });
 
   app.post("/customers", async (req, reply) => {
     const body = CustomerCreate.parse(req.body);

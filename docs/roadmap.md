@@ -13,7 +13,8 @@ Cada paso = una sesión de Claude Code que termina con algo visible en pantalla.
 ## Fase 2 · Operación
 - [x] Bitácora/auditoría (tabla `audit_log` vía trigger)
 - [ ] Adjuntos (fotos de la falla) en disco local / S3 compatible (MinIO en servidor)
-- [ ] Filtros, búsqueda y paginación; vista lista tipo ClickUp
+- [x] Filtros, búsqueda y paginación en órdenes, clientes y técnicos
+- [ ] Vista lista agrupada por estado (tipo ClickUp)
 - [ ] Panel de indicadores (órdenes por estado, tiempos de atención)
 
 ## Fase 3 · Sincronización (prepara el móvil offline)

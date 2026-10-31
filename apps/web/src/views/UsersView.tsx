@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LABELS, PASSWORD_MIN, USER_ROLES, USER_STATUS, type Technician, type User } from "@orbyta/shared";
+import { LABELS, PASSWORD_MIN, USER_ROLES, USER_STATUS, type TechnicianOption, type User } from "@orbyta/shared";
 import { api, patch, post } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
 
@@ -7,14 +7,14 @@ const empty = { email: "", name: "", role: "supervisor", status: "active", passw
 
 export function UsersView({ meId }: { meId: string }) {
   const [rows, setRows] = useState<User[]>([]);
-  const [technicians, setTechnicians] = useState<Technician[]>([]);
+  const [technicians, setTechnicians] = useState<TechnicianOption[]>([]);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
 
   const load = () => api<User[]>("/users").then(setRows).catch((e) => setErr((e as Error).message));
-  useEffect(() => { load(); api<Technician[]>("/technicians").then(setTechnicians).catch(() => {}); }, []);
+  useEffect(() => { load(); api<TechnicianOption[]>("/lookups/technicians").then(setTechnicians).catch(() => {}); }, []);
 
   const close = () => { setForm(empty); setEditing(null); setOpen(false); setErr(""); };
   const edit = (u: User) => {

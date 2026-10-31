@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
-import { CLOSED_ORDER_STATUS, OrderCreate, OrderUpdate, TECHNICIAN_ORDER_TARGETS } from "@orbyta/shared";
+import { and, asc, desc, eq, isNull, sql, type SQL } from "drizzle-orm";
+import { CLOSED_ORDER_STATUS, ORDER_STATUS, OrderCreate, OrderListQuery, OrderUpdate, TECHNICIAN_ORDER_TARGETS, type OrderPage } from "@orbyta/shared";
+import { searchAny } from "../db/search.js";
 import { withTenant } from "../db/client.js";
 import { customers, projects, serviceOrderEvents, serviceOrders, technicians } from "../db/schema.js";
 import type { Tx } from "../db/client.js";
@@ -40,11 +41,36 @@ const mine = (req: FastifyRequest) =>
     : req.user.technicianId ? eq(serviceOrders.technicianId, req.user.technicianId) : sql`false`;
 
 export async function orderRoutes(app: FastifyInstance) {
-  app.get("/service-orders", async (req) =>
-    withTenant(req.tenantId, (tx) =>
-      tx.select().from(serviceOrders).where(and(isNull(serviceOrders.deletedAt), mine(req))).orderBy(desc(serviceOrders.createdAt)),
-    ),
-  );
+  app.get("/service-orders", async (req): Promise<OrderPage> => {
+    const f = OrderListQuery.parse(req.query);
+    // Filtros comunes (todos menos el de estado): sirven tanto para la página como para los conteos por estado.
+    const base: (SQL | undefined)[] = [
+      isNull(serviceOrders.deletedAt),
+      mine(req), // el técnico solo ve sus órdenes, aunque pida otros filtros
+      f.q ? searchAny(f.q, serviceOrders.code, serviceOrders.customerName, serviceOrders.address, serviceOrders.description, serviceOrders.assignedTo) : undefined,
+      f.priority ? eq(serviceOrders.priority, f.priority) : undefined,
+      f.technicianId ? eq(serviceOrders.technicianId, f.technicianId) : undefined,
+      f.customerId ? eq(serviceOrders.customerId, f.customerId) : undefined,
+      f.projectId === "none" ? isNull(serviceOrders.projectId) : f.projectId ? eq(serviceOrders.projectId, f.projectId) : undefined,
+    ];
+    const sortKey = {
+      created: serviceOrders.createdAt, code: serviceOrders.code, status: serviceOrders.status,
+      priority: sql`case ${serviceOrders.priority} when 'urgent' then 4 when 'high' then 3 when 'medium' then 2 else 1 end`,
+      customer: sql`lower(${serviceOrders.customerName})`,
+    }[f.sort];
+
+    return withTenant(req.tenantId, async (tx) => {
+      const grouped = await tx.select({ status: serviceOrders.status, n: sql<number>`count(*)::int` })
+        .from(serviceOrders).where(and(...base)).groupBy(serviceOrders.status);
+      const counts = Object.fromEntries(ORDER_STATUS.map((s) => [s, grouped.find((g) => g.status === s)?.n ?? 0])) as OrderPage["counts"];
+      const items = await tx.select().from(serviceOrders)
+        .where(and(...base, f.status ? eq(serviceOrders.status, f.status) : undefined))
+        .orderBy(f.dir === "asc" ? asc(sortKey) : desc(sortKey), asc(serviceOrders.id)) // id desempata: la paginación es estable
+        .limit(f.limit).offset(f.offset);
+      const total = f.status ? counts[f.status] : Object.values(counts).reduce((a, b) => a + b, 0);
+      return { items, total, counts };
+    });
+  });
 
   app.post("/service-orders", async (req, reply) => {
     if (req.user.role === "technician") return reply.code(403).send(forbidden);

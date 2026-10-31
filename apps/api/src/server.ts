@@ -11,6 +11,7 @@ import type { SessionUser } from "@orbyta/shared";
 import { projectRoutes } from "./routes/projects.js";
 import { orderRoutes } from "./routes/orders.js";
 import { companyRoutes } from "./routes/company.js";
+import { lookupRoutes } from "./routes/lookups.js";
 import { customerRoutes } from "./routes/customers.js";
 import { technicianRoutes } from "./routes/technicians.js";
 
@@ -55,6 +56,7 @@ await app.register(async (api) => {
       await staff.register(projectRoutes);
       await staff.register(customerRoutes);
       await staff.register(technicianRoutes);
+      await staff.register(lookupRoutes);
     });
     await scoped.register(async (admin) => {
       admin.addHook("preHandler", allow("admin"));

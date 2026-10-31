@@ -1,21 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Customer } from "@orbyta/shared";
-import { api, patch, post } from "../api";
-import { Button, Field, inputCls } from "../ui";
+import { patch, post } from "../api";
+import { Button, Field, Pager, SearchBox, inputCls } from "../ui";
+import { useDebounced, usePagedList } from "../hooks";
 
 const empty = { name: "", taxId: "", phone: "", email: "", address: "" };
 // Campos vacíos viajan como null para poder borrar un dato al editar.
 const clean = (f: typeof empty) => ({ ...f, taxId: f.taxId || null, phone: f.phone || null, email: f.email || null, address: f.address || null });
 
 export function CustomersView() {
-  const [rows, setRows] = useState<Customer[]>([]);
+  const [q, setQ] = useState("");
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
 
-  const load = () => api<Customer[]>("/customers").then(setRows);
-  useEffect(() => { load(); }, []);
+  const list = usePagedList<Customer>("/customers", { q: useDebounced(q) });
+  const rows = list.items;
 
   const close = () => { setForm(empty); setEditing(null); setOpen(false); setErr(""); };
   const edit = (c: Customer) => {
@@ -25,7 +26,7 @@ export function CustomersView() {
   const save = async () => {
     try {
       await (editing ? patch(`/customers/${editing}`, clean(form)) : post("/customers", clean(form)));
-      close(); load();
+      close(); list.reload();
     } catch (e) { setErr((e as Error).message); }
   };
 
@@ -35,6 +36,9 @@ export function CustomersView() {
         <h1 className="text-xl font-semibold">Clientes</h1>
         <Button onClick={() => (open ? close() : setOpen(true))}>{open ? "Cerrar" : "+ Nuevo cliente"}</Button>
       </div>
+
+      <div className="mb-4"><SearchBox value={q} onChange={setQ} placeholder="Buscar por nombre, RUC, teléfono, correo o dirección…" /></div>
+      {list.error && <p className="mb-3 text-sm text-rose-600">{list.error}</p>}
 
       {open && (
         <div className="mb-5 grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-white p-4">
@@ -64,10 +68,11 @@ export function CustomersView() {
                 <td className="px-4 py-3 text-right"><button className="text-xs text-brand-600 hover:underline" onClick={() => edit(c)}>Editar</button></td>
               </tr>
             ))}
-            {!rows.length && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">Sin clientes.</td></tr>}
+            {!rows.length && !list.error && <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-500">{q ? "Ningún cliente coincide con la búsqueda." : "Sin clientes."}</td></tr>}
           </tbody>
         </table>
       </div>
+      <Pager total={list.total} offset={list.offset} limit={list.limit} onOffset={list.setOffset} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TASK_STATUS, ORDER_STATUS, LABELS, type Project, type ServiceOrder, type Task } from "@orbyta/shared";
+import { TASK_STATUS, ORDER_STATUS, LABELS, type OrderPage, type Project, type ServiceOrder, type Task } from "@orbyta/shared";
 import { api, patch, post } from "../api";
 import { Badge, Button, inputCls } from "../ui";
 
@@ -115,6 +115,7 @@ function Board({ project, onChange }: { project: Project; onChange: () => void }
 function ProjectOrders({ project, onChange }: { project: Project; onChange: () => void }) {
   const [orders, setOrders] = useState<ServiceOrder[]>([]);
   const [free, setFree] = useState<ServiceOrder[]>([]);
+  const [freeTotal, setFreeTotal] = useState(0);
   const [err, setErr] = useState("");
 
   // `live` descarta la respuesta si el usuario ya cambió de proyecto.
@@ -122,9 +123,9 @@ function ProjectOrders({ project, onChange }: { project: Project; onChange: () =
     try {
       const [mine, all] = await Promise.all([
         api<ServiceOrder[]>(`/projects/${project.id}/service-orders`),
-        api<ServiceOrder[]>("/service-orders"),
+        api<OrderPage>("/service-orders?projectId=none&limit=100"), // órdenes aún sin proyecto, para vincular
       ]);
-      if (live()) { setOrders(mine); setFree(all.filter((o) => !o.projectId)); }
+      if (live()) { setOrders(mine); setFree(all.items); setFreeTotal(all.total); }
     } catch (e) { if (live()) setErr((e as Error).message); }
   };
   useEffect(() => {
@@ -150,6 +151,9 @@ function ProjectOrders({ project, onChange }: { project: Project; onChange: () =
           </select>
         )}
       </div>
+      {freeTotal > free.length && (
+        <p className="mb-2 text-xs text-slate-500">El selector muestra las {free.length} órdenes sin proyecto más recientes de {freeTotal}; para las demás, asigna el proyecto desde Órdenes de servicio.</p>
+      )}
       {err && <p className="mb-2 text-sm text-rose-600">{err}</p>}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <table className="w-full text-sm">

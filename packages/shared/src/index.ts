@@ -133,6 +133,29 @@ export const CompanyUpdate = z.object({
 }).partial();
 export type CompanyUpdate = z.infer<typeof CompanyUpdate>;
 
+// ---- Listados: filtros, búsqueda, orden y paginación (en el servidor) ----
+const pageParams = {
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+  offset: z.coerce.number().int().min(0).max(1_000_000).default(0),
+};
+const searchText = z.string().trim().max(100).optional();
+
+export const ORDER_SORT = ["created", "code", "priority", "status", "customer"] as const;
+export const OrderListQuery = z.object({
+  q: searchText, // busca en código, cliente, dirección, falla y técnico
+  status: z.enum(ORDER_STATUS).optional(),
+  priority: z.enum(ORDER_PRIORITY).optional(),
+  technicianId: id.optional(),
+  projectId: z.union([id, z.literal("none")]).optional(), // "none" = órdenes sin proyecto
+  customerId: id.optional(),
+  sort: z.enum(ORDER_SORT).default("created"),
+  dir: z.enum(["asc", "desc"]).default("desc"),
+  ...pageParams,
+});
+export type OrderListQuery = z.infer<typeof OrderListQuery>;
+export const CustomerListQuery = z.object({ q: searchText, ...pageParams });
+export const TechnicianListQuery = z.object({ q: searchText, status: z.enum(TECHNICIAN_STATUS).optional(), ...pageParams });
+
 // ---- Bitácora de auditoría ----
 export const AUDIT_TABLES = ["service_orders", "projects", "tasks", "customers", "technicians", "users", "tenants"] as const;
 export const AUDIT_ACTIONS = ["insert", "update", "delete"] as const;
@@ -187,3 +210,9 @@ export interface AuditEntry {
   userId: string | null; userName: string | null; createdAt: string;
 }
 export interface AuditPage { items: AuditEntry[]; nextCursor: string | null }
+export interface Page<T> { items: T[]; total: number }
+/** Órdenes de una página; `counts` por estado respeta los demás filtros pero ignora el de estado (para las tarjetas). */
+export interface OrderPage extends Page<ServiceOrder> { counts: Record<(typeof ORDER_STATUS)[number], number> }
+// Listas completas y ligeras para los selectores (ver /lookups/*).
+export interface CustomerOption { id: string; name: string; address: string | null }
+export interface TechnicianOption { id: string; name: string; status: (typeof TECHNICIAN_STATUS)[number] }
