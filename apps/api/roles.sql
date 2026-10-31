@@ -13,5 +13,7 @@ END $$;
 GRANT USAGE ON SCHEMA public TO orbyta_app;
 GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO orbyta_app;
 REVOKE ALL ON _migrations FROM orbyta_app;
+-- La bitácora es de solo agregar: la API puede leerla e insertar (vía trigger), nunca modificarla.
+REVOKE UPDATE ON audit_log FROM orbyta_app;
 -- Tablas que se creen en migraciones futuras
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE ON TABLES TO orbyta_app;

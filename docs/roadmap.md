@@ -11,7 +11,7 @@ Cada paso = una sesión de Claude Code que termina con algo visible en pantalla.
 - [x] 1.6 Autenticación local (usuarios, login, roles básicos: admin, supervisor, técnico) — la empresa sale de la sesión, no del header
 
 ## Fase 2 · Operación
-- [ ] Bitácora/auditoría (tabla `audit_log` vía trigger)
+- [x] Bitácora/auditoría (tabla `audit_log` vía trigger)
 - [ ] Adjuntos (fotos de la falla) en disco local / S3 compatible (MinIO en servidor)
 - [ ] Filtros, búsqueda y paginación; vista lista tipo ClickUp
 - [ ] Panel de indicadores (órdenes por estado, tiempos de atención)

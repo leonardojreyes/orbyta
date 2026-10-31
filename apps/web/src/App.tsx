@@ -6,11 +6,12 @@ import { ProjectsView } from "./views/ProjectsView";
 import { OrdersView } from "./views/OrdersView";
 import { CustomersView } from "./views/CustomersView";
 import { TechniciansView } from "./views/TechniciansView";
+import { AuditView } from "./views/AuditView";
 import { UsersView } from "./views/UsersView";
 import { CompanyView } from "./views/CompanyView";
 import { AccountView } from "./views/AccountView";
 
-type View = "projects" | "orders" | "customers" | "technicians" | "users" | "company" | "account";
+type View = "projects" | "orders" | "customers" | "technicians" | "users" | "audit" | "company" | "account";
 type Role = SessionUser["role"];
 
 // Menú por rol (la API vuelve a validar cada permiso; esto solo evita mostrar lo que daría 403).
@@ -20,6 +21,7 @@ const MENU: { key: View; label: string; roles: Role[] }[] = [
   { key: "customers", label: "👥  Clientes", roles: ["admin", "supervisor"] },
   { key: "technicians", label: "🧑‍🔧  Técnicos", roles: ["admin", "supervisor"] },
   { key: "users", label: "🔑  Usuarios", roles: ["admin"] },
+  { key: "audit", label: "📜  Bitácora", roles: ["admin"] },
   { key: "company", label: "🏢  Empresa", roles: ["admin"] },
 ];
 
@@ -87,6 +89,7 @@ export function App() {
         {view === "customers" && <CustomersView key={me.id} />}
         {view === "technicians" && <TechniciansView key={me.id} />}
         {view === "users" && <UsersView key={me.id} meId={me.id} />}
+        {view === "audit" && <AuditView key={me.id} />}
         {view === "account" && <AccountView key={me.id} />}
         {view === "company" && <CompanyView key={me.id} onSaved={loadCompany} />}
       </main>

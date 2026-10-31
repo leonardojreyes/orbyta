@@ -2,7 +2,7 @@
 // Falla (exit 1) si el rol puede saltarse RLS o si una empresa ve/modifica datos de otra.
 import { and, eq, sql } from "drizzle-orm";
 import { admin, db, pool, withTenant } from "./client.js";
-import { customers, projects, serviceOrders, sessions, technicians, tenants, users } from "./schema.js";
+import { auditLog, customers, projects, serviceOrders, sessions, technicians, tenants, users } from "./schema.js";
 
 let failed = 0;
 const check = (name: string, ok: boolean) => {
@@ -80,6 +80,24 @@ check("la orden de A no puede apuntar a un cliente de B", !!cb && !!oa && await 
 
 check("la orden de A no puede apuntar a un proyecto de B", !!pb && !!oa && await rejects(() =>
   probe(a.id, (tx) => tx.update(serviceOrders).set({ projectId: pb.id }).where(eq(serviceOrders.id, oa.id)))));
+
+// Bitácora: aislada por empresa y de solo agregar (la API no puede modificar ni borrar entradas).
+const [auditA, auditB] = await Promise.all([a, b].map((t) => withTenant(t.id, (tx) => tx.select().from(auditLog))));
+check("bitácora: A y B solo ven sus entradas", auditA!.every((r) => r.tenantId === a.id) && auditB!.every((r) => r.tenantId === b.id));
+if (auditA!.length) {
+  const seen = await withTenant(b.id, (tx) => tx.select().from(auditLog).where(eq(auditLog.id, auditA![0]!.id)));
+  check("bitácora: B no lee una entrada de A por id", seen.length === 0);
+} else console.log("· bitácora sin entradas todavía: se omite la lectura cruzada");
+const ownEntry = { tenantId: a.id, tableName: "customers", recordId: a.id, action: "update", changes: {} } as const;
+check("bitácora: el rol no puede modificar entradas", await rejects(() => probe(a.id, async (tx) => {
+  const [row] = await tx.insert(auditLog).values(ownEntry).returning({ id: auditLog.id });
+  await tx.update(auditLog).set({ changes: { x: 1 } }).where(eq(auditLog.id, row!.id));
+})));
+check("bitácora: el rol no puede borrar entradas", await rejects(() => probe(a.id, async (tx) => {
+  const [row] = await tx.insert(auditLog).values(ownEntry).returning({ id: auditLog.id });
+  await tx.execute(sql`delete from audit_log where id = ${row!.id}`);
+})));
+check("bitácora: A no puede registrar entradas de B", await rejects(() => probe(a.id, (tx) => tx.insert(auditLog).values({ ...ownEntry, tenantId: b.id }))));
 
 check("sin empresa fijada no se ve ninguna fila", (await db.select().from(serviceOrders)).length === 0);
 check("el rol no puede hacer DELETE físico", await rejects(() =>

@@ -5,6 +5,8 @@ import { env } from "./env.js";
 import { loginRoutes, sessionRoutes } from "./routes/auth.js";
 import { userRoutes } from "./routes/users.js";
 import { allow, requireSession } from "./auth.js";
+import { requestContext } from "./db/client.js";
+import { auditRoutes } from "./routes/audit.js";
 import type { SessionUser } from "@orbyta/shared";
 import { projectRoutes } from "./routes/projects.js";
 import { orderRoutes } from "./routes/orders.js";
@@ -41,6 +43,8 @@ await app.register(async (api) => {
     scoped.decorateRequest("user", null as unknown as SessionUser);
     scoped.decorateRequest("sessionId", "");
     scoped.addHook("preHandler", requireSession);
+    // Desde aquí todo el trabajo de la solicitud corre con el usuario en el contexto (lo lee withTenant).
+    scoped.addHook("preHandler", (req, _reply, done) => requestContext.run({ userId: req.user.id }, done));
 
     await scoped.register(sessionRoutes);
     await scoped.register(orderRoutes);    // todos los roles; el técnico solo ve y actualiza las suyas
@@ -55,6 +59,7 @@ await app.register(async (api) => {
     await scoped.register(async (admin) => {
       admin.addHook("preHandler", allow("admin"));
       await admin.register(userRoutes);
+      await admin.register(auditRoutes);
     });
   });
 }, { prefix: "/api" });

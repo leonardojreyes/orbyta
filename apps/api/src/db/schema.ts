@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, date, timestamp, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, date, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
 
 const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull().defaultNow(),
@@ -109,5 +109,17 @@ export const sessions = pgTable("sessions", {
   userId: uuid("user_id").notNull(),
   tokenHash: text("token_hash").notNull().unique(),
   expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
+  ...timestamps,
+});
+
+export const auditLog = pgTable("audit_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  tableName: text("table_name").notNull(),
+  recordId: uuid("record_id").notNull(),
+  recordLabel: text("record_label"),
+  action: text("action", { enum: ["insert", "update", "delete"] }).notNull(),
+  changes: jsonb("changes").$type<Record<string, unknown>>().notNull(),
+  userId: uuid("user_id"),
   ...timestamps,
 });

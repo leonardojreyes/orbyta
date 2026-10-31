@@ -133,6 +133,20 @@ export const CompanyUpdate = z.object({
 }).partial();
 export type CompanyUpdate = z.infer<typeof CompanyUpdate>;
 
+// ---- Bitácora de auditoría ----
+export const AUDIT_TABLES = ["service_orders", "projects", "tasks", "customers", "technicians", "users", "tenants"] as const;
+export const AUDIT_ACTIONS = ["insert", "update", "delete"] as const;
+export const AuditQuery = z.object({
+  table: z.enum(AUDIT_TABLES).optional(),
+  action: z.enum(AUDIT_ACTIONS).optional(),
+  userId: id.optional(),
+  recordId: id.optional(),
+  limit: z.coerce.number().int().min(1).max(200).default(50),
+  // Cursor opaco "<created_at>_<id>" devuelto como nextCursor en la página anterior.
+  cursor: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d{1,6})?[+-]\d{2}(:\d{2})?_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i).optional(),
+});
+export type AuditQuery = z.infer<typeof AuditQuery>;
+
 // ---- Tipos de respuesta ----
 export interface SessionUser {
   id: string; name: string; email: string; role: (typeof USER_ROLES)[number]; technicianId: string | null;
@@ -166,3 +180,10 @@ export interface Customer {
 export interface Technician {
   id: string; name: string; phone: string | null; email: string | null; status: (typeof TECHNICIAN_STATUS)[number];
 }
+export interface AuditEntry {
+  id: string; tableName: (typeof AUDIT_TABLES)[number]; recordId: string; recordLabel: string | null;
+  action: (typeof AUDIT_ACTIONS)[number];
+  changes: Record<string, unknown>; // insert: fila completa; update/delete: { campo: { old, new } }
+  userId: string | null; userName: string | null; createdAt: string;
+}
+export interface AuditPage { items: AuditEntry[]; nextCursor: string | null }

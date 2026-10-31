@@ -1,5 +1,13 @@
 # Avance
 
+## 2026-10-30 · Fase 2 · Bitácora de auditoría
+- Migraciones `007_audit_log.sql` y `008_audit_log_tuning.sql`: tabla `audit_log` (RLS, solo agregar: sin UPDATE ni DELETE para `orbyta_app`) y trigger genérico en proyectos, tareas, órdenes, clientes, técnicos, usuarios y empresa. Guarda autor, fecha y campos cambiados (antes y después); `password_hash` y `logo_url` quedan ocultos. Un cambio sin diferencias reales no genera entrada.
+- El autor viaja a PostgreSQL por solicitud (`AsyncLocalStorage` + `app.user_id` en `withTenant`); probado con dos solicitudes simultáneas de usuarios distintos.
+- API `GET /audit` solo admin (filtros por entidad, acción, usuario y registro; paginación por cursor) y vista "Bitácora" en la web. `db:check-rls` suma 5 comprobaciones de la bitácora.
+- Revisor: corregidos un 500 con cursores mal formados, los índices de cada filtro, `created_at` con `clock_timestamp()` para no perder filas al paginar, y una carrera en la vista al cambiar filtros. Una prueba propia detectó que el trigger rompía el cambio de datos de la empresa (`tenants` no tiene `deleted_at`); corregido antes de aplicar la 007.
+- Decisiones: ADR-10 (los inserts duplican datos personales en una tabla que no se borra desde la API; no se auditan inicios de sesión). Probado con curl; pantallas sin ver en el navegador.
+- **Siguiente paso:** Fase 2: adjuntos (fotos de la falla), filtros y paginación en las listas, o el panel de indicadores.
+
 ## 2026-10-30 · Transiciones del técnico y cambio de contraseña propio
 - El técnico solo avanza sus órdenes entre asignada, en curso y terminada; no reabre, no cancela ni toca órdenes cerradas. Admin y supervisor sin esa restricción. Reglas en `@orbyta/shared` (`TECHNICIAN_ORDER_TARGETS`, `CLOSED_ORDER_STATUS`); la web solo ofrece esos estados y bloquea las órdenes cerradas.
 - `POST /auth/password` y pantalla "Cambiar contraseña": pide la actual, valida la nueva, cierra las demás sesiones del usuario y tiene límite de intentos propio (separado del login).

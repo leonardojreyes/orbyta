@@ -3,9 +3,10 @@ import { ORDER_PRIORITY, ORDER_STATUS, LABELS, type ServiceOrder, type ServiceOr
 import { api, patch } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
 import { useCatalogs } from "../catalogs";
+import { parsePgDate } from "../time";
 import { lockedFor, statusChoices } from "../orderStatus";
 
-const fmt = (iso: string) => new Date(iso).toLocaleString("es", { dateStyle: "short", timeStyle: "short" });
+const fmt = (iso: string) => parsePgDate(iso).toLocaleString("es", { dateStyle: "short", timeStyle: "short" });
 
 /** Panel lateral: edita los datos de la orden y muestra su historial de estados. */
 export function OrderPanel({ order, statusOnly, onClose, onSaved }: { order: ServiceOrder; statusOnly: boolean; onClose: () => void; onSaved: () => void }) {
