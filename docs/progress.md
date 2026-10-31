@@ -1,5 +1,15 @@
 # Avance
 
+## 2026-10-30 · 1.6 Autenticación local y roles
+- Migración `006_auth.sql`: `users` y `sessions` con RLS. Login con código de empresa + correo + contraseña (scrypt de `node:crypto`, sin dependencias); sesión en cookie HttpOnly `<tenantId>.<secreto>` y en BD solo el SHA-256 del secreto. La empresa sale de la sesión: se eliminaron el header `X-Tenant-Id` y la ruta `/tenants`.
+- Roles: `admin` (todo, usuarios y empresa), `supervisor` (operación) y `technician` (solo sus órdenes y su estado, según `users.technician_id`). Grupos de rutas por rol en `server.ts`; menú por rol en la web.
+- Web: login, cerrar sesión, vista Usuarios (alta, rol, desactivar, nueva contraseña). Cambiar contraseña, rol o estado cierra las sesiones del usuario; el admin no puede quitarse su rol ni desactivarse.
+- Comandos nuevos: `pnpm db:create-admin <codigo-empresa> <correo>` (primer acceso; contraseña generada y mostrada una vez). El seed crea usuarios de ejemplo con contraseña aleatoria mostrada al terminar. `db:check-rls` cubre `users` y `sessions`.
+- Revisor: corregidos el límite de intentos (por cuenta+IP, por cuenta y por IP; se cuenta antes de verificar, sin carrera), CORS cerrado por defecto, errores 4xx de Fastify ya no salen como 500 y editar un usuario sin cambios reales ya no cierra sus sesiones. Límites conocidos en ADR-09.
+- **Pendiente de decisión:** el técnico puede mover sus órdenes a cualquier estado (incluso reabrir una terminada); falta definir las transiciones permitidas. Otros menores sin hacer: un usuario no puede cambiar su propia contraseña, `sessions` no se purga, no se exige ficha de técnico al rol técnico, y el bloqueo por IP puede afectar a usuarios legítimos tras un mismo NAT.
+- Probado con curl en una base temporal (login, roles, cookie falsificada, revocación, límites); pantallas sin ver en el navegador. **Hay que crear el primer administrador en la base local** con `db:create-admin`.
+- **Siguiente paso:** Fase 2, bitácora/auditoría (`audit_log` vía trigger), y decidir las transiciones de estado del técnico.
+
 ## 2026-10-30 · 1.5 Logo y datos de empresa
 - Migración `005_company_profile.sql`: RUC, dirección, teléfono, correo y `updated_at` en `tenants`. El logo va como data URL (máx. ~200 KB) en `logo_url`, sin dependencias nuevas.
 - API: `GET/PATCH /company` filtran siempre por la empresa de la solicitud; `/tenants` ya no devuelve logo ni datos fiscales.

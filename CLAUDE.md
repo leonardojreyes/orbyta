@@ -20,7 +20,8 @@ Idioma: código y nombres técnicos en inglés; textos de UI, comentarios y docs
 
 ## Comandos
 - `pnpm install` · `pnpm db:migrate` · `pnpm db:seed` · `pnpm db:reset` · `pnpm typecheck`
-- `pnpm dev` (API :3001 + web :5173) — lo corre Leonardo en otra terminal. **No lo ejecutes en primer plano**; para probar usa `curl -s localhost:3001/api/...` con header `X-Tenant-Id`.
+- `pnpm dev` (API :3001 + web :5173) — lo corre Leonardo en otra terminal. **No lo ejecutes en primer plano**; para probar usa `curl` con la sesión: primero `curl -s -c <jar> -X POST localhost:3001/api/auth/login -H 'Content-Type: application/json' -d '{"tenant":"<codigo-empresa>","email":"…","password":"…"}'` y luego `curl -s -b <jar> localhost:3001/api/...` (la empresa sale de la sesión; ya no existe el header `X-Tenant-Id`).
+- `pnpm db:create-admin <codigo-empresa> <correo>` crea el primer administrador (muestra la contraseña una vez) · `pnpm db:check-rls` prueba el aislamiento entre empresas (correrlo al agregar tablas).
 
 ## Restricciones del equipo (MacBook M1, 8 GB RAM, ~36 GB disco)
 - Sin Docker, sin Xcode, sin Android Studio. PostgreSQL nativo (Homebrew).

@@ -7,11 +7,11 @@ import { useCatalogs } from "../catalogs";
 const fmt = (iso: string) => new Date(iso).toLocaleString("es", { dateStyle: "short", timeStyle: "short" });
 
 /** Panel lateral: edita los datos de la orden y muestra su historial de estados. */
-export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; onClose: () => void; onSaved: () => void }) {
+export function OrderPanel({ order, statusOnly, onClose, onSaved }: { order: ServiceOrder; statusOnly: boolean; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState(order);
   const [events, setEvents] = useState<ServiceOrderEvent[]>([]);
   const [err, setErr] = useState("");
-  const { customers, technicians, projects, error: catalogErr } = useCatalogs();
+  const { customers, technicians, projects, error: catalogErr } = useCatalogs(!statusOnly);
 
   const loadEvents = async () => {
     try { setEvents(await api<ServiceOrderEvent[]>(`/service-orders/${order.id}/events`)); }
@@ -22,7 +22,8 @@ export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; o
 
   const save = async () => {
     try {
-      await patch(`/service-orders/${order.id}`, {
+      // El técnico solo puede cambiar el estado; la API rechaza cualquier otro campo.
+      await patch(`/service-orders/${order.id}`, statusOnly ? { status: form.status } : {
         projectId: form.projectId, customerId: form.customerId, customerName: form.customerName, address: form.address, description: form.description,
         priority: form.priority, status: form.status, technicianId: form.technicianId,
       });
@@ -42,19 +43,19 @@ export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; o
 
       <div className="flex-1 space-y-3 overflow-auto px-5 py-4">
         <Field label="Cliente">
-          <select className={inputCls} value={form.customerId ?? ""} onChange={(e) => {
+          <select disabled={statusOnly} className={inputCls} value={form.customerId ?? ""} onChange={(e) => {
             const c = customers.find((x) => x.id === e.target.value);
             setForm({ ...form, customerId: c?.id ?? null, customerName: c?.name ?? form.customerName });
           }}>
-            {!form.customerId && <option value="">{form.customerName} (sin vincular)</option>}
+            {(statusOnly || !form.customerId) && <option value={form.customerId ?? ""}>{form.customerName}{form.customerId ? "" : " (sin vincular)"}</option>}
             {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </Field>
-        <Field label="Dirección"><input className={inputCls} value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></Field>
-        <Field label="Descripción de la falla"><textarea rows={3} className={inputCls} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></Field>
+        <Field label="Dirección"><input disabled={statusOnly} className={inputCls} value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></Field>
+        <Field label="Descripción de la falla"><textarea rows={3} disabled={statusOnly} className={inputCls} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Prioridad">
-            <select className={inputCls} value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value as ServiceOrder["priority"] })}>
+            <select disabled={statusOnly} className={inputCls} value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value as ServiceOrder["priority"] })}>
               {ORDER_PRIORITY.map((p) => <option key={p} value={p}>{LABELS[p]}</option>)}
             </select>
           </Field>
@@ -65,17 +66,17 @@ export function OrderPanel({ order, onClose, onSaved }: { order: ServiceOrder; o
           </Field>
         </div>
         <Field label="Proyecto">
-          <select className={inputCls} value={form.projectId ?? ""} onChange={(e) => setForm({ ...form, projectId: e.target.value || null })}>
-            <option value="">Sin proyecto</option>
+          <select disabled={statusOnly} className={inputCls} value={form.projectId ?? ""} onChange={(e) => setForm({ ...form, projectId: e.target.value || null })}>
+            <option value="">{statusOnly && form.projectId ? "Con proyecto" : "Sin proyecto"}</option>
             {projects.map((p) => <option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
           </select>
         </Field>
         <Field label="Técnico asignado">
-          <select className={inputCls} value={form.technicianId ?? ""} onChange={(e) => {
+          <select disabled={statusOnly} className={inputCls} value={form.technicianId ?? ""} onChange={(e) => {
             const technicianId = e.target.value || null;
             setForm({ ...form, technicianId, status: technicianId && form.status === "open" ? "assigned" : form.status });
           }}>
-            <option value="">Sin asignar</option>
+            <option value="">{statusOnly && form.assignedTo ? form.assignedTo : "Sin asignar"}</option>
             {technicians.filter((t) => t.status === "active" || t.id === form.technicianId).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
         </Field>

@@ -5,6 +5,8 @@ export const PROJECT_STATUS = ["planned", "active", "on_hold", "done"] as const;
 export const TASK_STATUS = ["todo", "in_progress", "done"] as const;
 export const ORDER_STATUS = ["open", "assigned", "in_progress", "done", "cancelled"] as const;
 export const TECHNICIAN_STATUS = ["active", "inactive"] as const;
+export const USER_ROLES = ["admin", "supervisor", "technician"] as const;
+export const USER_STATUS = ["active", "inactive"] as const;
 export const ORDER_PRIORITY = ["low", "medium", "high", "urgent"] as const;
 
 export const LABELS: Record<string, string> = {
@@ -12,6 +14,7 @@ export const LABELS: Record<string, string> = {
   todo: "Por hacer", in_progress: "En curso",
   open: "Abierta", assigned: "Asignada", cancelled: "Cancelada",
   inactive: "Inactivo",
+  admin: "Administrador", supervisor: "Supervisor", technician: "Técnico",
   low: "Baja", medium: "Media", high: "Alta", urgent: "Urgente",
 };
 
@@ -82,6 +85,31 @@ export const TechnicianCreate = z.object({
 export type TechnicianCreate = z.infer<typeof TechnicianCreate>;
 export const TechnicianUpdate = TechnicianCreate.partial().omit({ id: true });
 
+// ---- Autenticación y usuarios ----
+export const PASSWORD_MIN = 10;
+const password = z.string().min(PASSWORD_MIN, `La contraseña debe tener al menos ${PASSWORD_MIN} caracteres`).max(200);
+const email = z.string().trim().toLowerCase().email().max(200);
+
+export const LoginInput = z.object({
+  tenant: z.string().trim().toLowerCase().min(1).max(80), // código (slug) de la empresa
+  email,
+  password: z.string().min(1).max(200),
+});
+export type LoginInput = z.infer<typeof LoginInput>;
+
+export const UserCreate = z.object({
+  id: id.optional(),
+  email,
+  name: z.string().trim().min(2).max(120),
+  role: z.enum(USER_ROLES),
+  status: z.enum(USER_STATUS).default("active"),
+  password,
+  technicianId: id.nullish(),
+});
+export type UserCreate = z.infer<typeof UserCreate>;
+export const UserUpdate = UserCreate.partial().omit({ id: true, email: true });
+export type UserUpdate = z.infer<typeof UserUpdate>;
+
 // Logo de la empresa: imagen pequeña embebida (data URL), sin servicio de archivos aparte.
 export const LOGO_MAX_CHARS = 280_000; // ≈ 200 KB de imagen en base64
 export const CompanyUpdate = z.object({
@@ -97,6 +125,10 @@ export const CompanyUpdate = z.object({
 export type CompanyUpdate = z.infer<typeof CompanyUpdate>;
 
 // ---- Tipos de respuesta ----
+export interface SessionUser {
+  id: string; name: string; email: string; role: (typeof USER_ROLES)[number]; technicianId: string | null;
+}
+export interface User extends SessionUser { status: (typeof USER_STATUS)[number] }
 export interface Tenant { id: string; name: string; slug: string }
 export interface Company extends Tenant {
   logoUrl: string | null; taxId: string | null; address: string | null; phone: string | null; email: string | null;

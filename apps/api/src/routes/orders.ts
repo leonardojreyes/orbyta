@@ -1,4 +1,4 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import { OrderCreate, OrderUpdate } from "@orbyta/shared";
 import { withTenant } from "../db/client.js";
@@ -32,14 +32,22 @@ async function resolveRefs(tx: Tx, body: Refs, current?: { technicianId: string 
   return { names };
 }
 
+const forbidden = { error: "No tienes permiso para esta acción" };
+
+/** El técnico solo alcanza las órdenes asignadas a su ficha de técnico; admin y supervisor, todas. */
+const mine = (req: FastifyRequest) =>
+  req.user.role !== "technician" ? undefined
+    : req.user.technicianId ? eq(serviceOrders.technicianId, req.user.technicianId) : sql`false`;
+
 export async function orderRoutes(app: FastifyInstance) {
   app.get("/service-orders", async (req) =>
     withTenant(req.tenantId, (tx) =>
-      tx.select().from(serviceOrders).where(isNull(serviceOrders.deletedAt)).orderBy(desc(serviceOrders.createdAt)),
+      tx.select().from(serviceOrders).where(and(isNull(serviceOrders.deletedAt), mine(req))).orderBy(desc(serviceOrders.createdAt)),
     ),
   );
 
   app.post("/service-orders", async (req, reply) => {
+    if (req.user.role === "technician") return reply.code(403).send(forbidden);
     const body = OrderCreate.parse(req.body);
     const row = await withTenant(req.tenantId, async (tx) => {
       const refs = await resolveRefs(tx, body);
@@ -58,8 +66,10 @@ export async function orderRoutes(app: FastifyInstance) {
 
   app.patch<{ Params: { id: string } }>("/service-orders/:id", async (req, reply) => {
     const body = OrderUpdate.parse(req.body);
+    // El técnico solo puede cambiar el estado de sus órdenes.
+    if (req.user.role === "technician" && Object.keys(body).some((k) => k !== "status")) return reply.code(403).send(forbidden);
     const row = await withTenant(req.tenantId, async (tx) => {
-      const where = and(eq(serviceOrders.id, req.params.id), isNull(serviceOrders.deletedAt));
+      const where = and(eq(serviceOrders.id, req.params.id), isNull(serviceOrders.deletedAt), mine(req));
       const [prev] = await tx.select({ status: serviceOrders.status, technicianId: serviceOrders.technicianId }).from(serviceOrders).where(where).for("update");
       if (!prev) return undefined;
       const refs = await resolveRefs(tx, body, prev);
@@ -80,7 +90,7 @@ export async function orderRoutes(app: FastifyInstance) {
   app.get<{ Params: { id: string } }>("/service-orders/:id/events", async (req, reply) => {
     const events = await withTenant(req.tenantId, async (tx) => {
       const [order] = await tx.select({ id: serviceOrders.id }).from(serviceOrders)
-        .where(and(eq(serviceOrders.id, req.params.id), isNull(serviceOrders.deletedAt)));
+        .where(and(eq(serviceOrders.id, req.params.id), isNull(serviceOrders.deletedAt), mine(req)));
       if (!order) return undefined;
       return tx.select().from(serviceOrderEvents)
         .where(and(eq(serviceOrderEvents.orderId, order.id), isNull(serviceOrderEvents.deletedAt)))

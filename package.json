@@ -9,6 +9,8 @@
     "db:migrate": "pnpm --filter @orbyta/api db:migrate",
     "db:seed": "pnpm --filter @orbyta/api db:seed",
     "db:reset": "pnpm --filter @orbyta/api db:reset",
+    "db:check-rls": "pnpm --filter @orbyta/api db:check-rls",
+    "db:create-admin": "pnpm --filter @orbyta/api db:create-admin",
     "typecheck": "pnpm -r typecheck",
     "build": "pnpm -r build"
   }

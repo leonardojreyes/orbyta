@@ -1,13 +1,15 @@
-// Cliente HTTP mínimo. Toda llamada de negocio lleva la empresa activa.
-let tenantId = "";
-export const setTenant = (id: string) => { tenantId = id; };
+// Cliente HTTP mínimo. La sesión viaja en una cookie HttpOnly; la empresa sale de la sesión, no del cliente.
+let onUnauthorized: () => void = () => {};
+/** App registra aquí qué hacer cuando la API responde 401 (sesión vencida o cerrada). */
+export const setOnUnauthorized = (fn: () => void) => { onUnauthorized = fn; };
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`/api${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...(tenantId ? { "X-Tenant-Id": tenantId } : {}), ...init.headers },
+    headers: { ...(init.body ? { "Content-Type": "application/json" } : {}), ...init.headers },
   });
   if (!res.ok) {
+    if (res.status === 401 && path !== "/auth/login" && path !== "/auth/me") onUnauthorized();
     const body = await res.json().catch(() => ({}));
     // Validación Zod: indica qué campos fallaron.
     const fields = Array.isArray(body.issues) ? ` (${body.issues.map((i: { path: (string | number)[] }) => i.path.join(".")).join(", ")})` : "";

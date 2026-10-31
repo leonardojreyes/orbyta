@@ -1,8 +1,20 @@
 // Datos de ejemplo: dos empresas para comprobar el aislamiento multiempresa.
 import { admin } from "./client.js";
-import { tenants, projects, tasks, serviceOrders, serviceOrderEvents, customers, technicians } from "./schema.js";
+import { randomBytes } from "node:crypto";
+import { tenants, projects, tasks, serviceOrders, serviceOrderEvents, customers, technicians, users } from "./schema.js";
+import { hashPassword } from "../auth.js";
 
 const { db, pool, withTenant } = admin;
+
+// Usuarios de ejemplo con contraseña aleatoria: se muestran una sola vez al terminar el seed.
+const credentials: string[] = [];
+async function seedUser(tx: Parameters<Parameters<typeof withTenant>[1]>[0], tenantId: string, slug: string,
+  role: "admin" | "supervisor" | "technician", name: string, technicianId?: string) {
+  const password = randomBytes(9).toString("base64url");
+  const email = `${role}@${slug}.example`;
+  await tx.insert(users).values({ tenantId, email, name, role, technicianId, passwordHash: await hashPassword(password) });
+  credentials.push(`  ${slug.padEnd(14)} ${role.padEnd(11)} ${email.padEnd(36)} ${password}`);
+}
 
 type OrderSeed = Omit<typeof serviceOrders.$inferInsert, "customerId" | "technicianId" | "assignedTo"> & { technician?: string };
 
@@ -17,6 +29,7 @@ async function seedCatalogsAndOrders(tx: Parameters<Parameters<typeof withTenant
     return { ...o, customerId: cs.find((c) => c.name === o.customerName)!.id, technicianId: t?.id, assignedTo: t?.name };
   })).returning();
   await tx.insert(serviceOrderEvents).values(created.map((o) => ({ tenantId, orderId: o.id, toStatus: o.status })));
+  return ts;
 }
 
 const [aguas, redes] = await db
@@ -48,7 +61,7 @@ await withTenant(aguas.id, async (tx) => {
     { tenantId: aguas.id, projectId: p1!.id, title: "Pruebas de presión", status: "todo" },
     { tenantId: aguas.id, projectId: p2!.id, title: "Inspección con cámara CCTV", status: "todo", assignee: "J. Mora" },
   ]);
-  await seedCatalogsAndOrders(tx, aguas.id, ["Técnico R. Salas", "Técnico L. Cruz"], [
+  const aguasTechs = await seedCatalogsAndOrders(tx, aguas.id, ["Técnico R. Salas", "Técnico L. Cruz"], [
     { tenantId: aguas.id, code: "OS-0001", customerName: "Carlos Andrade", address: "Mz. 12 Villa 4, Los Ceibos",
       description: "Fuga en medidor domiciliario", priority: "high", status: "assigned", technician: "Técnico R. Salas", projectId: p1!.id },
     { tenantId: aguas.id, code: "OS-0002", customerName: "María Paredes", address: "Av. Las Aguas 210",
@@ -58,6 +71,9 @@ await withTenant(aguas.id, async (tx) => {
     { tenantId: aguas.id, code: "OS-0004", customerName: "Pedro Gómez", address: "Calle 5ta y Ficus",
       description: "Cambio de medidor", priority: "low", status: "done", technician: "Técnico R. Salas" },
   ]);
+  await seedUser(tx, aguas.id, aguas.slug, "admin", "Administrador Aguas");
+  await seedUser(tx, aguas.id, aguas.slug, "supervisor", "Supervisora Aguas");
+  await seedUser(tx, aguas.id, aguas.slug, "technician", "R. Salas", aguasTechs.find((t) => t.name === "Técnico R. Salas")?.id);
 });
 
 await withTenant(redes.id, async (tx) => {
@@ -68,7 +84,11 @@ await withTenant(redes.id, async (tx) => {
     { tenantId: redes.id, code: "OS-0001", customerName: "Lucía Torres", address: "Cdla. Entre Ríos",
       description: "Corte de servicio de internet", priority: "high", status: "open" },
   ]);
+  await seedUser(tx, redes.id, redes.slug, "admin", "Administrador Redes");
 });
 
 console.log("✓ Datos de ejemplo cargados (2 empresas).");
+console.log("\nUsuarios de ejemplo (solo desarrollo; la contraseña no se vuelve a mostrar):");
+console.log("  empresa        rol         correo                               contraseña");
+console.log(credentials.join("\n"));
 await pool.end();

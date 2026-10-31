@@ -2,7 +2,7 @@
 // Falla (exit 1) si el rol puede saltarse RLS o si una empresa ve/modifica datos de otra.
 import { and, eq, sql } from "drizzle-orm";
 import { admin, db, pool, withTenant } from "./client.js";
-import { customers, projects, serviceOrders, technicians, tenants } from "./schema.js";
+import { customers, projects, serviceOrders, sessions, technicians, tenants, users } from "./schema.js";
 
 let failed = 0;
 const check = (name: string, ok: boolean) => {
@@ -57,7 +57,7 @@ check("A no puede insertar filas con tenant_id de B", await rejects(() =>
 ));
 
 // Catálogos: misma garantía que las órdenes.
-for (const [label, table] of [["clientes", customers], ["técnicos", technicians]] as const) {
+for (const [label, table] of [["clientes", customers], ["técnicos", technicians], ["usuarios", users], ["sesiones", sessions]] as const) {
   const [mine, theirs] = await Promise.all([
     withTenant(a.id, (tx) => tx.select({ t: table.tenantId, id: table.id }).from(table)),
     withTenant(b.id, (tx) => tx.select({ t: table.tenantId, id: table.id }).from(table)),
@@ -68,7 +68,7 @@ for (const [label, table] of [["clientes", customers], ["técnicos", technicians
     const seen = await withTenant(b.id, (tx) => tx.select().from(table).where(eq(table.id, other.id)));
     check(`${label}: B no lee uno de A por id`, seen.length === 0);
     check(`${label}: B no puede modificar uno de A`, (await probe(b.id, (tx) =>
-      tx.update(table).set({ name: "x" }).where(eq(table.id, other.id)).returning({ id: table.id }))).length === 0);
+      tx.update(table).set({ updatedAt: sql`now()` }).where(eq(table.id, other.id)).returning({ id: table.id }))).length === 0);
   }
 }
 const [cb] = await withTenant(b.id, (tx) => tx.select().from(customers));

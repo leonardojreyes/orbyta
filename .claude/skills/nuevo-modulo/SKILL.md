@@ -14,5 +14,5 @@ Patrón de referencia: órdenes de servicio. Copia su forma, no inventes otra.
 3. **Zod** en `packages/shared/src/index.ts`: `<Entidad>Create`, `<Entidad>Update = Create.partial().omit({id:true})`, interfaz de respuesta, catálogos de estado y etiquetas en `LABELS`.
 4. **Rutas** `apps/api/src/routes/<entidad>.ts` (GET lista, POST, PATCH) usando `withTenant`; regístralas en `server.ts` dentro del bloque `scoped`.
 5. **Vista** `apps/web/src/views/<Entidad>View.tsx` usando `api/post/patch` y componentes de `ui.tsx`; agrega la entrada al menú en `App.tsx`.
-6. **Verifica**: `pnpm db:migrate`, `pnpm typecheck`, y un `curl -s -H "X-Tenant-Id: <uuid>" localhost:3001/api/<ruta>`.
+6. **Verifica**: `pnpm db:migrate`, `pnpm typecheck`, `pnpm db:check-rls` (agrega la tabla nueva a la lista de `check-rls.ts`) y un `curl -s -b <jar> localhost:3001/api/<ruta>` con sesión (ver CLAUDE.md). Registra las rutas en el grupo de `server.ts` que corresponda al rol (`staff`: admin y supervisor; `admin`: solo admin).
 7. Llama al subagente `revisor`, corrige lo ALTO, y ejecuta `/avance`.

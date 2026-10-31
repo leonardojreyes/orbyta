@@ -2,7 +2,10 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { ZodError } from "zod";
 import { env } from "./env.js";
-import { tenantRoutes } from "./routes/tenants.js";
+import { loginRoutes, sessionRoutes } from "./routes/auth.js";
+import { userRoutes } from "./routes/users.js";
+import { allow, requireSession } from "./auth.js";
+import type { SessionUser } from "@orbyta/shared";
 import { projectRoutes } from "./routes/projects.js";
 import { orderRoutes } from "./routes/orders.js";
 import { companyRoutes } from "./routes/company.js";
@@ -10,15 +13,19 @@ import { customerRoutes } from "./routes/customers.js";
 import { technicianRoutes } from "./routes/technicians.js";
 
 declare module "fastify" {
-  interface FastifyRequest { tenantId: string }
+  interface FastifyRequest { tenantId: string; user: SessionUser; sessionId: string }
 }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const app = Fastify({ logger: { level: "info" } });
-await app.register(cors, { origin: true });
+// trustProxy solo si hay un proxy de confianza delante (TRUST_PROXY=true); si no, req.ip sería falsificable.
+const app = Fastify({ logger: { level: "info" }, trustProxy: process.env.TRUST_PROXY === "true" });
+// En desarrollo la web usa el proxy de Vite (mismo origen), así que CORS no hace falta; solo se abre a orígenes listados.
+await app.register(cors, { origin: process.env.CORS_ORIGIN?.split(",") ?? false });
 
 app.setErrorHandler((err, _req, reply) => {
   if (err instanceof ZodError) return reply.code(400).send({ error: "Datos inválidos", issues: err.issues });
+  // Errores del cliente de Fastify (JSON mal formado, tipo de contenido no soportado…) no son 500.
+  const status = (err as { statusCode?: number }).statusCode;
+  if (status && status >= 400 && status < 500) return reply.code(status).send({ error: "Solicitud inválida" });
   app.log.error(err);
   return reply.code(500).send({ error: "Error interno" });
 });
@@ -26,20 +33,29 @@ app.setErrorHandler((err, _req, reply) => {
 app.get("/api/health", async () => ({ ok: true, service: "orbyta-api" }));
 
 await app.register(async (api) => {
-  await api.register(tenantRoutes);
-  // Todo lo de negocio exige empresa. MVP: header X-Tenant-Id. Fase siguiente: claim del token OIDC (Keycloak).
+  await api.register(loginRoutes); // única ruta pública
+
+  // Todo lo demás exige sesión: la empresa y el usuario salen de la cookie, nunca de un header.
   await api.register(async (scoped) => {
     scoped.decorateRequest("tenantId", "");
-    scoped.addHook("preHandler", async (req, reply) => {
-      const t = req.headers["x-tenant-id"];
-      if (typeof t !== "string" || !UUID.test(t)) return reply.code(400).send({ error: "Falta X-Tenant-Id" });
-      req.tenantId = t;
+    scoped.decorateRequest("user", null as unknown as SessionUser);
+    scoped.decorateRequest("sessionId", "");
+    scoped.addHook("preHandler", requireSession);
+
+    await scoped.register(sessionRoutes);
+    await scoped.register(orderRoutes);    // todos los roles; el técnico solo ve y actualiza las suyas
+    await scoped.register(companyRoutes);  // GET todos; PATCH solo admin
+
+    await scoped.register(async (staff) => {
+      staff.addHook("preHandler", allow("admin", "supervisor"));
+      await staff.register(projectRoutes);
+      await staff.register(customerRoutes);
+      await staff.register(technicianRoutes);
     });
-    await scoped.register(projectRoutes);
-    await scoped.register(orderRoutes);
-    await scoped.register(companyRoutes);
-    await scoped.register(customerRoutes);
-    await scoped.register(technicianRoutes);
+    await scoped.register(async (admin) => {
+      admin.addHook("preHandler", allow("admin"));
+      await admin.register(userRoutes);
+    });
   });
 }, { prefix: "/api" });
 

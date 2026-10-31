@@ -8,7 +8,7 @@ Cada paso = una sesión de Claude Code que termina con algo visible en pantalla.
 - [x] 1.3 Catálogos: clientes y técnicos (skill `nuevo-modulo`); orden de servicio referencia cliente y técnico
 - [x] 1.4 Vincular órdenes a proyectos y ver órdenes dentro del proyecto
 - [x] 1.5 Logo por empresa y datos de empresa
-- [ ] 1.6 Autenticación local (usuarios, login, roles básicos: admin, supervisor, técnico) — la empresa sale de la sesión, no del header
+- [x] 1.6 Autenticación local (usuarios, login, roles básicos: admin, supervisor, técnico) — la empresa sale de la sesión, no del header
 
 ## Fase 2 · Operación
 - [ ] Bitácora/auditoría (tabla `audit_log` vía trigger)

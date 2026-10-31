@@ -90,3 +90,24 @@ export const technicians = pgTable("technicians", {
   status: text("status", { enum: ["active", "inactive"] }).notNull().default("active"),
   ...timestamps,
 });
+
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  email: text("email").notNull(),
+  name: text("name").notNull(),
+  role: text("role", { enum: ["admin", "supervisor", "technician"] }).notNull(),
+  status: text("status", { enum: ["active", "inactive"] }).notNull().default("active"),
+  passwordHash: text("password_hash").notNull(),
+  technicianId: uuid("technician_id"),
+  ...timestamps,
+});
+
+export const sessions = pgTable("sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").notNull(),
+  userId: uuid("user_id").notNull(),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
+  ...timestamps,
+});

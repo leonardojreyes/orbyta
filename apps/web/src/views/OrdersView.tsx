@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ORDER_PRIORITY, ORDER_STATUS, LABELS, type ServiceOrder } from "@orbyta/shared";
+import { ORDER_PRIORITY, ORDER_STATUS, LABELS, type ServiceOrder, type SessionUser } from "@orbyta/shared";
 import { api, patch, post } from "../api";
 import { Badge, Button, Field, inputCls } from "../ui";
 import { OrderPanel } from "./OrderPanel";
@@ -7,13 +7,14 @@ import { useCatalogs } from "../catalogs";
 
 const empty = { customerId: "", customerName: "", address: "", description: "", priority: "medium", technicianId: "", projectId: "" };
 
-export function OrdersView() {
+export function OrdersView({ role }: { role: SessionUser["role"] }) {
+  const isTech = role === "technician"; // el técnico solo ve sus órdenes y cambia su estado
   const [orders, setOrders] = useState<ServiceOrder[]>([]);
   const [filter, setFilter] = useState<string>("all");
   const [form, setForm] = useState(empty);
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState("");
-  const { customers, technicians, projects, error: catalogErr } = useCatalogs();
+  const { customers, technicians, projects, error: catalogErr } = useCatalogs(!isTech);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const load = () => api<ServiceOrder[]>("/service-orders").then(setOrders);
@@ -41,7 +42,7 @@ export function OrdersView() {
     <div className="p-6">
       <div className="mb-5 flex items-center justify-between">
         <h1 className="text-xl font-semibold">Órdenes de servicio</h1>
-        <Button onClick={() => setOpen(!open)}>{open ? "Cerrar" : "+ Nueva orden"}</Button>
+        {!isTech && <Button onClick={() => setOpen(!open)}>{open ? "Cerrar" : "+ Nueva orden"}</Button>}
       </div>
 
       <div className="mb-5 grid grid-cols-5 gap-3">
@@ -118,7 +119,7 @@ export function OrdersView() {
         </table>
       </div>
 
-      {selected && <OrderPanel order={selected} onClose={() => setSelectedId(null)} onSaved={load} />}
+      {selected && <OrderPanel order={selected} statusOnly={isTech} onClose={() => setSelectedId(null)} onSaved={load} />}
     </div>
   );
 }
